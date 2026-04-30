@@ -842,9 +842,9 @@ document.getElementById('booking-form').addEventListener('submit',async function
     note:fd.get('note')||'-',
     items:bookingItems,
   }
-  const APPS_SCRIPT_URL='YOUR_APPS_SCRIPT_WEBHOOK_URL'
+  const APPS_SCRIPT_URL='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'
   try{
-    if(APPS_SCRIPT_URL!=='YOUR_APPS_SCRIPT_WEBHOOK_URL'){
+    if(APPS_SCRIPT_URL!=='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'){
       await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     } else {
       console.log('제출 데이터:',JSON.stringify(payload,null,2))
