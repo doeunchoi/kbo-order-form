@@ -476,7 +476,6 @@ function tickClock(){
   const h=pad2(now.getHours()),m=pad2(now.getMinutes()),s=pad2(now.getSeconds())
   document.getElementById('clock-time').textContent=`${h}:${m}:${s}`
 
-  // 날짜 표시
   const dateStr=now.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'})
   document.getElementById('clock-date').textContent=dateStr
 
@@ -490,7 +489,6 @@ function tickClock(){
     if(diff<=0){
       statusEl.textContent='접수 중';statusEl.className='clock-status-bar open'
       timeEl.className='clock-time-display open';dotEl.className='clock-dot live';cdEl.textContent=''
-      // 접수 시작 순간 제출 버튼 자동 활성화
       unlockSubmit()
     } else {
       const ts=Math.floor(diff/1000)
@@ -498,7 +496,6 @@ function tickClock(){
       statusEl.textContent='개시 전';statusEl.className='clock-status-bar soon'
       timeEl.className='clock-time-display';dotEl.className='clock-dot'
       cdEl.textContent=d>0?`${d}일 ${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후`:`${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후 개시`
-      // 접수 전이면 제출 버튼 잠금 (폼 입력은 자유롭게 가능)
       lockSubmit(cfg)
     }
   } else {
@@ -507,7 +504,7 @@ function tickClock(){
     unlockSubmit()
   }
 }
-// ── 제출 버튼만 잠금/해제 (폼 입력은 항상 가능) ──
+
 let _submitLocked=false
 function lockSubmit(cfg){
   if(_submitLocked)return
@@ -543,14 +540,12 @@ function initMonthSelect(){
 function onMonthChange(){
   const now=new Date()
   const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value)
-  // 잠금 배너: 정보 안내용으로만 표시 (폼 입력은 항상 가능)
   const lb=document.getElementById('lock-banner')
   if(cfg&&now<cfg.openAt){
     const s=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'})
     document.getElementById('lock-title').textContent=`${cfg.label} 청약 — 미리 작성 후 ${s} 정각에 제출하세요`
     document.getElementById('lock-desc').textContent=`폼은 지금 모두 작성 가능합니다. 제출 버튼은 접수 개시 시각에 자동으로 활성화됩니다.`
     lb.style.display='block'
-    // 제출 버튼만 잠금
     _submitLocked=false; lockSubmit(cfg)
   } else {
     lb.style.display='none'
@@ -568,13 +563,11 @@ function onMonthChange(){
 }
 
 // ── 청구처 / 담당자 소속 동기화 ──
-// 청구처 직접 입력 → 체크박스 켜져있으면 소속도 동기화
 function onBillingInput(){
   if(document.getElementById('chk-same-billing').checked){
     document.getElementById('inp-org').value=document.getElementById('inp-billing').value
   }
 }
-// 체크박스: 청구처 → 소속 채우기
 function onSameBilling(){
   const checked=document.getElementById('chk-same-billing').checked
   const org=document.getElementById('inp-org')
@@ -586,7 +579,6 @@ function onSameBilling(){
     org.removeAttribute('readonly')
   }
 }
-// 소속 직접 입력 시 — 체크박스가 켜져있으면 청구처도 동기화
 function onOrgInput(){
   if(document.getElementById('chk-same-billing').checked){
     document.getElementById('inp-billing').value=document.getElementById('inp-org').value
@@ -598,7 +590,6 @@ function onTasChange(){
   const noTas=document.getElementById('tas-no').checked
   const sec=document.getElementById('tas-section')
   sec.classList.toggle('visible',noTas)
-  // TAS 필드 required 토글
   ;['tas-corp','tas-biznum','tas-mgrname','tas-mgremail'].forEach(id=>{
     const el=document.getElementById(id)
     if(el) noTas?el.setAttribute('required',''):el.removeAttribute('required')
@@ -723,7 +714,7 @@ function buildWeekGridInEl(grid,idx){
   }
 }
 
-// ── 가격 요약 (구단/주차 옵션 표시 포함) ──
+// ── 가격 요약 ──
 function updatePriceSummary(){
   const rows=document.getElementById('price-rows')
   const divider=document.getElementById('price-divider')
@@ -784,6 +775,8 @@ initMonthSelect();addItem()
 })()
 
 // ── 제출 ──
+const APPS_SCRIPT_URL='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'
+
 document.getElementById('booking-form').addEventListener('submit',async function(e){
   e.preventDefault();const form=e.target
   if(!document.getElementById('chk-privacy').checked){alert('개인정보 수집·이용에 동의해주세요.');return}
@@ -842,14 +835,9 @@ document.getElementById('booking-form').addEventListener('submit',async function
     note:fd.get('note')||'-',
     items:bookingItems,
   }
-  const APPS_SCRIPT_URL='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'
   try{
-    if(APPS_SCRIPT_URL!=='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'){
-      await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    } else {
-      console.log('제출 데이터:',JSON.stringify(payload,null,2))
-      await new Promise(r=>setTimeout(r,700))
-    }
+    // ✅ 수정: if/else 조건 제거 — 항상 실제 fetch 실행
+    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     document.getElementById('form-screen').style.display='none'
     document.getElementById('success-screen').style.display='block'
     document.getElementById('success-timestamp').textContent='제출 시각: '+new Date().toLocaleString('ko-KR')
