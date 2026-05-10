@@ -14,32 +14,32 @@
   --border:#E2E2DE;--border-focus:#111111;
   --radius:12px;--radius-sm:8px;
   --avail:#2D6A11;--avail-bg:#EAF3DE;
-  --warn-bg:#FFF8EC;--warn:#92580A;--warn-border:#F5DDB0;
+  --warn-bg:#FFF8EC;--warn:#92580A;
   --danger-bg:#FFF2F2;--danger:#991B1B;--danger-border:#FECACA;
   --blue-bg:#EEF2FF;--blue:#3730A3;
   --price-bg:#F0FDF4;
-  --purple:#7C3AED;--purple-bg:#F5F3FF;
+  --purple:#7C3AED;--purple-bg:#F5F3FF;--purple-border:#DDD6FE;
 }
 body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font-size:15px;color:var(--text1);min-height:100vh}
 
-/* ── 고정 시계 바 ── */
+/* ── 클락바 ── */
 .clock-bar{position:fixed;top:0;left:0;right:0;z-index:300;background:var(--surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px}
 .clock-bar-left{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .logo-badge{background:var(--tving);color:#fff;font-size:11px;font-weight:700;padding:3px 7px;border-radius:4px;letter-spacing:.5px}
 .logo-text{font-size:13px;font-weight:600}
 .clock-bar-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1px}
 .clock-dot-row{display:flex;align-items:center;gap:7px}
-.clock-dot{width:6px;height:6px;border-radius:50%;background:#ccc;transition:background .3s;flex-shrink:0}
+.clock-dot{width:6px;height:6px;border-radius:50%;background:#ccc;transition:background .3s}
 .clock-dot.live{background:var(--avail);animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(45,106,17,.15)}50%{box-shadow:0 0 0 6px rgba(45,106,17,.05)}}
-.clock-time-display{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em;color:var(--text1)}
-.clock-time-display.open{color:var(--avail)}
-.clock-date-display{font-size:10px;color:var(--text3);text-align:center;letter-spacing:.01em}
+.clock-time{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.clock-time.open{color:var(--avail)}
+.clock-date{font-size:10px;color:var(--text3);text-align:center}
 .clock-bar-right{display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0}
-.clock-status-bar{font-size:11px;font-weight:600;color:var(--text3)}
-.clock-status-bar.open{color:var(--avail)}
-.clock-status-bar.soon{color:var(--warn)}
-.countdown-bar{font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
+.clock-status{font-size:11px;font-weight:600;color:var(--text3)}
+.clock-status.open{color:var(--avail)}
+.clock-status.soon{color:var(--warn)}
+.countdown{font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
 
 /* ── 레이아웃 ── */
 .page{max-width:660px;margin:0 auto;padding:76px 20px 80px}
@@ -47,35 +47,29 @@ body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font
 .page-kicker{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tving);margin-bottom:6px}
 .page-title{font-size:22px;font-weight:700;line-height:1.3;margin-bottom:8px}
 .page-desc{font-size:13px;color:var(--text2);line-height:1.7}
-.deadline-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-top:10px;background:var(--avail-bg);color:var(--avail)}
-.deadline-chip.upcoming{background:var(--warn-bg);color:var(--warn)}
-.deadline-chip.planned{background:var(--purple-bg);color:var(--purple)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;margin-top:10px;background:var(--avail-bg);color:var(--avail)}
+.chip.upcoming{background:var(--warn-bg);color:var(--warn)}
+.chip.planned{background:var(--purple-bg);color:var(--purple)}
 
-/* ── 광고 유형 선택 ── */
-.form-type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.form-type-btn{padding:16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;text-align:left;transition:all .15s;position:relative;overflow:hidden}
-.form-type-btn.active.exposure{border-color:var(--tving);background:#FFF8F8}
-.form-type-btn.active.planning{border-color:var(--purple);background:var(--purple-bg)}
-.form-type-btn-badge{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-bottom:7px;display:inline-block}
-.exposure .form-type-btn-badge{background:var(--tving);color:#fff}
-.planning .form-type-btn-badge{background:var(--purple);color:#fff}
-.form-type-btn-title{font-size:14px;font-weight:700;margin-bottom:3px}
-.form-type-btn-desc{font-size:11px;color:var(--text3);line-height:1.5}
-.form-type-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;transition:all .15s}
-.form-type-btn.active.exposure .form-type-check{background:var(--tving);border-color:var(--tving)}
-.form-type-btn.active.planning .form-type-check{background:var(--purple);border-color:var(--purple)}
-.form-type-check::after{content:'';width:5px;height:3px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg);display:none}
-.form-type-btn.active .form-type-check::after{display:block}
-
-/* ── 잠금 배너 ── */
-.lock-banner{background:var(--blue-bg);border:1px solid #C7D2FE;border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;display:none}
-.lock-banner-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:6px}
-.lock-banner-desc{font-size:12px;color:var(--blue);line-height:1.7;opacity:.85}
+/* ── 폼 유형 선택 ── */
+.type-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.type-btn{padding:16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer;text-align:left;transition:all .15s;position:relative}
+.type-btn.active.exp{border-color:var(--tving);background:#FFF8F8}
+.type-btn.active.plan{border-color:var(--purple);background:var(--purple-bg)}
+.type-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;margin-bottom:7px;display:inline-block;letter-spacing:.05em}
+.exp .type-badge{background:var(--tving);color:#fff}
+.plan .type-badge{background:var(--purple);color:#fff}
+.type-title{font-size:14px;font-weight:700;margin-bottom:3px}
+.type-desc{font-size:11px;color:var(--text3);line-height:1.5}
+.type-check{position:absolute;top:12px;right:12px;width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;transition:all .15s}
+.type-btn.active.exp .type-check{background:var(--tving);border-color:var(--tving)}
+.type-btn.active.plan .type-check{background:var(--purple);border-color:var(--purple)}
+.type-check::after{content:'';width:5px;height:3px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg);display:none}
+.type-btn.active .type-check::after{display:block}
 
 /* ── 폼 카드 ── */
-.form-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:12px;transition:opacity .2s}
-.form-card.locked{opacity:.38;pointer-events:none;user-select:none}
-.form-card-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:12px}
+.card-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 
 /* ── 필드 ── */
 .field{margin-bottom:14px}
@@ -89,75 +83,74 @@ textarea{height:70px;padding:10px 12px;resize:vertical;line-height:1.6}
 input:focus,select:focus,textarea:focus{border-color:var(--border-focus)}
 input.error,select.error{border-color:var(--tving)!important}
 input::placeholder,textarea::placeholder{color:var(--text3)}
-.field-hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
-.field-hint.warn{color:#C06000;background:var(--warn-bg);border-radius:5px;padding:5px 8px;margin-top:4px}
+.hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+.hint.warn{color:#C06000;background:var(--warn-bg);border-radius:5px;padding:5px 8px}
 input[readonly]{background:#F7F7F5;color:var(--text3)}
 
-/* ── 인라인 체크박스 ── */
-.inline-check{display:flex;align-items:center;gap:7px;margin-top:6px;cursor:pointer}
-.inline-check input[type=checkbox]{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border);appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:var(--surface);flex-shrink:0}
-.inline-check input:checked{background:var(--text1);border-color:var(--text1)}
-.inline-check input:checked::after{content:'';position:absolute;left:2.5px;top:.5px;width:7px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg)}
-.inline-check-label{font-size:12px;color:var(--text2);user-select:none}
+/* ── 인라인 체크 ── */
+.ichk{display:flex;align-items:center;gap:7px;margin-top:6px;cursor:pointer}
+.ichk input[type=checkbox]{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border);appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:var(--surface);flex-shrink:0}
+.ichk input:checked{background:var(--text1);border-color:var(--text1)}
+.ichk input:checked::after{content:'';position:absolute;left:2.5px;top:.5px;width:7px;height:4px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg)}
+.ichk-label{font-size:12px;color:var(--text2);user-select:none}
 
-/* ── TAS 섹션 ── */
-.tas-toggle-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--border);margin-top:4px;cursor:pointer}
-.tas-toggle-row input[type=radio]{width:16px;height:16px;accent-color:var(--text1);flex-shrink:0;cursor:pointer}
-.tas-toggle-label{font-size:13px;color:var(--text1);user-select:none}
-.tas-section{display:none;margin-top:14px;padding:16px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
-.tas-section.visible{display:block}
-.tas-section-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
-.tas-info{font-size:12px;color:var(--text3);background:var(--blue-bg);border-radius:6px;padding:8px 11px;margin-top:8px;line-height:1.6}
+/* ── TAS ── */
+.tas-radio-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--border);margin-top:4px;cursor:pointer}
+.tas-radio-row input[type=radio]{width:16px;height:16px;accent-color:var(--text1);flex-shrink:0;cursor:pointer}
+.tas-radio-label{font-size:13px;color:var(--text1);user-select:none}
+.tas-extra{display:none;margin-top:14px;padding:16px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.tas-extra.show{display:block}
+.tas-extra-title{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
+.tas-note{font-size:12px;color:var(--text3);background:var(--blue-bg);border-radius:6px;padding:8px 11px;margin-top:8px;line-height:1.6}
 
-/* ── 노출형 청약 아이템 ── */
-.booking-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;position:relative}
-.booking-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.booking-item-num{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.04em}
-.remove-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:2px 7px;border-radius:4px;transition:all .12s;font-family:inherit}
-.remove-btn:hover{background:var(--danger-bg);color:var(--danger)}
-.add-item-btn{width:100%;height:40px;background:none;border:1.5px dashed var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
-.add-item-btn:hover{border-color:var(--text1);color:var(--text1);background:var(--bg)}
+/* ── 노출형 상품 아이템 ── */
+.exp-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px}
+.exp-item-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.exp-item-num{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.04em}
+.rm-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:12px;padding:2px 7px;border-radius:4px;transition:all .12s;font-family:inherit}
+.rm-btn:hover{background:var(--danger-bg);color:var(--danger)}
+.add-btn{width:100%;height:40px;background:none;border:1.5px dashed var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px}
+.add-btn:hover{border-color:var(--text1);color:var(--text1);background:var(--bg)}
 
 /* ── 구단 라디오 ── */
 .team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-.team-item{position:relative}
-.team-item input[type=radio]{position:absolute;opacity:0;width:0;height:0}
-.team-item label{display:flex;align-items:center;justify-content:center;height:38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;margin:0}
-.team-item input:checked + label{border-color:var(--text1);background:var(--text1);color:#fff}
-.team-item label:hover{border-color:rgba(0,0,0,.3)}
+.tm-item{position:relative}
+.tm-item input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.tm-item label{display:flex;align-items:center;justify-content:center;height:38px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .12s;margin:0}
+.tm-item input:checked+label{border-color:var(--text1);background:var(--text1);color:#fff}
+.tm-item label:hover{border-color:rgba(0,0,0,.3)}
 
 /* ── 주차 라디오 ── */
 .week-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
-.week-item{position:relative}
-.week-item input[type=radio]{position:absolute;opacity:0;width:0;height:0}
-.week-item label{display:flex;flex-direction:column;align-items:center;justify-content:center;height:50px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:var(--text2);cursor:pointer;transition:all .12s;gap:2px;margin:0}
-.week-item label .wk-num{font-size:13px;font-weight:700;color:var(--text1)}
-.week-item input:checked + label{border-color:var(--text1);background:var(--text1);color:#fff}
-.week-item input:checked + label .wk-num{color:#fff}
-.week-item label:hover{border-color:rgba(0,0,0,.3)}
+.wk-item{position:relative}
+.wk-item input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.wk-item label{display:flex;flex-direction:column;align-items:center;justify-content:center;height:50px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:11px;color:var(--text2);cursor:pointer;transition:all .12s;gap:2px;margin:0}
+.wk-item label .wk-n{font-size:13px;font-weight:700;color:var(--text1)}
+.wk-item input:checked+label{border-color:var(--text1);background:var(--text1);color:#fff}
+.wk-item input:checked+label .wk-n{color:#fff}
+.wk-item label:hover{border-color:rgba(0,0,0,.3)}
 
-/* ── 조건부 ── */
-.conditional{display:none;margin-top:12px}
-.conditional.visible{display:block}
+.cond{display:none;margin-top:12px}
+.cond.show{display:block}
 
 /* ── 가격 요약 ── */
-.price-summary{background:var(--price-bg);border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px}
-.price-summary-title{font-size:10px;font-weight:700;color:var(--avail);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+.price-sum{background:var(--price-bg);border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px}
+.price-sum-title{font-size:10px;font-weight:700;color:var(--avail);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
 .price-rows{display:flex;flex-direction:column;gap:6px}
 .price-row{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid #D1FAE5}
 .price-row:last-child{border-bottom:none}
 .price-row-top{display:flex;justify-content:space-between;align-items:center}
-.price-row-label{font-size:13px;font-weight:600;color:var(--text1)}
-.price-row-val{font-size:13px;font-weight:700;color:var(--text1);font-variant-numeric:tabular-nums}
-.price-row-detail{font-size:11px;color:var(--text3)}
-.price-divider{border:none;border-top:1.5px solid #86EFAC;margin:6px 0}
-.price-total-row{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
-.price-total-label{font-size:13px;font-weight:600;color:var(--avail)}
+.price-row-lbl{font-size:13px;font-weight:600}
+.price-row-val{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.price-row-sub{font-size:11px;color:var(--text3)}
+.price-div{border:none;border-top:1.5px solid #86EFAC;margin:6px 0}
+.price-total{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.price-total-lbl{font-size:13px;font-weight:600;color:var(--avail)}
 .price-total-val{font-size:16px;font-weight:700;color:var(--avail);font-variant-numeric:tabular-nums}
 .price-vat{font-size:11px;color:var(--text3);margin-top:4px;text-align:right}
 .price-empty{font-size:12px;color:var(--text3);text-align:center;padding:4px 0}
 
-/* ── 체크박스 공용 ── */
+/* ── 체크박스 ── */
 .cbox-wrap{display:flex;flex-direction:column}
 .cbox-row{display:flex;align-items:flex-start;gap:9px;padding:9px 0;cursor:pointer}
 .cbox-row input[type=checkbox]{width:17px;height:17px;min-width:17px;border-radius:4px;border:1.5px solid var(--border);appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:var(--surface);margin-top:1px;flex-shrink:0}
@@ -166,26 +159,26 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
 .cbox-label{font-size:13px;color:var(--text2);user-select:none;line-height:1.5}
 
 /* ── 개인정보 카드 ── */
-.privacy-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
-.privacy-header{padding:14px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none}
-.privacy-header-left{display:flex;align-items:center;gap:9px}
-.privacy-badge{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--blue-bg);color:var(--blue);padding:3px 7px;border-radius:3px}
-.privacy-title-text{font-size:13px;font-weight:600}
-.privacy-toggle-btn{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;flex-shrink:0}
-.privacy-toggle-btn svg{transition:transform .2s}
-.privacy-toggle-btn.open svg{transform:rotate(180deg)}
-.privacy-body{display:none;padding:0 20px 16px;border-top:1px solid var(--border)}
-.privacy-body.open{display:block}
-.privacy-table{width:100%;border-collapse:collapse;font-size:11px;margin:12px 0}
-.privacy-table th{background:#F7F7F5;padding:7px 10px;text-align:left;font-weight:600;color:var(--text2);border:1px solid var(--border)}
-.privacy-table td{padding:7px 10px;color:var(--text2);border:1px solid var(--border);line-height:1.5}
-.privacy-note{font-size:11px;color:var(--text3);line-height:1.7}
-.privacy-agree-row{display:flex;align-items:flex-start;gap:9px;padding:12px 20px;border-top:1px solid var(--border);background:#FAFAF8;cursor:pointer}
-.privacy-agree-row input[type=checkbox]{width:17px;height:17px;min-width:17px;border-radius:4px;border:1.5px solid var(--border);appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:var(--surface);margin-top:1px;flex-shrink:0}
-.privacy-agree-row input:checked{background:var(--text1);border-color:var(--text1)}
-.privacy-agree-row input:checked::after{content:'';position:absolute;left:3.5px;top:1px;width:7px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
-.privacy-agree-label{font-size:13px;font-weight:600;color:var(--text1);line-height:1.5}
-.privacy-agree-label em{color:var(--tving);font-style:normal}
+.priv-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.priv-hdr{padding:14px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;user-select:none}
+.priv-hdr-left{display:flex;align-items:center;gap:9px}
+.priv-badge{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--blue-bg);color:var(--blue);padding:3px 7px;border-radius:3px}
+.priv-hdr-title{font-size:13px;font-weight:600}
+.priv-toggle{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:3px;flex-shrink:0}
+.priv-toggle svg{transition:transform .2s}
+.priv-toggle.open svg{transform:rotate(180deg)}
+.priv-body{display:none;padding:0 20px 16px;border-top:1px solid var(--border)}
+.priv-body.open{display:block}
+.priv-table{width:100%;border-collapse:collapse;font-size:11px;margin:12px 0}
+.priv-table th{background:#F7F7F5;padding:7px 10px;text-align:left;font-weight:600;color:var(--text2);border:1px solid var(--border)}
+.priv-table td{padding:7px 10px;color:var(--text2);border:1px solid var(--border);line-height:1.5}
+.priv-note{font-size:11px;color:var(--text3);line-height:1.7}
+.priv-agree{display:flex;align-items:flex-start;gap:9px;padding:12px 20px;border-top:1px solid var(--border);background:#FAFAF8;cursor:pointer}
+.priv-agree input[type=checkbox]{width:17px;height:17px;min-width:17px;border-radius:4px;border:1.5px solid var(--border);appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:var(--surface);margin-top:1px;flex-shrink:0}
+.priv-agree input:checked{background:var(--text1);border-color:var(--text1)}
+.priv-agree input:checked::after{content:'';position:absolute;left:3.5px;top:1px;width:7px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
+.priv-agree-lbl{font-size:13px;font-weight:600;color:var(--text1);line-height:1.5}
+.priv-agree-lbl em{color:var(--tving);font-style:normal}
 
 /* ── 주의 카드 ── */
 .caution-card{background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--radius);padding:16px 18px;margin-bottom:12px}
@@ -193,18 +186,18 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
 .caution-list{list-style:none;display:flex;flex-direction:column;gap:5px}
 .caution-list li{font-size:12px;color:var(--danger);line-height:1.6;padding-left:12px;position:relative;opacity:.9}
 .caution-list li::before{content:'·';position:absolute;left:0;font-weight:700}
-.caution-agree-row{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--danger-border);cursor:pointer}
-.caution-agree-row input[type=checkbox]{width:17px;height:17px;min-width:17px;border-radius:4px;border:1.5px solid #FECACA;appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:#fff;margin-top:1px;flex-shrink:0}
-.caution-agree-row input:checked{background:var(--danger);border-color:var(--danger)}
-.caution-agree-row input:checked::after{content:'';position:absolute;left:3.5px;top:1px;width:7px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
-.caution-agree-label{font-size:12px;font-weight:600;color:var(--danger);line-height:1.5}
+.caution-agree{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding-top:12px;border-top:1px solid var(--danger-border);cursor:pointer}
+.caution-agree input[type=checkbox]{width:17px;height:17px;min-width:17px;border-radius:4px;border:1.5px solid #FECACA;appearance:none;-webkit-appearance:none;cursor:pointer;position:relative;transition:all .12s;background:#fff;margin-top:1px;flex-shrink:0}
+.caution-agree input:checked{background:var(--danger);border-color:var(--danger)}
+.caution-agree input:checked::after{content:'';position:absolute;left:3.5px;top:1px;width:7px;height:4.5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
+.caution-agree-lbl{font-size:12px;font-weight:600;color:var(--danger);line-height:1.5}
 
 /* ── 제출 ── */
 .submit-area{margin-top:14px}
 .submit-btn{width:100%;height:50px;background:var(--tving);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .submit-btn:hover{background:var(--tving-dark)}
-.submit-btn.planning-btn{background:var(--purple)}
-.submit-btn.planning-btn:hover{background:#6D28D9}
+.submit-btn.plan-submit{background:var(--purple)}
+.submit-btn.plan-submit:hover{background:#6D28D9}
 .submit-btn:disabled{background:#C0C0BC;cursor:not-allowed}
 .submit-notice{font-size:11px;color:var(--text3);text-align:center;margin-top:10px;line-height:1.7}
 
@@ -214,86 +207,80 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
 .success-title{font-size:20px;font-weight:700;margin-bottom:10px}
 .success-desc{font-size:14px;color:var(--text2);line-height:1.7}
 .success-chip{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:12px;color:var(--text2);margin-top:14px}
-
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 
-/* ── 기획형 전용 스타일 ── */
-/* 상품 유형 탭 */
+/* ── 기획형 ── */
 .plan-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .plan-tab{padding:7px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;background:var(--surface);transition:all .12s;font-family:inherit}
 .plan-tab.active{border-color:var(--purple);background:var(--purple-bg);color:var(--purple)}
 
-/* 기획형 상품 아이템 */
-.plan-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;position:relative}
-.plan-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.plan-item-badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:3px;background:var(--purple-bg);color:var(--purple)}
-.plan-item-badge.supermatch{background:#FFF7ED;color:#C2410C}
-.plan-item-badge.fandum{background:var(--avail-bg);color:var(--avail)}
-.plan-item-badge.clip{background:var(--blue-bg);color:var(--blue)}
+.plan-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px}
+.plan-item-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.plan-badge{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:3px}
+.plan-badge.sm{background:#FFF7ED;color:#C2410C}
+.plan-badge.fd{background:var(--avail-bg);color:var(--avail)}
+.plan-badge.cl{background:var(--blue-bg);color:var(--blue)}
 
-/* PKG 카드 */
-.pkg-card{border:2px solid var(--purple);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;background:var(--purple-bg);position:relative}
-.pkg-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.pkg-card-title{font-size:13px;font-weight:700;color:var(--purple)}
-.pkg-card-price{font-size:13px;font-weight:700;color:var(--purple)}
-.pkg-included{font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.6}
-.pkg-included strong{color:var(--text1);font-weight:600}
-
-/* 캘린더 */
-.calendar-wrap{margin-top:10px}
-.calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.calendar-nav{background:none;border:1px solid var(--border);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:12px;font-family:inherit}
-.calendar-title{font-size:13px;font-weight:600}
-.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.calendar-day-label{font-size:10px;text-align:center;color:var(--text3);font-weight:600;padding:3px 0}
-.calendar-cell{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:1px solid transparent;transition:all .1s;position:relative}
-.calendar-cell.empty{cursor:default}
-.calendar-cell.available:hover{border-color:var(--purple);background:var(--purple-bg);color:var(--purple)}
-.calendar-cell.selected{background:var(--purple);color:#fff;border-color:var(--purple)}
-.calendar-cell.occupied{background:#F3F4F6;color:var(--text3);cursor:not-allowed;text-decoration:line-through}
-.calendar-cell.occupied.mine{background:#E0F2FE;color:#0369A1;cursor:default;text-decoration:none}
-.calendar-cell.other-month{opacity:.3}
-.calendar-cell.past{opacity:.3;cursor:not-allowed}
-.calendar-legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
-.calendar-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
-.calendar-legend-dot{width:10px;height:10px;border-radius:2px}
-.occupied-info{font-size:11px;color:var(--text3);margin-top:6px;background:var(--warn-bg);padding:6px 10px;border-radius:5px;display:none}
-
-/* 월 구좌 선택 */
-.monthly-quota-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}
-.monthly-quota-label{font-size:12px;font-weight:600;color:var(--text1);flex:1}
-.monthly-quota-sub{font-size:11px;color:var(--text3)}
-.monthly-quota-input{width:80px;flex-shrink:0}
-
-/* 기획형 가격 요약 */
-.plan-price-summary{background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px}
-.plan-price-summary-title{font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
-
-/* 라디오 그룹 */
 .radio-group{display:flex;flex-direction:column;gap:8px;margin-top:6px}
 .radio-row{display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .12s}
 .radio-row:hover{border-color:rgba(0,0,0,.2)}
-.radio-row.selected{border-color:var(--purple);background:var(--purple-bg)}
-.radio-row input[type=radio]{width:15px;height:15px;min-width:15px;accent-color:var(--purple);margin-top:1px;flex-shrink:0;cursor:pointer}
-.radio-row-content{flex:1}
-.radio-row-title{font-size:13px;font-weight:600;color:var(--text1)}
+.radio-row.sel{border-color:var(--purple);background:var(--purple-bg)}
+.radio-row input[type=radio]{width:15px;height:15px;min-width:15px;accent-color:var(--purple);margin-top:2px;flex-shrink:0;cursor:pointer}
+.radio-row-body{flex:1}
+.radio-row-title{font-size:13px;font-weight:600}
 .radio-row-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.5}
 .radio-row-price{font-size:12px;font-weight:700;color:var(--purple);margin-top:3px}
 
-/* 세그먼트 선택 */
-.segment-group{display:flex;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-top:6px}
-.segment-btn{flex:1;padding:9px;font-size:12px;font-weight:600;border:none;background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;transition:all .12s;border-right:1px solid var(--border)}
-.segment-btn:last-child{border-right:none}
-.segment-btn.active{background:var(--text1);color:#fff}
+.seg{display:flex;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-top:6px}
+.seg-btn{flex:1;padding:9px;font-size:12px;font-weight:600;border:none;background:var(--surface);color:var(--text2);cursor:pointer;font-family:inherit;transition:all .12s;border-right:1px solid var(--border)}
+.seg-btn:last-child{border-right:none}
+.seg-btn.active{background:var(--text1);color:#fff}
 
-/* 기간 선택 */
-.date-range-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+/* ── 캘린더 ── */
+.cal-wrap{margin-top:10px}
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-nav{background:none;border:1px solid var(--border);border-radius:4px;padding:3px 10px;cursor:pointer;font-size:12px;font-family:inherit;transition:background .1s}
+.cal-nav:hover{background:var(--bg)}
+.cal-month-label{font-size:13px;font-weight:700}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-daylabel{font-size:10px;text-align:center;color:var(--text3);font-weight:600;padding:3px 0}
+.cal-daylabel:first-child{color:#EF4444}
+.cal-daylabel:last-child{color:#3B82F6}
+.cal-cell{aspect-ratio:1;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:1px solid transparent;transition:all .1s;position:relative;line-height:1.2}
+.cal-cell.empty,.cal-cell.past{opacity:.3;cursor:default;pointer-events:none}
+.cal-cell.avail:hover{border-color:var(--purple);background:var(--purple-bg);color:var(--purple)}
+.cal-cell.selected{background:var(--purple);color:#fff;border-color:var(--purple)}
+.cal-cell.full{background:#F3F4F6;color:var(--text3);cursor:not-allowed;font-size:10px}
+.cal-cell.full::after{content:'마감';font-size:8px;color:#9CA3AF;display:block}
+.cal-cell.other-month{opacity:.25}
+.cal-cell .dot{width:4px;height:4px;border-radius:50%;background:var(--avail);position:absolute;bottom:3px}
+.cal-cell.selected .dot{background:rgba(255,255,255,.7)}
+.cal-legend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap}
+.cal-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.cal-legend-dot{width:10px;height:10px;border-radius:2px}
+.cal-selected-display{margin-top:8px;padding:8px 10px;background:var(--purple-bg);border-radius:6px;font-size:12px;color:var(--purple);font-weight:600;display:none}
+
+/* 빅 가상광고 월별 구좌 UI */
+.bigvr-month-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-top:8px}
+.bigvr-month-info .month-name{font-size:13px;font-weight:600}
+.bigvr-month-info .month-sub{font-size:11px;color:var(--text3)}
+.bigvr-quota-input{width:80px}
+
+/* PKG */
+.pkg-card{border:2px solid var(--purple);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;background:var(--purple-bg)}
+.pkg-extra{margin-top:16px;padding:14px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--purple-border)}
+.plan-price-sum{background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px}
+.plan-price-title{font-size:10px;font-weight:700;color:var(--purple);letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+
+/* lock 배너 */
+.lock-banner{background:var(--blue-bg);border:1px solid #C7D2FE;border-radius:var(--radius);padding:14px 18px;margin-bottom:14px;display:none}
+.lock-banner-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.lock-banner-desc{font-size:12px;color:var(--blue);line-height:1.7;opacity:.85}
 </style>
 </head>
 <body>
 
-<!-- 고정 시계 바 -->
 <div class="clock-bar">
   <div class="clock-bar-left">
     <span class="logo-badge">TVING</span>
@@ -302,178 +289,159 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
   <div class="clock-bar-center">
     <div class="clock-dot-row">
       <div class="clock-dot" id="clock-dot"></div>
-      <div class="clock-time-display" id="clock-time">--:--:--</div>
+      <div class="clock-time" id="clock-time">--:--:--</div>
     </div>
-    <div class="clock-date-display" id="clock-date"></div>
+    <div class="clock-date" id="clock-date"></div>
   </div>
   <div class="clock-bar-right">
-    <div class="clock-status-bar" id="clock-status"></div>
-    <div class="countdown-bar" id="countdown"></div>
+    <div class="clock-status" id="clock-status"></div>
+    <div class="countdown" id="countdown"></div>
   </div>
 </div>
 
 <div class="page">
 <div id="form-screen">
-
   <div class="page-header">
     <div class="page-kicker">2026 KBO 정규시즌</div>
     <div class="page-title">광고 상품<br>청약 신청서</div>
     <div class="page-desc">청약은 선착순으로 처리됩니다. 제출 시각이 선착순 기준으로 자동 기록됩니다.<br>낙찰 결과는 영업일 기준 2일 이내 이메일로 안내드립니다.</div>
-    <div class="deadline-chip" id="deadline-chip">
+    <div class="chip" id="main-chip">
       <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      <span id="deadline-text">광고 유형을 선택해주세요</span>
+      <span id="chip-text">광고 유형을 선택해주세요</span>
     </div>
   </div>
 
   <!-- 광고 유형 선택 -->
-  <div class="form-type-selector">
-    <button type="button" class="form-type-btn exposure active" onclick="selectFormType('exposure')">
-      <div class="form-type-check"></div>
-      <div class="form-type-btn-badge">노출형</div>
-      <div class="form-type-btn-title">노출형 광고</div>
-      <div class="form-type-btn-desc">KBO 생중계·클립 인스트림<br>월/주 단위 청약 (선착순)</div>
+  <div class="type-selector">
+    <button type="button" class="type-btn exp active" onclick="setFormType('exp')">
+      <div class="type-check"></div>
+      <div class="type-badge">노출형</div>
+      <div class="type-title">노출형 광고</div>
+      <div class="type-desc">KBO 생중계·클립 인스트림<br>월/주 단위 청약 (선착순)</div>
     </button>
-    <button type="button" class="form-type-btn planning" onclick="selectFormType('planning')">
-      <div class="form-type-check"></div>
-      <div class="form-type-btn-badge">기획형</div>
-      <div class="form-type-btn-title">기획형 광고</div>
-      <div class="form-type-btn-desc">슈퍼매치·팬덤중계·클립<br>정규시즌 상시 청약 접수</div>
+    <button type="button" class="type-btn plan" onclick="setFormType('plan')">
+      <div class="type-check"></div>
+      <div class="type-badge">기획형</div>
+      <div class="type-title">기획형 광고</div>
+      <div class="type-desc">슈퍼매치·팬덤중계·클립<br>정규시즌 상시 청약 접수</div>
     </button>
   </div>
 
-  <!-- ════ 노출형 폼 ════ -->
-  <div id="exposure-form">
+  <!-- ══════════ 노출형 폼 ══════════ -->
+  <div id="exp-form">
     <div class="lock-banner" id="lock-banner">
-      <div class="lock-banner-title">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4M8 5.5v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <span id="lock-title"></span>
-      </div>
+      <div class="lock-banner-title"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4M8 5.5v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><span id="lock-title"></span></div>
       <div class="lock-banner-desc" id="lock-desc"></div>
     </div>
-
-    <form id="booking-form" novalidate>
-      <!-- 1. 청약 기본 정보 -->
-      <div class="form-card">
-        <div class="form-card-title">청약 기본 정보</div>
+    <form id="exp-booking-form" novalidate>
+      <div class="card">
+        <div class="card-title">청약 기본 정보</div>
         <div class="field">
           <label>청약월 <span class="req">*</span></label>
-          <select name="month" required id="sel-month"><option value="">선택하세요</option></select>
+          <select name="month" id="sel-month" required><option value="">선택하세요</option></select>
         </div>
       </div>
-
-      <!-- 2. 신청자 정보 -->
-      <div class="form-card" id="card-contact">
-        <div class="form-card-title">신청자 정보</div>
+      <div class="card">
+        <div class="card-title">신청자 정보</div>
         <div class="field-row">
           <div class="field"><label>광고주명 <span class="req">*</span></label><input type="text" name="advertiser" placeholder="예: 삼성전자" required></div>
           <div class="field"><label>브랜드명 <span class="req">*</span></label><input type="text" name="brand" placeholder="예: 갤럭시 S26" required></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>대행사 <span class="req">*</span></label><input type="text" name="agency" placeholder="없을 경우 '없음'" required><div class="field-hint">없을 경우 반드시 '없음' 입력</div></div>
-          <div class="field"><label>미디어렙 <span class="req">*</span></label><input type="text" name="media_rep" placeholder="없을 경우 '없음'" required><div class="field-hint">없을 경우 반드시 '없음' 입력</div></div>
+          <div class="field"><label>대행사 <span class="req">*</span></label><input type="text" name="agency" placeholder="없을 경우 '없음'" required><div class="hint">없을 경우 반드시 '없음' 입력</div></div>
+          <div class="field"><label>미디어렙 <span class="req">*</span></label><input type="text" name="media_rep" placeholder="없을 경우 '없음'" required></div>
         </div>
         <div class="field-row">
           <div class="field">
             <label>청구처 <span class="req">*</span></label>
-            <input type="text" name="billing_entity" id="inp-billing" placeholder="계산서 발행 주체" required oninput="onBillingInput()">
-            <div class="field-hint">광고비 계산서를 발행할 주체 명칭</div>
-            <label class="inline-check" style="margin-top:6px"><input type="checkbox" id="chk-same-billing" onchange="onSameBilling()"><span class="inline-check-label">담당자 소속과 동일 → 자동 채우기</span></label>
+            <input type="text" name="billing_entity" id="inp-billing" placeholder="계산서 발행 주체" required oninput="syncBilling()">
+            <label class="ichk" style="margin-top:6px"><input type="checkbox" id="chk-same-billing" onchange="toggleSameBilling()"><span class="ichk-label">담당자 소속과 동일</span></label>
           </div>
-          <div class="field"><label>정산월 <span class="req">*</span></label><input type="text" name="billing_month" placeholder="예: 2026-05" pattern="\d{4}-\d{2}" required><div class="field-hint">YYYY-MM 형식</div></div>
+          <div class="field"><label>정산월 <span class="req">*</span></label><input type="text" name="billing_month" placeholder="예: 2026-05" required><div class="hint">YYYY-MM 형식</div></div>
         </div>
         <div class="field-row">
           <div class="field"><label>담당자명 <span class="req">*</span></label><input type="text" name="contact_name" placeholder="이름" required></div>
-          <div class="field"><label>담당자 이메일 <span class="req">*</span></label><input type="email" name="contact_email" placeholder="example@agency.com" required><div class="field-hint">낙찰 결과 안내 이메일 발송</div></div>
+          <div class="field"><label>담당자 이메일 <span class="req">*</span></label><input type="email" name="contact_email" placeholder="example@agency.com" required><div class="hint">낙찰 결과 안내 이메일 발송</div></div>
         </div>
-        <div class="field"><label>담당자 소속 <span class="req">*</span></label><input type="text" name="contact_org" id="inp-org" placeholder="예: 나스미디어 디지털본부" required oninput="onOrgInput()"></div>
+        <div class="field"><label>담당자 소속 <span class="req">*</span></label><input type="text" name="contact_org" id="inp-org" placeholder="예: 나스미디어 디지털본부" required oninput="syncOrg()"></div>
         <div style="margin-top:6px">
-          <div style="font-size:12px;font-weight:600;color:var(--text1);margin-bottom:2px">TAS 광고 계정 <span class="req">*</span></div>
-          <div class="tas-toggle-row"><input type="radio" name="tas_status" id="tas-yes" value="있음" onchange="onTasChange()" checked><label for="tas-yes" class="tas-toggle-label">TAS 광고 계정이 이미 있습니다</label></div>
-          <div class="tas-toggle-row" style="border-top:none;padding-top:4px"><input type="radio" name="tas_status" id="tas-no" value="없음" onchange="onTasChange()"><label for="tas-no" class="tas-toggle-label">TAS 광고 계정이 없습니다 (신규 생성 필요)</label></div>
-          <div class="tas-section" id="tas-section">
-            <div class="tas-section-title">TAS 광고 계정 생성 정보</div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:2px">TAS 광고 계정 <span class="req">*</span></div>
+          <div class="tas-radio-row"><input type="radio" name="tas_status" id="tas-yes" value="있음" onchange="onTasChange()" checked><label for="tas-yes" class="tas-radio-label">TAS 광고 계정이 이미 있습니다</label></div>
+          <div class="tas-radio-row" style="border-top:none;padding-top:4px"><input type="radio" name="tas_status" id="tas-no" value="없음" onchange="onTasChange()"><label for="tas-no" class="tas-radio-label">TAS 광고 계정이 없습니다 (신규 생성 필요)</label></div>
+          <div class="tas-extra" id="tas-extra">
+            <div class="tas-extra-title">TAS 광고 계정 생성 정보</div>
             <div class="field"><label>광고주 법인명 <span class="req">*</span></label><input type="text" name="tas_corp_name" id="tas-corp" placeholder="사업자등록증 상 정확한 법인명"></div>
-            <div class="field"><label>광고주 사업자등록번호 <span class="req">*</span></label><input type="text" name="tas_biz_num" id="tas-biznum" placeholder="000-00-00000" maxlength="12"></div>
-            <div class="field"><label>계정 권한 부여 담당자명 <span class="req">*</span></label><input type="text" name="tas_mgr_name" id="tas-mgrname" placeholder="이름"></div>
-            <div class="field"><label>계정 권한 부여 담당자 이메일 <span class="req">*</span></label><input type="email" name="tas_mgr_email" id="tas-mgremail" placeholder="example@agency.com"></div>
-            <div class="tas-info">입력하신 담당자에게 관리자 권한이 부여됩니다. 해당 담당자가 TAS에 로그인 후 팀원을 직접 초대할 수 있습니다.</div>
+            <div class="field"><label>사업자등록번호 <span class="req">*</span></label><input type="text" name="tas_biz_num" id="tas-biznum" placeholder="000-00-00000" maxlength="12"></div>
+            <div class="field"><label>계정 권한 담당자명 <span class="req">*</span></label><input type="text" name="tas_mgr_name" id="tas-mgrname" placeholder="이름"></div>
+            <div class="field"><label>계정 권한 담당자 이메일 <span class="req">*</span></label><input type="email" name="tas_mgr_email" id="tas-mgremail" placeholder="example@agency.com"></div>
+            <div class="tas-note">입력하신 담당자에게 관리자 권한이 부여됩니다.</div>
           </div>
         </div>
       </div>
-
-      <!-- 3. 청약 상품 -->
-      <div class="form-card">
-        <div class="form-card-title">청약 상품</div>
-        <div id="items-container"></div>
-        <button type="button" class="add-item-btn" onclick="addItem()">
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          청약 상품 추가
+      <div class="card">
+        <div class="card-title">청약 상품</div>
+        <div id="exp-items"></div>
+        <button type="button" class="add-btn" onclick="addExpItem()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>청약 상품 추가
         </button>
-        <div class="price-summary" id="price-summary">
-          <div class="price-summary-title">청약 금액 합계 (VAT 별도)</div>
-          <div class="price-rows" id="price-rows"><div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div></div>
-          <div class="price-divider" id="price-divider" style="display:none"></div>
-          <div class="price-total-row" id="price-total-row" style="display:none"><span class="price-total-label">합계</span><span class="price-total-val" id="price-total">—</span></div>
-          <div class="price-vat" id="price-vat" style="display:none">※ 부가세(VAT) 별도</div>
+        <div class="price-sum" id="exp-price-sum">
+          <div class="price-sum-title">청약 금액 합계 (VAT 별도)</div>
+          <div class="price-rows" id="exp-price-rows"><div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div></div>
+          <div class="price-div" id="exp-price-div" style="display:none"></div>
+          <div class="price-total" id="exp-price-total-row" style="display:none"><span class="price-total-lbl">합계</span><span class="price-total-val" id="exp-price-total">—</span></div>
+          <div class="price-vat" id="exp-price-vat" style="display:none">※ 부가세(VAT) 별도</div>
         </div>
       </div>
-
-      <!-- 4. 추가 정보 -->
-      <div class="form-card">
-        <div class="form-card-title">추가 정보</div>
+      <div class="card">
+        <div class="card-title">추가 정보</div>
         <div class="cbox-wrap">
           <label class="cbox-row" style="padding-top:0"><input type="checkbox" name="jbp" id="chk-jbp"><span class="cbox-label">JBP 해당 광고주입니다</span></label>
           <label class="cbox-row" style="border-top:none;padding-top:2px"><input type="checkbox" name="kbo_pass" id="chk-pass"><span class="cbox-label">2026 KBO 정규시즌 패스 구매 광고주입니다</span></label>
         </div>
         <div class="field" style="margin-top:14px"><label>특이사항</label><textarea name="note" placeholder="전달 사항이 있으면 입력해주세요 (선택)"></textarea></div>
       </div>
-
-      <!-- 개인정보 동의 -->
-      <div class="privacy-card">
-        <div class="privacy-header" onclick="togglePrivacy('exp')">
-          <div class="privacy-header-left"><span class="privacy-badge">개인정보</span><span class="privacy-title-text">개인정보 수집·이용 동의</span></div>
-          <div class="privacy-toggle-btn" id="privacy-toggle-exp">내용 보기 <svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <!-- 개인정보 -->
+      <div class="priv-card">
+        <div class="priv-hdr" onclick="togglePriv('exp')">
+          <div class="priv-hdr-left"><span class="priv-badge">개인정보</span><span class="priv-hdr-title">개인정보 수집·이용 동의</span></div>
+          <div class="priv-toggle" id="priv-toggle-exp">내용 보기 <svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <div class="privacy-body" id="privacy-body-exp">
-          <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:12px">CJ ENM (이하 "회사")은 광고 청약 신청 접수 및 낙찰 결과 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
-          <table class="privacy-table"><tr><th>수집 항목</th><th>수집·이용 목적</th><th>보유 기간</th></tr><tr><td>담당자명, 소속, 이메일 주소</td><td>청약 접수 확인, 낙찰 결과 통보, 광고 집행 관련 연락</td><td>청약 완료 후 1년</td></tr><tr><td>광고주명, 브랜드명, 대행사명, 미디어렙, 청구처</td><td>청약 상품 배정 및 내부 관리</td><td>청약 완료 후 1년</td></tr></table>
-          <p class="privacy-note">※ 귀하는 개인정보 수집·이용에 동의를 거부할 권리가 있습니다. 단, 동의 거부 시 청약 신청 접수가 불가합니다.<br>※ 수집된 개인정보는 광고 청약 목적 외 용도로 활용되지 않으며, 제3자에게 제공되지 않습니다.</p>
+        <div class="priv-body" id="priv-body-exp">
+          <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:12px">CJ ENM은 광고 청약 신청 접수 및 낙찰 결과 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+          <table class="priv-table"><tr><th>수집 항목</th><th>목적</th><th>보유 기간</th></tr><tr><td>담당자명, 소속, 이메일</td><td>청약 접수 확인, 낙찰 결과 통보</td><td>청약 완료 후 1년</td></tr><tr><td>광고주명, 브랜드명, 대행사 등</td><td>청약 상품 배정 및 내부 관리</td><td>청약 완료 후 1년</td></tr></table>
+          <p class="priv-note">※ 수집된 개인정보는 광고 청약 목적 외 활용되지 않으며, 제3자에게 제공되지 않습니다.</p>
         </div>
-        <label class="privacy-agree-row"><input type="checkbox" id="chk-privacy" required><span class="privacy-agree-label">위 개인정보 수집·이용에 <em>동의합니다</em> <em>*</em></span></label>
+        <label class="priv-agree"><input type="checkbox" id="chk-privacy" required><span class="priv-agree-lbl">위 개인정보 수집·이용에 <em>동의합니다</em> <em>*</em></span></label>
       </div>
-
       <div class="caution-card">
         <div class="caution-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L1.5 13.5h13L8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.5v3M8 11v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>제출 전 반드시 확인하세요</div>
         <ul class="caution-list">
           <li>제출 전 청약 상품명, 구좌수, 소재 초수, 희망 주차·구단 등 모든 항목을 반드시 재확인해 주세요.</li>
-          <li>잘못된 정보 기입, 오입력 등 신청자 본인의 과실로 인해 원하는 구좌를 확보하지 못한 경우, 이에 대한 책임은 전적으로 신청자 본인에게 있으며 TVING 측은 책임을 지지 않습니다.</li>
+          <li>오입력 등 신청자 본인의 과실로 인한 불이익에 대해 TVING 측은 책임을 지지 않습니다.</li>
           <li>청약은 선착순으로 처리되며, 구좌 수 초과 시 낙찰되지 않을 수 있습니다.</li>
-          <li>허위 정보 기재 시 청약이 취소될 수 있습니다.</li>
         </ul>
-        <label class="caution-agree-row"><input type="checkbox" id="chk-caution" required><span class="caution-agree-label">위 내용을 모두 확인하였으며, 기입한 정보에 대한 책임이 본인에게 있음에 동의합니다 *</span></label>
+        <label class="caution-agree"><input type="checkbox" id="chk-caution" required><span class="caution-agree-lbl">위 내용을 모두 확인하였으며, 기입한 정보에 대한 책임이 본인에게 있음에 동의합니다 *</span></label>
       </div>
-
       <div class="submit-area">
-        <button type="submit" class="submit-btn" id="submit-btn">청약 신청서 제출</button>
+        <button type="submit" class="submit-btn" id="exp-submit-btn">청약 신청서 제출</button>
         <div class="submit-notice">제출 시각이 선착순 기준으로 자동 기록됩니다.</div>
       </div>
     </form>
-  </div><!-- /exposure-form -->
+  </div><!-- /exp-form -->
 
-  <!-- ════ 기획형 폼 ════ -->
-  <div id="planning-form" style="display:none">
-    <div style="background:var(--purple-bg);border:1px solid #DDD6FE;border-radius:var(--radius);padding:14px 18px;margin-bottom:14px">
+  <!-- ══════════ 기획형 폼 ══════════ -->
+  <div id="plan-form" style="display:none">
+    <div style="background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px">
       <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:4px;display:flex;align-items:center;gap:6px">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4M8 5.5v.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         기획형 광고 — 정규시즌(4~9월) 상시 청약 접수
       </div>
-      <div style="font-size:12px;color:var(--purple);line-height:1.7;opacity:.85">선착순으로 처리되며, 집행 확정 이후 취소·환불이 불가합니다. KBOP 및 제작진 사전 승인 후 최종 집행이 확정됩니다.</div>
+      <div style="font-size:12px;color:var(--purple);line-height:1.7;opacity:.85">집행 확정 이후 취소·환불이 불가합니다. KBOP 및 제작진 사전 승인 후 최종 집행 확정됩니다.</div>
     </div>
-
-    <form id="planning-booking-form" novalidate>
-      <!-- 신청자 정보 (TAS 제외) -->
-      <div class="form-card">
-        <div class="form-card-title">신청자 정보</div>
+    <form id="plan-booking-form" novalidate>
+      <!-- 신청자 정보 -->
+      <div class="card">
+        <div class="card-title">신청자 정보</div>
         <div class="field-row">
           <div class="field"><label>광고주명 <span class="req">*</span></label><input type="text" name="p_advertiser" placeholder="예: 삼성전자" required></div>
           <div class="field"><label>브랜드명 <span class="req">*</span></label><input type="text" name="p_brand" placeholder="예: 갤럭시 S26" required></div>
@@ -485,710 +453,865 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
         <div class="field-row">
           <div class="field">
             <label>청구처 <span class="req">*</span></label>
-            <input type="text" name="p_billing_entity" id="p-inp-billing" placeholder="계산서 발행 주체" required oninput="onPBillingInput()">
-            <label class="inline-check" style="margin-top:6px"><input type="checkbox" id="p-chk-same-billing" onchange="onPSameBilling()"><span class="inline-check-label">담당자 소속과 동일 → 자동 채우기</span></label>
+            <input type="text" name="p_billing_entity" id="p-inp-billing" placeholder="계산서 발행 주체" required oninput="pSyncBilling()">
+            <label class="ichk" style="margin-top:6px"><input type="checkbox" id="p-chk-same-billing" onchange="pToggleSameBilling()"><span class="ichk-label">담당자 소속과 동일</span></label>
           </div>
-          <div class="field"><label>정산월 <span class="req">*</span></label><input type="text" name="p_billing_month" placeholder="예: 2026-05" required><div class="field-hint">YYYY-MM 형식</div></div>
+          <div class="field"><label>정산월 <span class="req">*</span></label><input type="text" name="p_billing_month" placeholder="예: 2026-05" required><div class="hint">YYYY-MM 형식</div></div>
         </div>
         <div class="field-row">
           <div class="field"><label>담당자명 <span class="req">*</span></label><input type="text" name="p_contact_name" placeholder="이름" required></div>
           <div class="field"><label>담당자 이메일 <span class="req">*</span></label><input type="email" name="p_contact_email" placeholder="example@agency.com" required></div>
         </div>
-        <div class="field"><label>담당자 소속 <span class="req">*</span></label><input type="text" name="p_contact_org" id="p-inp-org" placeholder="예: 나스미디어 디지털본부" required oninput="onPOrgInput()"></div>
+        <div class="field"><label>담당자 소속 <span class="req">*</span></label><input type="text" name="p_contact_org" id="p-inp-org" placeholder="예: 나스미디어 디지털본부" required oninput="pSyncOrg()"></div>
       </div>
 
-      <!-- 청약 방식 선택 -->
-      <div class="form-card">
-        <div class="form-card-title">청약 방식</div>
-        <div class="radio-group" id="plan-mode-group">
-          <label class="radio-row selected" onclick="selectPlanMode('single')">
+      <!-- 청약 방식 -->
+      <div class="card">
+        <div class="card-title">청약 방식</div>
+        <div class="radio-group">
+          <label class="radio-row sel" id="plan-mode-single" onclick="setPlanMode('single')">
             <input type="radio" name="plan_mode" value="single" checked>
-            <div class="radio-row-content">
-              <div class="radio-row-title">단일 상품 청약</div>
-              <div class="radio-row-desc">슈퍼매치, 팬덤중계, 하이라이트 클립 범퍼 등 개별 상품을 선택하여 청약합니다</div>
-            </div>
+            <div class="radio-row-body"><div class="radio-row-title">단일 상품 청약</div><div class="radio-row-desc">슈퍼매치, 팬덤중계, 하이라이트 클립 범퍼 등 개별 상품 청약</div></div>
           </label>
-          <label class="radio-row" onclick="selectPlanMode('pkg')">
+          <label class="radio-row" id="plan-mode-pkg" onclick="setPlanMode('pkg')">
             <input type="radio" name="plan_mode" value="pkg">
-            <div class="radio-row-content">
-              <div class="radio-row-title">패키지 청약</div>
-              <div class="radio-row-desc">슈퍼매치 PKG, 팬덤중계 구단 독점 협찬 PKG 등 패키지 상품을 청약합니다</div>
-            </div>
+            <div class="radio-row-body"><div class="radio-row-title">패키지 청약</div><div class="radio-row-desc">슈퍼매치 PKG, 팬덤중계 구단 독점 협찬 PKG 등 패키지 상품 청약</div></div>
           </label>
         </div>
       </div>
 
-      <!-- 단일 상품 섹션 -->
-      <div id="single-product-section">
-        <div class="form-card">
-          <div class="form-card-title">청약 상품</div>
-
-          <!-- 상품 카테고리 탭 -->
-          <div class="plan-tabs" id="plan-cat-tabs">
-            <button type="button" class="plan-tab active" onclick="selectPlanCat('supermatch')">슈퍼매치</button>
-            <button type="button" class="plan-tab" onclick="selectPlanCat('fandum')">팬덤중계</button>
-            <button type="button" class="plan-tab" onclick="selectPlanCat('clip')">하이라이트 클립 범퍼</button>
+      <!-- 단일 상품 -->
+      <div id="plan-single-section">
+        <div class="card">
+          <div class="card-title">청약 상품</div>
+          <div class="plan-tabs">
+            <button type="button" class="plan-tab active" id="tab-sm" onclick="setPlanCat('sm')">슈퍼매치</button>
+            <button type="button" class="plan-tab" id="tab-fd" onclick="setPlanCat('fd')">팬덤중계</button>
+            <button type="button" class="plan-tab" id="tab-cl" onclick="setPlanCat('cl')">하이라이트 클립 범퍼</button>
           </div>
 
-          <!-- 슈퍼매치 상품들 -->
-          <div id="cat-supermatch">
-            <div id="sm-items-container"></div>
-            <button type="button" class="add-item-btn" onclick="addPlanItem('sm')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              슈퍼매치 상품 추가
+          <!-- 슈퍼매치 -->
+          <div id="cat-sm">
+            <div id="sm-items"></div>
+            <button type="button" class="add-btn" onclick="addPlanItem('sm')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>슈퍼매치 상품 추가
             </button>
           </div>
 
-          <!-- 팬덤중계 상품들 -->
-          <div id="cat-fandum" style="display:none">
-            <div id="fd-items-container"></div>
-            <button type="button" class="add-item-btn" onclick="addPlanItem('fd')">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              팬덤중계 상품 추가
+          <!-- 팬덤중계 -->
+          <div id="cat-fd" style="display:none">
+            <div id="fd-items"></div>
+            <button type="button" class="add-btn" onclick="addPlanItem('fd')">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>팬덤중계 상품 추가
             </button>
           </div>
 
-          <!-- 하이라이트 클립 범퍼 -->
-          <div id="cat-clip" style="display:none">
-            <div style="padding:14px;background:var(--blue-bg);border-radius:var(--radius-sm);margin-bottom:12px">
-              <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:6px">하이라이트 클립 범퍼</div>
-              <div style="font-size:11px;color:var(--text2);line-height:1.7">경기 하이라이트 클립 인트로에 삽입되는 5초 범퍼형 광고입니다. 프리미엄 구독자에게도 노출됩니다.</div>
+          <!-- 클립 -->
+          <div id="cat-cl" style="display:none">
+            <div style="padding:14px;background:var(--blue-bg);border-radius:var(--radius-sm);margin-bottom:14px">
+              <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:4px">하이라이트 클립 범퍼</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.7">경기 하이라이트 클립 인트로에 삽입되는 5초 범퍼형 광고입니다. 프리미엄 구독자에게도 노출됩니다.<br>TVING SPORTS 유튜브(구독자 44.4만명) 및 TVING 서비스 내 동시 노출됩니다.</div>
             </div>
             <div class="field">
               <label>구매 방식 <span class="req">*</span></label>
-              <div class="segment-group" id="clip-buy-type">
-                <button type="button" class="segment-btn active" onclick="selectClipType('monthly')">1개월 독점 (1억원)</button>
-                <button type="button" class="segment-btn" onclick="selectClipType('unit')">20개 단위 (2천만원/20개)</button>
+              <div class="seg" id="clip-seg">
+                <button type="button" class="seg-btn active" onclick="setClipType('monthly')">1개월 독점 — 1억원</button>
+                <button type="button" class="seg-btn" onclick="setClipType('unit')">20개 단위 — 2천만원/20개</button>
               </div>
             </div>
-            <div id="clip-monthly-section">
+            <div id="clip-monthly">
               <div class="field" style="margin-top:12px">
                 <label>집행 월 <span class="req">*</span></label>
                 <select name="clip_month" id="clip-month-sel">
                   <option value="">선택하세요</option>
-                  <option value="2026-04">2026년 4월</option>
-                  <option value="2026-05">2026년 5월</option>
-                  <option value="2026-06">2026년 6월</option>
-                  <option value="2026-07">2026년 7월</option>
-                  <option value="2026-08">2026년 8월</option>
-                  <option value="2026-09">2026년 9월</option>
+                  <option value="2026-04">2026년 4월</option><option value="2026-05">2026년 5월</option>
+                  <option value="2026-06">2026년 6월</option><option value="2026-07">2026년 7월</option>
+                  <option value="2026-08">2026년 8월</option><option value="2026-09">2026년 9월</option>
                 </select>
               </div>
-              <div style="font-size:11px;color:var(--text3);margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px">
-                1개월 독점 시 <strong>1억원</strong> (VAT 별도) · 해당 월 전체 하이라이트 클립 인트로 독점 집행
-              </div>
+              <div class="hint" style="margin-top:6px;padding:8px 10px;background:var(--bg);border-radius:6px"><strong>1억원</strong> (VAT 별도) · 해당 월 전체 하이라이트 클립 인트로 독점</div>
             </div>
-            <div id="clip-unit-section" style="display:none">
+            <div id="clip-unit" style="display:none">
               <div class="field" style="margin-top:12px">
                 <label>구매 수량 <span class="req">*</span></label>
-                <input type="number" name="clip_units" min="1" placeholder="20개 단위로 입력 (예: 20, 40, 60)">
-                <div class="field-hint">20개 단위로 구매 가능 · 20개당 2천만원 (VAT 별도)</div>
+                <input type="number" name="clip_units" id="clip-units-inp" min="20" step="20" placeholder="20개 단위 입력 (예: 20, 40, 60)" oninput="updatePlanPrice()">
+                <div class="hint">20개당 <strong>2천만원</strong> (VAT 별도)</div>
               </div>
             </div>
           </div>
 
           <!-- 기획형 가격 요약 -->
-          <div class="plan-price-summary" id="plan-price-summary" style="margin-top:14px">
-            <div class="plan-price-summary-title">청약 금액 합계 (VAT 별도)</div>
+          <div class="plan-price-sum" id="plan-price-sum" style="margin-top:14px">
+            <div class="plan-price-title">청약 금액 합계 (VAT 별도)</div>
             <div id="plan-price-rows"><div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div></div>
-            <div id="plan-price-divider" style="display:none;border:none;border-top:1.5px solid #DDD6FE;margin:8px 0"></div>
-            <div id="plan-price-total-row" style="display:none;display:flex;justify-content:space-between;margin-top:4px">
+            <div id="plan-price-div" style="display:none;border:none;border-top:1.5px solid var(--purple-border);margin:8px 0"></div>
+            <div id="plan-price-total-row" style="display:none;justify-content:space-between;margin-top:4px">
               <span style="font-size:13px;font-weight:600;color:var(--purple)">합계</span>
               <span style="font-size:16px;font-weight:700;color:var(--purple)" id="plan-price-total">—</span>
             </div>
           </div>
         </div>
-      </div><!-- /single-product-section -->
+      </div>
 
-      <!-- 패키지 섹션 -->
-      <div id="pkg-section" style="display:none">
-        <div class="form-card">
-          <div class="form-card-title">패키지 선택</div>
-
-          <div class="radio-group" id="pkg-type-group">
-            <!-- PKG 옵션들 -->
-            <label class="radio-row" onclick="selectPkg('sm_full')">
-              <input type="radio" name="pkg_type" value="sm_full">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge supermatch">슈퍼매치</span>
-                  <div class="radio-row-title">슈퍼매치 풀커버 PKG</div>
-                </div>
-                <div class="radio-row-desc">타이틀 브랜드 ID × 5, 기획 PPL × 2, 이벤트 PPL × 2, 기능/단순 PPL × 2 (마이크 포함), 메인 디스플레이 PPL × 5 · <strong>집행기간: 4주</strong></div>
+      <!-- 패키지 -->
+      <div id="plan-pkg-section" style="display:none">
+        <div class="card">
+          <div class="card-title">패키지 선택</div>
+          <div class="radio-group" id="pkg-radio-group">
+            <label class="radio-row" onclick="selectPkg(this,'sm_full')"><input type="radio" name="pkg_type" value="sm_full">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge sm">슈퍼매치</span><div class="radio-row-title">슈퍼매치 풀커버 PKG</div></div>
+                <div class="radio-row-desc">타이틀 브랜드 ID×5, 기획 PPL×2, 이벤트 PPL×2, 기능/단순 PPL×2(마이크 포함), 메인 디스플레이 PPL×5 · <strong>집행기간: 4주</strong></div>
                 <div class="radio-row-price">2억원 (VAT 별도) — 정가 대비 70% 할인</div>
               </div>
             </label>
-            <label class="radio-row" onclick="selectPkg('sm_basic')">
-              <input type="radio" name="pkg_type" value="sm_basic">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge supermatch">슈퍼매치</span>
-                  <div class="radio-row-title">슈퍼매치 일반 협찬 PKG</div>
-                </div>
-                <div class="radio-row-desc">기획 PPL × 1, 기능/단순 PPL × 2, 메인 디스플레이 PPL × 2 · <strong>집행기간: 2주</strong></div>
+            <label class="radio-row" onclick="selectPkg(this,'sm_basic')"><input type="radio" name="pkg_type" value="sm_basic">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge sm">슈퍼매치</span><div class="radio-row-title">슈퍼매치 일반 협찬 PKG</div></div>
+                <div class="radio-row-desc">기획 PPL×1, 기능/단순 PPL×2, 메인 디스플레이 PPL×2 · <strong>집행기간: 2주</strong></div>
                 <div class="radio-row-price">8천만원 (VAT 별도) — 정가 대비 약 50% 할인</div>
               </div>
             </label>
-            <label class="radio-row" onclick="selectPkg('fd_season')">
-              <input type="radio" name="pkg_type" value="fd_season">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge fandum">팬덤중계</span>
-                  <div class="radio-row-title">팬덤중계 정규시즌 구단 독점 협찬 PKG</div>
-                </div>
-                <div class="radio-row-desc">타이틀 브랜드 ID × 30, 풀프레임 가상광고(맥락형) × 20, 기획 PPL × 10, 이벤트 PPL × 10, 기능/단순 PPL × 20, 협찬고지 × 20 · <strong>집행기간: 정규시즌 전체 4~9월 · 구단 1개 선택</strong></div>
+            <label class="radio-row" onclick="selectPkg(this,'fd_season')"><input type="radio" name="pkg_type" value="fd_season">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge fd">팬덤중계</span><div class="radio-row-title">팬덤중계 정규시즌 구단 독점 협찬 PKG</div></div>
+                <div class="radio-row-desc">타이틀 브랜드 ID×30, 풀프레임 가상광고(맥락형)×20, 기획 PPL×10, 이벤트 PPL×10, 기능/단순 PPL×20, 협찬고지×20 · <strong>4~9월 정규시즌 전체 · 구단 1개 선택</strong></div>
                 <div class="radio-row-price">5억원 (VAT 별도)</div>
               </div>
             </label>
-            <label class="radio-row" onclick="selectPkg('fd_season_novr')">
-              <input type="radio" name="pkg_type" value="fd_season_novr">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge fandum">팬덤중계</span>
-                  <div class="radio-row-title">팬덤중계 정규시즌 구단 독점 협찬 PKG (가상광고 제외)</div>
-                </div>
-                <div class="radio-row-desc">타이틀 브랜드 ID × 30, 기획 PPL × 10, 이벤트 PPL × 10, 기능/단순 PPL × 20, 협찬고지 × 20 · <strong>집행기간: 정규시즌 전체 4~9월 · 구단 1개 선택</strong></div>
+            <label class="radio-row" onclick="selectPkg(this,'fd_season_novr')"><input type="radio" name="pkg_type" value="fd_season_novr">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge fd">팬덤중계</span><div class="radio-row-title">팬덤중계 정규시즌 구단 독점 협찬 PKG (가상광고 제외)</div></div>
+                <div class="radio-row-desc">타이틀 브랜드 ID×30, 기획 PPL×10, 이벤트 PPL×10, 기능/단순 PPL×20, 협찬고지×20 · <strong>4~9월 정규시즌 전체 · 구단 1개 선택</strong></div>
                 <div class="radio-row-price">4억원 (VAT 별도)</div>
               </div>
             </label>
-            <label class="radio-row" onclick="selectPkg('fd_monthly')">
-              <input type="radio" name="pkg_type" value="fd_monthly">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge fandum">팬덤중계</span>
-                  <div class="radio-row-title">팬덤중계 월 구단 독점 협찬 PKG</div>
-                </div>
-                <div class="radio-row-desc">타이틀 브랜드 ID × 2, 풀프레임 가상광고(일반형) × 2, 이벤트 PPL × 1, 기능/단순 PPL × 1, 협찬고지 × 2 · <strong>집행기간: 4주 · 구단 1개 선택</strong></div>
+            <label class="radio-row" onclick="selectPkg(this,'fd_monthly')"><input type="radio" name="pkg_type" value="fd_monthly">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge fd">팬덤중계</span><div class="radio-row-title">팬덤중계 월 구단 독점 협찬 PKG</div></div>
+                <div class="radio-row-desc">타이틀 브랜드 ID×2, 풀프레임 가상광고(일반형)×2, 이벤트 PPL×1, 기능/단순 PPL×1, 협찬고지×2 · <strong>4주 집행 · 구단 1개 선택</strong></div>
                 <div class="radio-row-price">1억 5천만원 (VAT 별도) — 정가 대비 22% 할인</div>
               </div>
             </label>
-            <label class="radio-row" onclick="selectPkg('fd_monthly_novr')">
-              <input type="radio" name="pkg_type" value="fd_monthly_novr">
-              <div class="radio-row-content">
-                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">
-                  <span class="plan-item-badge fandum">팬덤중계</span>
-                  <div class="radio-row-title">팬덤중계 월 구단 독점 협찬 PKG (가상광고 제외)</div>
-                </div>
-                <div class="radio-row-desc">타이틀 브랜드 ID × 2, 기획 PPL × 1, 기능/단순 PPL × 1, 협찬고지 × 2 · <strong>집행기간: 4주 · 구단 1개 선택</strong></div>
+            <label class="radio-row" onclick="selectPkg(this,'fd_monthly_novr')"><input type="radio" name="pkg_type" value="fd_monthly_novr">
+              <div class="radio-row-body">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="plan-badge fd">팬덤중계</span><div class="radio-row-title">팬덤중계 월 구단 독점 협찬 PKG (가상광고 제외)</div></div>
+                <div class="radio-row-desc">타이틀 브랜드 ID×2, 기획 PPL×1, 기능/단순 PPL×1, 협찬고지×2 · <strong>4주 집행 · 구단 1개 선택</strong></div>
                 <div class="radio-row-price">1억원 (VAT 별도)</div>
               </div>
             </label>
           </div>
-
-          <!-- PKG 선택 후 추가 정보 -->
-          <div id="pkg-extra" style="display:none;margin-top:16px">
-            <div id="pkg-period-section" style="display:none">
-              <div class="field">
-                <label>집행 기간 <span class="req">*</span></label>
-                <div class="date-range-row">
-                  <div><label style="font-size:11px;margin-bottom:3px">시작일</label><input type="text" name="pkg_start" id="pkg-start" placeholder="예: 2026-05-04"></div>
-                  <div><label style="font-size:11px;margin-bottom:3px">종료일</label><input type="text" name="pkg_end" id="pkg-end" placeholder="자동 계산" readonly style="background:#F7F7F5;color:var(--text3)"></div>
+          <div id="pkg-extra" style="display:none">
+            <div class="pkg-extra">
+              <div id="pkg-period-wrap" style="display:none">
+                <div class="field">
+                  <label>집행 시작일 <span class="req">*</span></label>
+                  <input type="text" name="pkg_start" id="pkg-start" placeholder="YYYY-MM-DD (월요일 권장)" oninput="autoPkgEnd()">
                 </div>
-                <div class="field-hint">YYYY-MM-DD 형식 · 월요일~일요일 기준 집행</div>
+                <div class="field" style="margin-top:8px">
+                  <label>집행 종료일 (자동 계산)</label>
+                  <input type="text" name="pkg_end" id="pkg-end" readonly style="background:#F7F7F5;color:var(--text3)">
+                </div>
               </div>
-            </div>
-            <div id="pkg-team-section" style="display:none">
-              <div class="field">
-                <label>협찬 구단 <span class="req">*</span></label>
-                <select name="pkg_team" id="pkg-team-sel">
-                  <option value="">구단을 선택하세요</option>
-                  <option>LG 트윈스</option><option>한화 이글스</option><option>SSG 랜더스</option>
-                  <option>삼성 라이온즈</option><option>NC 다이노스</option><option>KT 위즈</option>
-                  <option>키움 히어로즈</option><option>두산 베어스</option><option>KIA 타이거즈</option>
-                </select>
-                <div class="field-hint">선착순 마감 · 1개 구단 선택 (해당 구단 팬덤중계 전체 집행)</div>
+              <div id="pkg-team-wrap" style="display:none">
+                <div class="field" style="margin-top:8px">
+                  <label>협찬 구단 <span class="req">*</span></label>
+                  <select name="pkg_team" id="pkg-team-sel">
+                    <option value="">구단을 선택하세요 (선착순 마감)</option>
+                    <option>LG 트윈스</option><option>한화 이글스</option><option>SSG 랜더스</option>
+                    <option>삼성 라이온즈</option><option>NC 다이노스</option><option>KT 위즈</option>
+                    <option>키움 히어로즈</option><option>두산 베어스</option><option>KIA 타이거즈</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div id="pkg-price-display" style="margin-top:12px;padding:12px 14px;background:var(--purple-bg);border-radius:var(--radius-sm);border:1px solid #DDD6FE">
-              <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">패키지 금액</div>
-              <div style="font-size:16px;font-weight:700;color:var(--purple)" id="pkg-price-val">—</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:2px">VAT 별도</div>
+              <div id="pkg-price-display" style="margin-top:12px;padding:12px 14px;background:var(--purple-bg);border-radius:var(--radius-sm);border:1px solid var(--purple-border);display:none">
+                <div style="font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">패키지 금액</div>
+                <div style="font-size:16px;font-weight:700;color:var(--purple)" id="pkg-price-val">—</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">VAT 별도</div>
+              </div>
             </div>
           </div>
         </div>
-      </div><!-- /pkg-section -->
+      </div>
 
       <!-- 추가 정보 -->
-      <div class="form-card">
-        <div class="form-card-title">추가 정보</div>
+      <div class="card">
+        <div class="card-title">추가 정보</div>
         <div class="cbox-wrap">
           <label class="cbox-row" style="padding-top:0"><input type="checkbox" name="p_jbp" id="p-chk-jbp"><span class="cbox-label">JBP 해당 광고주입니다 (우선 청약권 보유)</span></label>
         </div>
-        <div class="field" style="margin-top:14px"><label>특이사항 / 기획 방향 제안</label><textarea name="p_note" placeholder="브랜드 메시지, 희망 연출 방향, 타겟 등 제안 사항이 있으면 입력해주세요 (선택)"></textarea></div>
+        <div class="field" style="margin-top:14px"><label>특이사항 / 기획 방향 제안</label><textarea name="p_note" placeholder="브랜드 메시지, 희망 연출 방향, 타겟 등 제안 사항 (선택)"></textarea></div>
       </div>
 
-      <!-- 개인정보 동의 -->
-      <div class="privacy-card">
-        <div class="privacy-header" onclick="togglePrivacy('plan')">
-          <div class="privacy-header-left"><span class="privacy-badge">개인정보</span><span class="privacy-title-text">개인정보 수집·이용 동의</span></div>
-          <div class="privacy-toggle-btn" id="privacy-toggle-plan">내용 보기 <svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <!-- 개인정보 -->
+      <div class="priv-card">
+        <div class="priv-hdr" onclick="togglePriv('plan')">
+          <div class="priv-hdr-left"><span class="priv-badge">개인정보</span><span class="priv-hdr-title">개인정보 수집·이용 동의</span></div>
+          <div class="priv-toggle" id="priv-toggle-plan">내용 보기 <svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         </div>
-        <div class="privacy-body" id="privacy-body-plan">
-          <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:12px">CJ ENM (이하 "회사")은 광고 청약 신청 접수 및 낙찰 결과 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
-          <table class="privacy-table"><tr><th>수집 항목</th><th>수집·이용 목적</th><th>보유 기간</th></tr><tr><td>담당자명, 소속, 이메일 주소</td><td>청약 접수 확인, 집행 협의 연락, 낙찰 결과 통보</td><td>청약 완료 후 1년</td></tr><tr><td>광고주명, 브랜드명, 대행사명, 미디어렙, 청구처</td><td>청약 상품 배정 및 내부 관리</td><td>청약 완료 후 1년</td></tr></table>
-          <p class="privacy-note">※ 귀하는 개인정보 수집·이용에 동의를 거부할 권리가 있습니다. 단, 동의 거부 시 청약 신청 접수가 불가합니다.</p>
+        <div class="priv-body" id="priv-body-plan">
+          <p style="font-size:12px;color:var(--text2);line-height:1.7;margin-top:12px">CJ ENM은 광고 청약 신청 접수 및 결과 안내를 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+          <table class="priv-table"><tr><th>수집 항목</th><th>목적</th><th>보유 기간</th></tr><tr><td>담당자명, 소속, 이메일</td><td>청약 접수 확인, 집행 협의 연락</td><td>청약 완료 후 1년</td></tr><tr><td>광고주명, 브랜드명 등</td><td>청약 상품 배정 및 내부 관리</td><td>청약 완료 후 1년</td></tr></table>
         </div>
-        <label class="privacy-agree-row"><input type="checkbox" id="p-chk-privacy" required><span class="privacy-agree-label">위 개인정보 수집·이용에 <em>동의합니다</em> <em>*</em></span></label>
+        <label class="priv-agree"><input type="checkbox" id="p-chk-privacy" required><span class="priv-agree-lbl">위 개인정보 수집·이용에 <em>동의합니다</em> <em>*</em></span></label>
       </div>
-
       <div class="caution-card">
         <div class="caution-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L1.5 13.5h13L8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 6.5v3M8 11v.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>기획형 광고 주의사항</div>
         <ul class="caution-list">
           <li>청약 접수만으로 집행이 확정되지 않으며, KBOP 및 프로그램 제작진의 사전 승인 절차가 필요합니다.</li>
           <li>집행 확정 이후 광고주 사유로 인한 취소·환불·일정 변경은 일체 불가합니다.</li>
-          <li>기획 및 제작 이후 중도 무산 시 기획료, 제작 진행 비용이 청구될 수 있습니다.</li>
-          <li>특정 구단, 선수 또는 출연진의 진행을 보장하지 않으며, 출연자 관련 사회적 이슈 발생 시 당사는 보상 책임을 지지 않습니다.</li>
+          <li>기획 및 제작 이후 중도 무산 시 기획료·제작 진행 비용이 청구될 수 있습니다.</li>
         </ul>
-        <label class="caution-agree-row"><input type="checkbox" id="p-chk-caution" required><span class="caution-agree-label">위 기획형 광고 주의사항을 모두 확인하였으며, 이에 동의합니다 *</span></label>
+        <label class="caution-agree"><input type="checkbox" id="p-chk-caution" required><span class="caution-agree-lbl">위 기획형 광고 주의사항을 모두 확인하였으며, 이에 동의합니다 *</span></label>
       </div>
-
       <div class="submit-area">
-        <button type="submit" class="submit-btn planning-btn" id="p-submit-btn">기획형 청약 신청서 제출</button>
+        <button type="submit" class="submit-btn plan-submit" id="plan-submit-btn">기획형 청약 신청서 제출</button>
         <div class="submit-notice">접수 후 영업일 기준 2일 이내 담당자가 연락드립니다.</div>
       </div>
     </form>
-  </div><!-- /planning-form -->
-
+  </div><!-- /plan-form -->
 </div><!-- /form-screen -->
 
 <div class="success-screen" id="success-screen">
   <div class="success-icon">✓</div>
-  <div class="success-title" id="success-title">청약 신청이 완료되었습니다</div>
-  <div class="success-desc" id="success-desc">영업일 기준 2일 이내에 낙찰 결과를<br>입력하신 이메일로 안내드리겠습니다.</div>
-  <div class="success-chip" id="success-timestamp"></div>
+  <div class="success-title" id="succ-title">청약 신청이 완료되었습니다</div>
+  <div class="success-desc" id="succ-desc">영업일 기준 2일 이내에 낙찰 결과를<br>입력하신 이메일로 안내드리겠습니다.</div>
+  <div class="success-chip" id="succ-ts"></div>
 </div>
-</div>
+</div><!-- /page -->
 
 <script>
-// ── 상수 ──
-const MONTHS_CONFIG=[
-  {label:'2026년 5월',  openAt:new Date(2026,3,15,10,0,0),  seasonStart:new Date(2026,4,4)  },
-  {label:'2026년 6월',  openAt:new Date(2026,4,20,10,0,0),  seasonStart:new Date(2026,5,1)  },
-  {label:'2026년 7월',  openAt:new Date(2026,5,17,10,0,0),  seasonStart:new Date(2026,6,6)  },
-  {label:'2026년 8월',  openAt:new Date(2026,6,15,10,0,0),  seasonStart:new Date(2026,7,3)  },
-  {label:'2026년 9월',  openAt:new Date(2026,7,19,10,0,0),  seasonStart:new Date(2026,8,7)  },
-  {label:'2026년 10월',openAt:new Date(2026,8,16,10,0,0),  seasonStart:new Date(2026,9,5)  },
-]
-const PRODUCTS=[
-  {value:'노출보장PKG',          label:'노출 보장 PKG',           price:70000000,  durations:[15,30],    weekType:'none',   unit:'구좌'},
-  {value:'노출보장PKG(제한업종)', label:'노출 보장 PKG (제한업종)', price:70000000,  durations:[15,30],    weekType:'none',   unit:'구좌'},
-  {value:'퍼스트뷰PKG',          label:'1주 퍼스트뷰 독점 PKG',   price:100000000, durations:[15,30],    weekType:'single', unit:'주'  },
-  {value:'7이닝장초수독점PKG',   label:'7이닝 장초수 독점 PKG',   price:250000000, durations:['60~90'],  weekType:'none',   unit:'구좌'},
-  {value:'1주집중임팩트PKG',     label:'1주 집중 임팩트 PKG',     price:30000000,  durations:[15,30],    weekType:'single', unit:'주'  },
-  {value:'팬덤PKG',              label:'팬덤 PKG (구단 타겟팅)',   price:30000000,  durations:[15,30],    weekType:'none',   unit:'구단'},
-]
-const TEAMS=['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움']
-const DAY_KO=['일','월','화','수','목','금','토']
+// ════════════════════════════════════════════════════════════
+// 상수
+// ════════════════════════════════════════════════════════════
+const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec';
 
-// 기획형 슈퍼매치 상품
-const SM_PRODUCTS=[
-  {value:'sm_ppl_plan',    label:'PPL — 기획',        price:20000000, type:'일점유', needDate:true},
-  {value:'sm_ppl_event',   label:'PPL — 이벤트',      price:30000000, type:'일점유', needDate:true},
-  {value:'sm_ppl_func',    label:'PPL — 기능',        price:20000000, type:'일점유', needDate:true},
-  {value:'sm_ppl_simple',  label:'PPL — 단순',        price:20000000, type:'일점유', needDate:true},
-  {value:'sm_main_display',label:'메인 디스플레이 PPL',price:50000000, type:'일점유', needDate:true},
-  {value:'sm_big_vr',      label:'빅 가상광고',        price:30000000, type:'월구좌', maxMonthly:6, needDate:false},
-  {value:'sm_title_id',    label:'타이틀 브랜드 ID (Beta)', price:null, type:'협의', needDate:true},
-]
-// 기획형 팬덤중계 상품
-const FD_PRODUCTS=[
-  {value:'fd_ppl_plan',    label:'PPL — 기획',           price:40000000, type:'일점유', needDate:true},
-  {value:'fd_ppl_event',   label:'PPL — 이벤트',         price:30000000, type:'일점유', needDate:true},
-  {value:'fd_ppl_func',    label:'PPL — 기능',           price:20000000, type:'일점유', needDate:true},
-  {value:'fd_ppl_simple',  label:'PPL — 단순',           price:20000000, type:'일점유', needDate:true},
-  {value:'fd_fullframe_vr',label:'풀프레임 가상광고',     price:30000000, type:'일점유', needDate:true},
-  {value:'fd_sponsor',     label:'협찬고지',              price:3000000,  type:'일점유', needDate:true},
-  {value:'fd_title_id',    label:'타이틀 브랜드 ID (Beta)', price:null, type:'협의', needDate:true},
-]
+const MONTHS_CONFIG = [
+  {label:'2026년 5월',  openAt:new Date(2026,3,15,10,0,0), seasonStart:new Date(2026,4,4)},
+  {label:'2026년 6월',  openAt:new Date(2026,4,20,10,0,0), seasonStart:new Date(2026,5,1)},
+  {label:'2026년 7월',  openAt:new Date(2026,5,17,10,0,0), seasonStart:new Date(2026,6,6)},
+  {label:'2026년 8월',  openAt:new Date(2026,6,15,10,0,0), seasonStart:new Date(2026,7,3)},
+  {label:'2026년 9월',  openAt:new Date(2026,7,19,10,0,0), seasonStart:new Date(2026,8,7)},
+  {label:'2026년 10월', openAt:new Date(2026,8,16,10,0,0), seasonStart:new Date(2026,9,5)},
+];
+const EXP_PRODUCTS = [
+  {value:'노출보장PKG',          label:'노출 보장 PKG',           price:70000000,  durations:[15,30],   weekType:'none',   unit:'구좌'},
+  {value:'노출보장PKG(제한업종)', label:'노출 보장 PKG (제한업종)',price:70000000,  durations:[15,30],   weekType:'none',   unit:'구좌'},
+  {value:'퍼스트뷰PKG',          label:'1주 퍼스트뷰 독점 PKG',   price:100000000, durations:[15,30],   weekType:'single', unit:'주'},
+  {value:'7이닝장초수독점PKG',   label:'7이닝 장초수 독점 PKG',   price:250000000, durations:['60~90'], weekType:'none',   unit:'구좌'},
+  {value:'1주집중임팩트PKG',     label:'1주 집중 임팩트 PKG',     price:30000000,  durations:[15,30],   weekType:'single', unit:'주'},
+  {value:'팬덤PKG',              label:'팬덤 PKG (구단 타겟팅)',   price:30000000,  durations:[15,30],   weekType:'none',   unit:'구단'},
+];
+const TEAMS = ['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움'];
 
-// PKG 가격표
-const PKG_PRICES={
+// 기획형 상품 정의
+const SM_PRODS = [
+  {code:'sm_ppl_plan',     label:'PPL — 기획',           price:20000000, type:'date'},
+  {code:'sm_ppl_event',    label:'PPL — 이벤트',         price:30000000, type:'date'},
+  {code:'sm_ppl_func',     label:'PPL — 기능',           price:20000000, type:'date'},
+  {code:'sm_ppl_simple',   label:'PPL — 단순',           price:20000000, type:'date'},
+  {code:'sm_main_display', label:'메인 디스플레이 PPL',   price:50000000, type:'date'},
+  {code:'sm_big_vr',       label:'빅 가상광고',           price:30000000, type:'monthly', maxQuota:6},
+  {code:'sm_title_id',     label:'타이틀 브랜드 ID (Beta)', price:null, type:'consult'},
+];
+const FD_PRODS = [
+  {code:'fd_ppl_plan',     label:'PPL — 기획',           price:40000000, type:'date'},
+  {code:'fd_ppl_event',    label:'PPL — 이벤트',         price:30000000, type:'date'},
+  {code:'fd_ppl_func',     label:'PPL — 기능',           price:20000000, type:'date'},
+  {code:'fd_ppl_simple',   label:'PPL — 단순',           price:20000000, type:'date'},
+  {code:'fd_fullframe_vr', label:'풀프레임 가상광고',     price:30000000, type:'date'},
+  {code:'fd_sponsor',      label:'협찬고지',              price:3000000,  type:'date'},
+  {code:'fd_title_id',     label:'타이틀 브랜드 ID (Beta)', price:null,  type:'consult'},
+];
+const PKG_PRICES = {
   sm_full:200000000, sm_basic:80000000,
   fd_season:500000000, fd_season_novr:400000000,
-  fd_monthly:150000000, fd_monthly_novr:100000000
-}
+  fd_monthly:150000000, fd_monthly_novr:100000000,
+};
+const PKG_WEEKS = {sm_full:4, sm_basic:2, fd_monthly:4, fd_monthly_novr:4};
 
-// 점유 현황 더미 데이터 (실제로는 서버에서 받아야 함)
-const OCCUPIED_DATES={
-  'sm_ppl_plan':['2026-05-08','2026-05-15'],
-  'sm_main_display':['2026-05-09'],
-  'fd_ppl_plan':['2026-05-10','2026-05-17'],
-}
-
-let currentFormType='exposure'
-let currentPlanCat='supermatch'
-let currentPlanMode='single'
-let currentClipType='monthly'
-let selectedPkg=null
-
-function fmt(d){return `${d.getMonth()+1}/${d.getDate()}(${DAY_KO[d.getDay()]})`}
-function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
+const DAY_KO = ['일','월','화','수','목','금','토'];
 function pad2(n){return String(n).padStart(2,'0')}
 function commas(n){return n.toLocaleString('ko-KR')}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
+function fmt(d){return `${d.getMonth()+1}/${d.getDate()}(${DAY_KO[d.getDay()]})`}
+function toYMD(d){return d.toISOString().slice(0,10)}
 
-// ── 광고 유형 선택 ──
-function selectFormType(type){
-  currentFormType=type
-  document.querySelectorAll('.form-type-btn').forEach(b=>b.classList.remove('active'))
-  document.querySelector('.form-type-btn.'+type).classList.add('active')
-  document.getElementById('exposure-form').style.display=type==='exposure'?'':'none'
-  document.getElementById('planning-form').style.display=type==='planning'?'':'none'
-  const chip=document.getElementById('deadline-chip')
-  if(type==='planning'){
-    chip.className='deadline-chip planned'
-    document.getElementById('deadline-text').textContent='기획형 광고 — 정규시즌(4~9월) 상시 청약 접수'
-    document.getElementById('clock-status').textContent=''
-    document.getElementById('countdown').textContent=''
-  } else {
-    const sel=document.getElementById('sel-month')
-    if(sel.value) onMonthChange(); else {
-      chip.className='deadline-chip'
-      document.getElementById('deadline-text').textContent='청약월을 선택해주세요'
-    }
-  }
-}
+// 상태
+let formType = 'exp';
+let planMode = 'single';
+let planCat  = 'sm';
+let clipType = 'monthly';
+let selectedPkg = null;
+let expItemCount = 0, smItemCount = 0, fdItemCount = 0;
+let _submitLocked = false;
 
-// ── 고정 시계 ──
+// ════════════════════════════════════════════════════════════
+// 클락
+// ════════════════════════════════════════════════════════════
 function tickClock(){
-  const now=new Date()
-  document.getElementById('clock-time').textContent=`${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`
-  document.getElementById('clock-date').textContent=now.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'})
-  if(currentFormType!=='exposure')return
-  const cfg=MONTHS_CONFIG.find(m=>m.label===document.getElementById('sel-month').value)
-  const statusEl=document.getElementById('clock-status'),cdEl=document.getElementById('countdown')
-  const dotEl=document.getElementById('clock-dot'),timeEl=document.getElementById('clock-time')
-  if(cfg){
-    const diff=cfg.openAt-now
-    if(diff<=0){statusEl.textContent='접수 중';statusEl.className='clock-status-bar open';timeEl.className='clock-time-display open';dotEl.className='clock-dot live';cdEl.textContent='';unlockSubmit()}
-    else{const ts=Math.floor(diff/1000),d=Math.floor(ts/86400),hh=Math.floor((ts%86400)/3600),mm=Math.floor((ts%3600)/60),ss=ts%60;statusEl.textContent='개시 전';statusEl.className='clock-status-bar soon';timeEl.className='clock-time-display';dotEl.className='clock-dot';cdEl.textContent=d>0?`${d}일 ${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후`:`${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후 개시`;lockSubmit(cfg)}
-  } else {statusEl.textContent='';cdEl.textContent='';timeEl.className='clock-time-display';dotEl.className='clock-dot';unlockSubmit()}
+  const now = new Date();
+  document.getElementById('clock-time').textContent = `${pad2(now.getHours())}:${pad2(now.getMinutes())}:${pad2(now.getSeconds())}`;
+  document.getElementById('clock-date').textContent = now.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',weekday:'short'});
+  if(formType !== 'exp') return;
+  const cfg = MONTHS_CONFIG.find(m=>m.label===document.getElementById('sel-month').value);
+  const stEl=document.getElementById('clock-status'), cdEl=document.getElementById('countdown');
+  const dotEl=document.getElementById('clock-dot'), timeEl=document.getElementById('clock-time');
+  if(!cfg){stEl.textContent='';cdEl.textContent='';timeEl.className='clock-time';dotEl.className='clock-dot';unlockSubmit();return}
+  const diff = cfg.openAt - now;
+  if(diff <= 0){stEl.textContent='접수 중';stEl.className='clock-status open';timeEl.className='clock-time open';dotEl.className='clock-dot live';cdEl.textContent='';unlockSubmit()}
+  else{const ts=Math.floor(diff/1000),d=Math.floor(ts/86400),hh=Math.floor((ts%86400)/3600),mm=Math.floor((ts%3600)/60),ss=ts%60;stEl.textContent='개시 전';stEl.className='clock-status soon';timeEl.className='clock-time';dotEl.className='clock-dot';cdEl.textContent=d>0?`${d}일 ${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후`:`${pad2(hh)}:${pad2(mm)}:${pad2(ss)} 후 개시`;lockSubmit(cfg)}
 }
-
-let _submitLocked=false
 function lockSubmit(cfg){
-  if(_submitLocked)return;_submitLocked=true
-  const btn=document.getElementById('submit-btn'),openStr=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'})
-  btn.disabled=true;btn.textContent=`${openStr} 이후 제출 가능`;btn.style.background='#C0C0BC'
+  if(_submitLocked)return;_submitLocked=true;
+  const btn=document.getElementById('exp-submit-btn');
+  btn.disabled=true;btn.textContent=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'})+' 이후 제출 가능';btn.style.background='#C0C0BC';
 }
 function unlockSubmit(){
-  if(!_submitLocked)return;_submitLocked=false
-  const btn=document.getElementById('submit-btn');btn.disabled=false;btn.textContent='청약 신청서 제출';btn.style.background=''
+  if(!_submitLocked)return;_submitLocked=false;
+  const btn=document.getElementById('exp-submit-btn');btn.disabled=false;btn.textContent='청약 신청서 제출';btn.style.background='';
 }
-setInterval(tickClock,1000);tickClock()
+setInterval(tickClock,1000);tickClock();
 
-// ── 청약월 ──
+// ════════════════════════════════════════════════════════════
+// 폼 유형 선택
+// ════════════════════════════════════════════════════════════
+function setFormType(t){
+  formType=t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.type-btn.${t}`).classList.add('active');
+  document.getElementById('exp-form').style.display = t==='exp'?'':'none';
+  document.getElementById('plan-form').style.display = t==='plan'?'':'none';
+  const chip=document.getElementById('main-chip'), txt=document.getElementById('chip-text');
+  if(t==='plan'){chip.className='chip planned';txt.textContent='기획형 광고 — 정규시즌(4~9월) 상시 청약 접수';document.getElementById('clock-status').textContent='';document.getElementById('countdown').textContent=''}
+  else{const sel=document.getElementById('sel-month');if(sel.value)onMonthChange();else{chip.className='chip';txt.textContent='청약월을 선택해주세요'}}
+}
+
+// ════════════════════════════════════════════════════════════
+// 노출형 - 청약월
+// ════════════════════════════════════════════════════════════
 function initMonthSelect(){
-  const now=new Date(),sel=document.getElementById('sel-month')
-  sel.innerHTML='<option value="">선택하세요</option>'
-  MONTHS_CONFIG.forEach(mc=>{const opt=document.createElement('option');opt.value=mc.label;opt.textContent=mc.label+(now>=mc.openAt?'':' — 접수 예정');sel.appendChild(opt)})
+  const now=new Date(),sel=document.getElementById('sel-month');
+  sel.innerHTML='<option value="">선택하세요</option>';
+  MONTHS_CONFIG.forEach(mc=>{const o=document.createElement('option');o.value=mc.label;o.textContent=mc.label+(now>=mc.openAt?'':' — 접수 예정');sel.appendChild(o)});
 }
 function onMonthChange(){
-  const now=new Date(),cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value)
-  const lb=document.getElementById('lock-banner')
-  if(cfg&&now<cfg.openAt){const s=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});document.getElementById('lock-title').textContent=`${cfg.label} 청약 — 미리 작성 후 ${s} 정각에 제출하세요`;document.getElementById('lock-desc').textContent='폼은 지금 모두 작성 가능합니다. 제출 버튼은 접수 개시 시각에 자동으로 활성화됩니다.';lb.style.display='block';_submitLocked=false;lockSubmit(cfg)}
-  else{lb.style.display='none';_submitLocked=true;unlockSubmit()}
-  if(cfg){const s=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});document.getElementById('deadline-text').textContent=`${cfg.label} 접수 개시: ${s}`;document.getElementById('deadline-chip').className='deadline-chip'+(now>=cfg.openAt?'':' upcoming')}
-  document.querySelectorAll('.week-grid').forEach(g=>{const id=g.id.replace('week-grid-','');buildWeekGridInEl(g,id)})
+  const now=new Date(),cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);
+  const lb=document.getElementById('lock-banner');
+  if(!cfg){lb.style.display='none';return}
+  if(now<cfg.openAt){
+    const s=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('lock-title').textContent=`${cfg.label} 청약 — 미리 작성 후 ${s} 정각에 제출하세요`;
+    document.getElementById('lock-desc').textContent='폼은 지금 모두 작성 가능합니다. 제출 버튼은 접수 개시 시각에 자동으로 활성화됩니다.';
+    lb.style.display='block';_submitLocked=false;lockSubmit(cfg);
+  }else{lb.style.display='none';_submitLocked=true;unlockSubmit()}
+  const s=cfg.openAt.toLocaleString('ko-KR',{month:'long',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('chip-text').textContent=`${cfg.label} 접수 개시: ${s}`;
+  document.getElementById('main-chip').className='chip'+(now>=cfg.openAt?'':' upcoming');
+  document.querySelectorAll('.week-grid').forEach(g=>buildWeekGrid(g,g.dataset.idx));
 }
-function onBillingInput(){if(document.getElementById('chk-same-billing').checked)document.getElementById('inp-org').value=document.getElementById('inp-billing').value}
-function onSameBilling(){const c=document.getElementById('chk-same-billing').checked,o=document.getElementById('inp-org'),b=document.getElementById('inp-billing');if(c){o.value=b.value;o.setAttribute('readonly','')}else o.removeAttribute('readonly')}
-function onOrgInput(){if(document.getElementById('chk-same-billing').checked)document.getElementById('inp-billing').value=document.getElementById('inp-org').value}
-function onPBillingInput(){if(document.getElementById('p-chk-same-billing').checked)document.getElementById('p-inp-org').value=document.getElementById('p-inp-billing').value}
-function onPSameBilling(){const c=document.getElementById('p-chk-same-billing').checked,o=document.getElementById('p-inp-org'),b=document.getElementById('p-inp-billing');if(c){o.value=b.value;o.setAttribute('readonly','')}else o.removeAttribute('readonly')}
-function onPOrgInput(){if(document.getElementById('p-chk-same-billing').checked)document.getElementById('p-inp-billing').value=document.getElementById('p-inp-org').value}
-function onTasChange(){const noTas=document.getElementById('tas-no').checked;document.getElementById('tas-section').classList.toggle('visible',noTas);['tas-corp','tas-biznum','tas-mgrname','tas-mgremail'].forEach(id=>{const el=document.getElementById(id);if(el)noTas?el.setAttribute('required',''):el.removeAttribute('required')})}
+document.getElementById('sel-month').addEventListener('change',onMonthChange);
 
-// ── 노출형 아이템 ──
-let itemCount=0
-function addItem(){
-  const idx=itemCount++;const div=document.createElement('div');div.className='booking-item';div.id=`item-${idx}`
-  const prodOpts=PRODUCTS.map(p=>`<option value="${p.value}">${p.label}</option>`).join('')
-  const teamRadios=TEAMS.map(t=>`<div class="team-item"><input type="radio" id="tm-${idx}-${t}" name="team_${idx}" value="${t}"><label for="tm-${idx}-${t}">${t}</label></div>`).join('')
-  div.innerHTML=`<div class="booking-item-header"><span class="booking-item-num">청약 상품</span><button type="button" class="remove-btn" onclick="removeItem(${idx})">✕ 삭제</button></div>
-    <div class="field"><label>청약 상품 <span class="req">*</span></label><select name="product_${idx}" id="sel-product-${idx}" required onchange="onProductChange(${idx})"><option value="">선택하세요</option>${prodOpts}</select></div>
-    <div class="field-row"><div class="field"><label>소재 초수 <span class="req">*</span></label><select name="duration_${idx}" id="sel-duration-${idx}" required onchange="onDurationChange(${idx})"><option value="">선택하세요</option></select></div>
-    <div class="field"><label>청약 구좌수 <span class="req">*</span></label><input type="number" name="quota_${idx}" id="inp-quota-${idx}" min="1" max="99" placeholder="구좌수" required oninput="onQuotaInput(${idx})"><div class="field-hint warn" id="quota-hint-${idx}" style="display:none"></div></div></div>
-    <div class="conditional" id="cond-week-${idx}"><label>희망 주차 <span class="req">*</span></label><div class="week-grid" id="week-grid-${idx}" style="margin-top:6px"></div><div class="field-hint" style="margin-top:6px">다른 주차에 추가 청약 시 상품을 추가해 주세요</div></div>
-    <div class="conditional" id="cond-team-${idx}"><label>희망 구단 <span class="req">*</span></label><div class="team-grid" id="team-grid-${idx}" style="margin-top:6px">${teamRadios}</div></div>`
-  document.getElementById('items-container').appendChild(div);updateRemoveButtons();updatePriceSummary()
-}
-function removeItem(idx){const el=document.getElementById(`item-${idx}`);if(el)el.remove();updateRemoveButtons();updatePriceSummary();renumberItems()}
-function renumberItems(){document.querySelectorAll('.booking-item').forEach((el,i)=>{const l=el.querySelector('.booking-item-num');if(l)l.textContent=i===0?'청약 상품':`청약 상품 #${i+1}`})}
-function updateRemoveButtons(){const items=document.querySelectorAll('.booking-item');items.forEach(item=>{const btn=item.querySelector('.remove-btn');if(btn)btn.style.display=items.length<=1?'none':'inline-flex'})}
-function onProductChange(idx){
-  const val=document.getElementById(`sel-product-${idx}`).value,prod=PRODUCTS.find(p=>p.value===val),sel=document.getElementById(`sel-duration-${idx}`)
-  sel.innerHTML='<option value="">선택하세요</option>'
-  if(prod){prod.durations.forEach(d=>{const o=document.createElement('option');o.value=String(d);o.textContent=d==='60~90'?'60~90초':`${d}초`;sel.appendChild(o)});if(prod.durations.length===1){sel.selectedIndex=1;onDurationChange(idx)}}
-  const needWeek=prod&&prod.weekType==='single',needTeam=prod&&prod.value==='팬덤PKG'
-  document.getElementById(`cond-week-${idx}`).classList.toggle('visible',needWeek)
-  document.getElementById(`cond-team-${idx}`).classList.toggle('visible',needTeam)
-  if(needWeek)buildWeekGridInEl(document.getElementById(`week-grid-${idx}`),idx)
-  updatePriceSummary()
-}
-function onDurationChange(idx){
-  const dur=document.getElementById(`sel-duration-${idx}`).value,hint=document.getElementById(`quota-hint-${idx}`),inp=document.getElementById(`inp-quota-${idx}`)
-  if(dur==='30'){inp.setAttribute('step','2');inp.setAttribute('min','2');hint.textContent='30초 소재는 2의 배수로만 입력 가능합니다 (예: 2, 4, 6 ...)';hint.style.display='block';if(inp.value&&Number(inp.value)%2!==0)inp.value=''}
-  else{inp.setAttribute('step','1');inp.setAttribute('min','1');hint.style.display='none'}
-  updatePriceSummary()
-}
-function onQuotaInput(idx){const dur=document.getElementById(`sel-duration-${idx}`)?.value,val=Number(document.getElementById(`inp-quota-${idx}`).value);document.getElementById(`inp-quota-${idx}`).classList.toggle('error',dur==='30'&&val%2!==0);updatePriceSummary()}
-function buildWeekGridInEl(grid,idx){
-  grid.innerHTML='';const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);if(!cfg)return
-  for(let w=0;w<4;w++){const mon=addDays(cfg.seasonStart,w*7),sun=addDays(mon,6);const item=document.createElement('div');item.className='week-item';item.innerHTML=`<input type="radio" id="week-${idx}-${w+1}" name="weeks_${idx}" value="${w+1}주차"><label for="week-${idx}-${w+1}"><span class="wk-num">${w+1}주차</span>${fmt(mon)} ~ ${fmt(sun)}</label>`;grid.appendChild(item)}
-}
-function updatePriceSummary(){
-  const rows=document.getElementById('price-rows'),divider=document.getElementById('price-divider'),totalRow=document.getElementById('price-total-row'),totalEl=document.getElementById('price-total'),vatEl=document.getElementById('price-vat')
-  const items=document.querySelectorAll('.booking-item');let lines=[],grand=0
-  items.forEach(item=>{const id=item.id.replace('item-',''),prodVal=document.getElementById(`sel-product-${id}`)?.value,quotaVal=Number(document.getElementById(`inp-quota-${id}`)?.value)||0,prod=PRODUCTS.find(p=>p.value===prodVal);if(!prod||!quotaVal)return;const amount=prod.price*quotaVal;grand+=amount;const week=document.querySelector(`input[name=weeks_${id}]:checked`)?.value||'',team=document.querySelector(`input[name=team_${id}]:checked`)?.value||'',detail=week?`주차: ${week}`:team?`구단: ${team}`:'';lines.push({label:prod.label,quota:quotaVal,unit:prod.unit,detail,amount})})
-  if(!lines.length){rows.innerHTML='<div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div>';divider.style.display='none';totalRow.style.display='none';vatEl.style.display='none';return}
-  rows.innerHTML=lines.map(l=>`<div class="price-row"><div class="price-row-top"><span class="price-row-label">${l.label} × ${l.quota}${l.unit}</span><span class="price-row-val">${commas(l.amount)}원</span></div>${l.detail?`<div class="price-row-detail">${l.detail}</div>`:''}</div>`).join('')
-  divider.style.display=lines.length>1?'block':'none';totalRow.style.display='flex';totalEl.textContent=`${commas(grand)}원`;vatEl.style.display='block'
+// ════════════════════════════════════════════════════════════
+// 노출형 - 신청자 동기화
+// ════════════════════════════════════════════════════════════
+function syncBilling(){if(document.getElementById('chk-same-billing').checked)document.getElementById('inp-org').value=document.getElementById('inp-billing').value}
+function toggleSameBilling(){const c=document.getElementById('chk-same-billing').checked,o=document.getElementById('inp-org'),b=document.getElementById('inp-billing');if(c){o.value=b.value;o.setAttribute('readonly','')}else o.removeAttribute('readonly')}
+function syncOrg(){if(document.getElementById('chk-same-billing').checked)document.getElementById('inp-billing').value=document.getElementById('inp-org').value}
+function pSyncBilling(){if(document.getElementById('p-chk-same-billing').checked)document.getElementById('p-inp-org').value=document.getElementById('p-inp-billing').value}
+function pToggleSameBilling(){const c=document.getElementById('p-chk-same-billing').checked,o=document.getElementById('p-inp-org'),b=document.getElementById('p-inp-billing');if(c){o.value=b.value;o.setAttribute('readonly','')}else o.removeAttribute('readonly')}
+function pSyncOrg(){if(document.getElementById('p-chk-same-billing').checked)document.getElementById('p-inp-billing').value=document.getElementById('p-inp-org').value}
+function onTasChange(){
+  const noTas=document.getElementById('tas-no').checked;
+  document.getElementById('tas-extra').classList.toggle('show',noTas);
+  ['tas-corp','tas-biznum','tas-mgrname','tas-mgremail'].forEach(id=>{const el=document.getElementById(id);if(el)noTas?el.setAttribute('required',''):el.removeAttribute('required')});
 }
 
-// ── 기획형 상품 ──
-let smItemCount=0,fdItemCount=0
-
-function selectPlanMode(mode){
-  currentPlanMode=mode
-  document.querySelectorAll('#plan-mode-group .radio-row').forEach(r=>r.classList.remove('selected'))
-  event.currentTarget.closest('.radio-row').classList.add('selected')
-  document.getElementById('single-product-section').style.display=mode==='single'?'':'none'
-  document.getElementById('pkg-section').style.display=mode==='pkg'?'':'none'
-}
-
-function selectPlanCat(cat){
-  currentPlanCat=cat
-  document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'))
-  event.target.classList.add('active')
-  document.getElementById('cat-supermatch').style.display=cat==='supermatch'?'':'none'
-  document.getElementById('cat-fandum').style.display=cat==='fandum'?'':'none'
-  document.getElementById('cat-clip').style.display=cat==='clip'?'':'none'
-}
-
-function addPlanItem(prefix){
-  const isSmatch=prefix==='sm',products=isSmatch?SM_PRODUCTS:FD_PRODUCTS
-  const idx=isSmatch?(smItemCount++):(fdItemCount++)
-  const containerId=`${prefix}-items-container`,itemId=`plan-item-${prefix}-${idx}`
-  const div=document.createElement('div');div.className='plan-item';div.id=itemId
-  const badgeClass=isSmatch?'supermatch':'fandum',badgeText=isSmatch?'슈퍼매치':'팬덤중계'
-  const prodOpts=products.map(p=>`<option value="${p.value}" data-price="${p.price||0}" data-type="${p.type}">${p.label}${p.type==='월구좌'?` (월 최대 ${p.maxMonthly}구좌)`:p.price?` — ${commas(p.price)}원`:`— 별도 협의`}</option>`).join('')
+// ════════════════════════════════════════════════════════════
+// 노출형 - 상품 아이템
+// ════════════════════════════════════════════════════════════
+function addExpItem(){
+  const idx = expItemCount++;
+  const div = document.createElement('div');
+  div.className='exp-item'; div.id=`exp-item-${idx}`;
+  const prodOpts = EXP_PRODUCTS.map(p=>`<option value="${p.value}">${p.label}</option>`).join('');
+  const teamHtml = TEAMS.map(t=>`<div class="tm-item"><input type="radio" id="tm-${idx}-${t}" name="team_${idx}" value="${t}"><label for="tm-${idx}-${t}">${t}</label></div>`).join('');
   div.innerHTML=`
-    <div class="plan-item-header">
-      <span class="plan-item-badge ${badgeClass}">${badgeText}</span>
-      <button type="button" class="remove-btn" onclick="removePlanItem('${itemId}')">✕ 삭제</button>
+    <div class="exp-item-hdr"><span class="exp-item-num">청약 상품</span><button type="button" class="rm-btn" onclick="removeExpItem(${idx})">✕ 삭제</button></div>
+    <div class="field"><label>청약 상품 <span class="req">*</span></label><select name="exp_product_${idx}" id="exp-sel-${idx}" required onchange="onExpProductChange(${idx})"><option value="">선택하세요</option>${prodOpts}</select></div>
+    <div class="field-row">
+      <div class="field"><label>소재 초수 <span class="req">*</span></label><select name="exp_dur_${idx}" id="exp-dur-${idx}" required onchange="onExpDurChange(${idx})"><option value="">선택하세요</option></select></div>
+      <div class="field"><label>청약 구좌수 <span class="req">*</span></label><input type="number" name="exp_quota_${idx}" id="exp-quota-${idx}" min="1" max="99" placeholder="구좌수" required oninput="onExpQuotaInput(${idx})"><div class="hint warn" id="exp-quota-hint-${idx}" style="display:none"></div></div>
+    </div>
+    <div class="cond" id="exp-cond-week-${idx}"><label>희망 주차 <span class="req">*</span></label><div class="week-grid" id="exp-wk-${idx}" data-idx="${idx}" style="margin-top:6px"></div><div class="hint" style="margin-top:6px">다른 주차는 상품을 추가해 주세요</div></div>
+    <div class="cond" id="exp-cond-team-${idx}"><label>희망 구단 <span class="req">*</span></label><div class="team-grid" id="exp-team-${idx}" style="margin-top:6px">${teamHtml}</div></div>`;
+  document.getElementById('exp-items').appendChild(div);
+  updateExpRemoveBtns();updateExpPrice();
+}
+function removeExpItem(idx){const el=document.getElementById(`exp-item-${idx}`);if(el)el.remove();updateExpRemoveBtns();updateExpPrice();reNumberExpItems()}
+function reNumberExpItems(){document.querySelectorAll('.exp-item').forEach((el,i)=>{const l=el.querySelector('.exp-item-num');if(l)l.textContent=i===0?'청약 상품':`청약 상품 #${i+1}`})}
+function updateExpRemoveBtns(){const items=document.querySelectorAll('.exp-item');items.forEach(it=>{const b=it.querySelector('.rm-btn');if(b)b.style.display=items.length<=1?'none':'inline-flex'})}
+function onExpProductChange(idx){
+  const val=document.getElementById(`exp-sel-${idx}`).value, prod=EXP_PRODUCTS.find(p=>p.value===val);
+  const sel=document.getElementById(`exp-dur-${idx}`);sel.innerHTML='<option value="">선택하세요</option>';
+  if(prod){prod.durations.forEach(d=>{const o=document.createElement('option');o.value=String(d);o.textContent=d==='60~90'?'60~90초':`${d}초`;sel.appendChild(o)});if(prod.durations.length===1){sel.selectedIndex=1;onExpDurChange(idx)}}
+  const needWeek=prod&&prod.weekType==='single', needTeam=prod&&prod.value==='팬덤PKG';
+  document.getElementById(`exp-cond-week-${idx}`).classList.toggle('show',needWeek);
+  document.getElementById(`exp-cond-team-${idx}`).classList.toggle('show',needTeam);
+  if(needWeek)buildWeekGrid(document.getElementById(`exp-wk-${idx}`),idx);
+  updateExpPrice();
+}
+function onExpDurChange(idx){
+  const dur=document.getElementById(`exp-dur-${idx}`).value, hint=document.getElementById(`exp-quota-hint-${idx}`), inp=document.getElementById(`exp-quota-${idx}`);
+  if(dur==='30'){inp.setAttribute('step','2');inp.setAttribute('min','2');hint.textContent='30초 소재는 2의 배수로만 입력 가능합니다';hint.style.display='block';if(inp.value&&Number(inp.value)%2!==0)inp.value=''}
+  else{inp.setAttribute('step','1');inp.setAttribute('min','1');hint.style.display='none'}
+  updateExpPrice();
+}
+function onExpQuotaInput(idx){const dur=document.getElementById(`exp-dur-${idx}`)?.value,val=Number(document.getElementById(`exp-quota-${idx}`).value);document.getElementById(`exp-quota-${idx}`).classList.toggle('error',dur==='30'&&val%2!==0);updateExpPrice()}
+function buildWeekGrid(grid,idx){
+  grid.innerHTML='';const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);if(!cfg)return;
+  for(let w=0;w<4;w++){const mon=addDays(cfg.seasonStart,w*7),sun=addDays(mon,6);const item=document.createElement('div');item.className='wk-item';item.innerHTML=`<input type="radio" id="wk-${idx}-${w+1}" name="weeks_${idx}" value="${w+1}주차"><label for="wk-${idx}-${w+1}"><span class="wk-n">${w+1}주차</span>${fmt(mon)} ~ ${fmt(sun)}</label>`;grid.appendChild(item)}
+}
+function updateExpPrice(){
+  const rows=document.getElementById('exp-price-rows'), divEl=document.getElementById('exp-price-div'), totRow=document.getElementById('exp-price-total-row'), totEl=document.getElementById('exp-price-total'), vatEl=document.getElementById('exp-price-vat');
+  const items=document.querySelectorAll('.exp-item');let lines=[],grand=0;
+  items.forEach(it=>{const id=it.id.replace('exp-item-',''),pv=document.getElementById(`exp-sel-${id}`)?.value,q=Number(document.getElementById(`exp-quota-${id}`)?.value)||0,prod=EXP_PRODUCTS.find(p=>p.value===pv);if(!prod||!q)return;const amt=prod.price*q;grand+=amt;const wk=document.querySelector(`input[name=weeks_${id}]:checked`)?.value||'',tm=document.querySelector(`input[name=team_${id}]:checked`)?.value||'',det=wk?`주차: ${wk}`:tm?`구단: ${tm}`:'';lines.push({label:prod.label,q,unit:prod.unit,det,amt})});
+  if(!lines.length){rows.innerHTML='<div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div>';divEl.style.display='none';totRow.style.display='none';vatEl.style.display='none';return}
+  rows.innerHTML=lines.map(l=>`<div class="price-row"><div class="price-row-top"><span class="price-row-lbl">${l.label} × ${l.q}${l.unit}</span><span class="price-row-val">${commas(l.amt)}원</span></div>${l.det?`<div class="price-row-sub">${l.det}</div>`:''}</div>`).join('');
+  divEl.style.display=lines.length>1?'block':'none';totRow.style.display='flex';totEl.textContent=`${commas(grand)}원`;vatEl.style.display='block';
+}
+
+// ════════════════════════════════════════════════════════════
+// 기획형 - 캘린더 날짜 선택
+// ════════════════════════════════════════════════════════════
+// 슈퍼매치: 화(2), 금(5)  / 팬덤중계: 토(6), 일(0)
+const SM_WEEKDAYS = [2,5];
+const FD_WEEKDAYS = [6,0];
+const SEASON_START = new Date(2026,3,1); // 4월
+const SEASON_END   = new Date(2026,8,30); // 9월 말
+
+// 전역 캘린더 상태: itemId → {year, month, selectedDate}
+const CAL_STATE = {};
+
+// PLAN_BOOKED: Apps Script에서 받아온 마감 날짜 목록 (code → Set of ymd)
+// 실제 연동 전까지는 빈 Map. doGet() 연동 시 여기에 채워짐
+const PLAN_BOOKED = {}; // e.g. { 'sm_ppl_plan': new Set(['2026-05-08']), ... }
+
+function isBooked(code, ymd){
+  return PLAN_BOOKED[code] && PLAN_BOOKED[code].has(ymd);
+}
+
+function buildCalendar(containerId, itemId, allowedWeekdays){
+  if(!CAL_STATE[itemId]){
+    // 현재 달 또는 시즌 첫 달(4월)로 초기화, 현재가 시즌 내면 현재 달
+    const now = new Date();
+    const initMonth = (now.getFullYear()===2026 && now.getMonth()>=3 && now.getMonth()<=8)
+      ? now.getMonth()+1 : 4;
+    CAL_STATE[itemId] = {year:2026, month:initMonth, selected:null};
+  }
+  const s = CAL_STATE[itemId];
+  const el = document.getElementById(containerId);
+  if(!el) return;
+
+  // 현재 아이템의 상품 코드 찾기 (마감 여부 체크용)
+  const selEl = document.getElementById(`plan-sel-${itemId}`);
+  const prodCode = selEl ? (selEl.value || '') : '';
+
+  const firstDay = new Date(s.year, s.month-1, 1);
+  const lastDay  = new Date(s.year, s.month,   0);
+  const today    = new Date();
+  today.setHours(0,0,0,0);
+
+  const monthNames = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const canPrev = !(s.month === 4 && s.year === 2026);
+  const canNext = !(s.month === 9 && s.year === 2026);
+
+  let html = `<div class="cal-hdr">
+    <button type="button" class="cal-nav" onclick="calNav('${itemId}','${containerId}',-1,[${allowedWeekdays}])" ${canPrev?'':'disabled style="opacity:.3;cursor:default"'}>◀</button>
+    <span class="cal-month-label">${s.year}년 ${monthNames[s.month-1]}</span>
+    <button type="button" class="cal-nav" onclick="calNav('${itemId}','${containerId}',1,[${allowedWeekdays}])" ${canNext?'':'disabled style="opacity:.3;cursor:default"'}>▶</button>
+  </div>
+  <div class="cal-grid">
+    <div class="cal-daylabel">일</div><div class="cal-daylabel">월</div><div class="cal-daylabel">화</div>
+    <div class="cal-daylabel">수</div><div class="cal-daylabel">목</div><div class="cal-daylabel">금</div><div class="cal-daylabel">토</div>`;
+
+  const startDow = firstDay.getDay();
+  for(let i=0;i<startDow;i++) html+=`<div class="cal-cell empty"></div>`;
+
+  for(let d=1;d<=lastDay.getDate();d++){
+    const date = new Date(s.year, s.month-1, d);
+    const dow  = date.getDay();
+    const ymd  = toYMD(date);
+    const isPast    = date < today;
+    const isSeason  = date >= SEASON_START && date <= SEASON_END;
+    const isAllowed = allowedWeekdays.includes(dow);
+    const isSel     = s.selected === ymd;
+    const booked    = prodCode ? isBooked(prodCode, ymd) : false;
+
+    let cls='cal-cell', style='', onclick='';
+    if(!isSeason || !isAllowed){
+      cls+=' past'; // 비시즌 or 편성 없는 요일: 흐리게
+    } else if(isPast){
+      cls+=' past'; // 과거: 흐리게
+    } else if(booked){
+      cls+=' full'; // Apps Script에서 마감 확인됨
+      style='background:#FFF2F2;color:#991B1B;cursor:not-allowed;font-weight:600;border-radius:4px';
+      onclick=''; // 클릭 불가
+    } else if(isSel){
+      cls+=' selected';
+      style='background:var(--purple);color:#fff;font-weight:700;border-radius:4px;border:none';
+      onclick=`calSelect('${itemId}','${containerId}',[${allowedWeekdays}],'${ymd}')`;
+    } else {
+      cls+=' avail';
+      onclick=`calSelect('${itemId}','${containerId}',[${allowedWeekdays}],'${ymd}')`;
+    }
+
+    html+=`<div class="${cls}" style="${style}" onclick="${onclick}">${d}</div>`;
+  }
+  html+=`</div>`;
+
+  // 선택된 날짜 배너
+  if(s.selected){
+    const selDow = DAY_KO[new Date(s.selected+'T00:00:00').getDay()];
+    html+=`<div style="margin-top:8px;padding:8px 12px;background:var(--purple);color:#fff;border-radius:6px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px">
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      집행 날짜 선택됨: ${s.selected} (${selDow})&nbsp;&nbsp;<span style="opacity:.7;font-weight:400;font-size:11px">다시 클릭하면 선택 해제</span>
+    </div>`;
+  }
+
+  html+=`<div class="cal-legend" style="margin-top:8px">
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--avail-bg);border:1px solid var(--avail)"></div>집행 가능</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--purple)"></div>선택됨</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#FFF2F2;border:1px solid #FECACA"></div>마감</div>
+    <div class="cal-legend-item"><div class="cal-legend-dot" style="background:#F3F4F6"></div>편성 없음</div>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+function calNav(itemId, containerId, dir, weekdays){
+  const s = CAL_STATE[itemId];
+  s.month += dir;
+  if(s.month > 12){s.month=1;s.year++}
+  if(s.month < 1){s.month=12;s.year--}
+  buildCalendar(containerId, itemId, weekdays);
+}
+function calSelect(itemId, containerId, weekdays, ymd){
+  const s = CAL_STATE[itemId];
+  const d = new Date(ymd+'T00:00:00'), dow = d.getDay();
+  const today = new Date(); today.setHours(0,0,0,0);
+  if(d < today || !weekdays.includes(dow)) return;
+  s.selected = s.selected===ymd ? null : ymd; // 토글
+  buildCalendar(containerId, itemId, weekdays);
+  // hidden input 업데이트
+  const inp = document.getElementById(`plan-date-inp-${itemId}`);
+  if(inp) inp.value = s.selected || '';
+  updatePlanPrice();
+}
+
+// ════════════════════════════════════════════════════════════
+// 기획형 - 상품 아이템 추가
+// ════════════════════════════════════════════════════════════
+function addPlanItem(prefix){
+  const idx = prefix==='sm' ? smItemCount++ : fdItemCount++;
+  const prods = prefix==='sm' ? SM_PRODS : FD_PRODS;
+  const weekdays = prefix==='sm' ? SM_WEEKDAYS : FD_WEEKDAYS;
+  const weekdayStr = prefix==='sm' ? '화요일 / 금요일' : '토요일 / 일요일';
+  const badgeClass = prefix==='sm' ? 'sm' : 'fd';
+  const badgeText  = prefix==='sm' ? '슈퍼매치' : '팬덤중계';
+  const itemId = `${prefix}-${idx}`;
+  const containerId = `${prefix}-items`;
+
+  const div = document.createElement('div');
+  div.className='plan-item'; div.id=`plan-item-${itemId}`;
+
+  const prodOpts = prods.map(p=>`<option value="${p.code}" data-type="${p.type}" data-price="${p.price||0}" data-maxquota="${p.maxQuota||1}">${p.label}${p.price?` — ${commas(p.price)}원`:'— 별도 협의'}</option>`).join('');
+
+  div.innerHTML=`
+    <div class="plan-item-hdr">
+      <span class="plan-badge ${badgeClass}">${badgeText}</span>
+      <button type="button" class="rm-btn" onclick="removePlanItem('${itemId}','${containerId}')">✕ 삭제</button>
     </div>
     <div class="field">
       <label>상품 선택 <span class="req">*</span></label>
-      <select name="${prefix}_product_${idx}" id="${prefix}-sel-product-${idx}" onchange="onPlanProductChange('${prefix}',${idx})">
+      <select id="plan-sel-${itemId}" onchange="onPlanProductChange('${itemId}','${containerId}',[${weekdays}],'${weekdayStr}')">
         <option value="">선택하세요</option>${prodOpts}
       </select>
     </div>
-    <div id="${prefix}-item-detail-${idx}" style="display:none">
-      <!-- 일점유: 날짜 캘린더 -->
-      <div id="${prefix}-date-section-${idx}" style="display:none">
+    <input type="hidden" id="plan-date-inp-${itemId}">
+    <div id="plan-detail-${itemId}" style="display:none">
+      <!-- 일점유: 캘린더 -->
+      <div id="plan-date-section-${itemId}" style="display:none">
         <div class="field" style="margin-top:10px">
           <label>집행 날짜 <span class="req">*</span></label>
-          <input type="text" name="${prefix}_date_${idx}" id="${prefix}-date-inp-${idx}" placeholder="YYYY-MM-DD">
-          <div class="field-hint">슈퍼매치: 화/금 편성 / 팬덤중계: 토/일 편성</div>
-          <div id="${prefix}-occupied-warn-${idx}" class="occupied-info"></div>
+          <div class="hint" style="margin-bottom:6px">편성 요일: <strong>${weekdayStr}</strong> (4~9월 중 선택)</div>
+          <div class="cal-wrap" id="cal-${itemId}"></div>
         </div>
       </div>
-      <!-- 월구좌: 구좌 수 -->
-      <div id="${prefix}-monthly-section-${idx}" style="display:none">
-        <div class="monthly-quota-row">
-          <div>
-            <div class="monthly-quota-label">집행 월 및 구좌 수 <span class="req">*</span></div>
-            <div class="monthly-quota-sub">월 최대 6구좌 · 4주간 약 48회 노출 (경기당 6회)</div>
-          </div>
-          <div>
-            <select name="${prefix}_month_${idx}" style="height:36px;font-size:12px;margin-bottom:4px">
-              <option value="">집행 월</option>
-              <option value="2026-04">4월</option><option value="2026-05">5월</option><option value="2026-06">6월</option>
-              <option value="2026-07">7월</option><option value="2026-08">8월</option><option value="2026-09">9월</option>
-            </select>
-            <input type="number" name="${prefix}_quota_${idx}" class="monthly-quota-input" min="1" max="6" placeholder="구좌수(1~6)">
-          </div>
+      <!-- 월구좌: 빅 가상광고 -->
+      <div id="plan-monthly-section-${itemId}" style="display:none">
+        <div class="hint" style="margin-top:8px;padding:8px 10px;background:var(--warn-bg);border-radius:6px">
+          월 최대 <strong>6구좌</strong> 판매 · 구좌당 3,000만원 (VAT 별도) · 4주 간 약 48회 노출 (경기당 6회)
         </div>
+        <div id="bigvr-months-${itemId}" style="margin-top:10px"></div>
       </div>
-      <!-- 협의: 안내 -->
-      <div id="${prefix}-consult-section-${idx}" style="display:none">
-        <div style="margin-top:10px;padding:10px 12px;background:var(--warn-bg);border-radius:6px;font-size:11px;color:var(--warn)">타이틀 브랜드 ID는 집행 전 충분한 사전 협의가 필수입니다. 제작 방식 및 비용(1천만원~)은 별도 협의로 확정됩니다.</div>
-        <div class="field" style="margin-top:10px">
-          <label>희망 집행 시기</label>
-          <input type="text" name="${prefix}_period_${idx}" placeholder="예: 2026년 6월, 5월 초 등">
-        </div>
+      <!-- 협의: 타이틀 브랜드 ID -->
+      <div id="plan-consult-section-${itemId}" style="display:none">
+        <div style="margin-top:10px;padding:10px 12px;background:var(--warn-bg);border-radius:6px;font-size:11px;color:var(--warn)">집행 전 충분한 사전 협의가 필수입니다. 제작 방식 및 비용(1천만원~)은 별도 협의로 확정됩니다.</div>
+        <div class="field" style="margin-top:10px"><label>희망 집행 시기</label><input type="text" name="plan_period_${itemId}" placeholder="예: 2026년 6월, 5월 초 등"></div>
       </div>
-    </div>`
-  document.getElementById(containerId).appendChild(div)
-  updatePlanPriceSummary()
+    </div>`;
+
+  document.getElementById(containerId).appendChild(div);
+  updatePlanPrice();
 }
 
-function onPlanProductChange(prefix,idx){
-  const sel=document.getElementById(`${prefix}-sel-product-${idx}`)
-  const opt=sel.options[sel.selectedIndex],type=opt.getAttribute('data-type')||''
-  const detail=document.getElementById(`${prefix}-item-detail-${idx}`)
-  const dateSection=document.getElementById(`${prefix}-date-section-${idx}`)
-  const monthlySection=document.getElementById(`${prefix}-monthly-section-${idx}`)
-  const consultSection=document.getElementById(`${prefix}-consult-section-${idx}`)
-  detail.style.display=''
-  dateSection.style.display=type==='일점유'?'':'none'
-  monthlySection.style.display=type==='월구좌'?'':'none'
-  consultSection.style.display=type==='협의'?'':'none'
-  updatePlanPriceSummary()
+function onPlanProductChange(itemId, containerId, weekdays, weekdayStr){
+  const sel = document.getElementById(`plan-sel-${itemId}`);
+  const opt = sel.options[sel.selectedIndex];
+  const type = opt.getAttribute('data-type') || '';
+
+  const detail = document.getElementById(`plan-detail-${itemId}`);
+  const dateSection    = document.getElementById(`plan-date-section-${itemId}`);
+  const monthlySection = document.getElementById(`plan-monthly-section-${itemId}`);
+  const consultSection = document.getElementById(`plan-consult-section-${itemId}`);
+
+  detail.style.display = '';
+  dateSection.style.display    = type==='date'    ? '' : 'none';
+  monthlySection.style.display = type==='monthly' ? '' : 'none';
+  consultSection.style.display = type==='consult' ? '' : 'none';
+
+  if(type==='date'){
+    buildCalendar(`cal-${itemId}`, itemId, weekdays);
+  }
+  if(type==='monthly'){
+    buildBigVrMonths(`bigvr-months-${itemId}`, itemId);
+  }
+  updatePlanPrice();
 }
 
-function removePlanItem(itemId){const el=document.getElementById(itemId);if(el)el.remove();updatePlanPriceSummary()}
+function buildBigVrMonths(containerId, itemId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  const now = new Date();
+  // 현재 이후 월만 (5~9월 기준, 현재 월 포함)
+  const allMonths = [
+    {val:'2026-05',label:'2026년 5월'},
+    {val:'2026-06',label:'2026년 6월'},
+    {val:'2026-07',label:'2026년 7월'},
+    {val:'2026-08',label:'2026년 8월'},
+    {val:'2026-09',label:'2026년 9월'},
+  ].filter(m=>{
+    const [y,mo]=m.val.split('-').map(Number);
+    return new Date(y,mo-1,1) >= new Date(now.getFullYear(),now.getMonth(),1);
+  });
 
-function updatePlanPriceSummary(){
-  if(currentPlanMode==='pkg') return
-  const rows=document.getElementById('plan-price-rows'),dividerEl=document.getElementById('plan-price-divider'),totalRowEl=document.getElementById('plan-price-total-row'),totalEl=document.getElementById('plan-price-total')
-  let lines=[],grand=0
+  el.innerHTML=`
+    <div class="field" style="margin-top:10px">
+      <label>집행 월 <span class="req">*</span></label>
+      <select id="bigvr-month-sel-${itemId}" name="bigvr_month_${itemId}" onchange="updatePlanPrice()">
+        <option value="">월을 선택하세요</option>
+        ${allMonths.map(m=>`<option value="${m.val}">${m.label}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field" style="margin-top:8px">
+      <label>청약 구좌수 <span class="req">*</span></label>
+      <input type="number" id="bigvr-quota-${itemId}" name="bigvr_quota_${itemId}" min="1" max="3" placeholder="1~3 구좌" oninput="updatePlanPrice()">
+      <div class="hint">구좌당 3,000만원 (VAT 별도) · 4주 약 48회 노출</div>
+      <div class="hint" style="margin-top:4px;color:var(--text2)">3구좌 초과 청약을 희망하시는 경우 하단 특이사항에 기재해 주세요.</div>
+    </div>`;
+}
+
+function removePlanItem(itemId, containerId){
+  const el=document.getElementById(`plan-item-${itemId}`);
+  if(el)el.remove();
+  delete CAL_STATE[itemId];
+  updatePlanPrice();
+}
+
+// ════════════════════════════════════════════════════════════
+// 기획형 - 탭 / 모드
+// ════════════════════════════════════════════════════════════
+function setPlanCat(c){
+  planCat=c;
+  ['sm','fd','cl'].forEach(k=>{
+    document.getElementById(`tab-${k}`).classList.toggle('active',k===c);
+    document.getElementById(`cat-${k}`).style.display=k===c?'':'none';
+  });
+}
+function setPlanMode(m){
+  planMode=m;
+  document.getElementById('plan-mode-single').classList.toggle('sel',m==='single');
+  document.getElementById('plan-mode-pkg').classList.toggle('sel',m==='pkg');
+  document.getElementById('plan-single-section').style.display=m==='single'?'':'none';
+  document.getElementById('plan-pkg-section').style.display=m==='pkg'?'':'none';
+}
+function setClipType(t){
+  clipType=t;
+  document.querySelectorAll('#clip-seg .seg-btn').forEach((b,i)=>b.classList.toggle('active',i===(t==='monthly'?0:1)));
+  document.getElementById('clip-monthly').style.display=t==='monthly'?'':'none';
+  document.getElementById('clip-unit').style.display=t==='unit'?'':'none';
+  updatePlanPrice();
+}
+
+// ════════════════════════════════════════════════════════════
+// 기획형 - PKG
+// ════════════════════════════════════════════════════════════
+function selectPkg(labelEl, pkgVal){
+  selectedPkg=pkgVal;
+  document.querySelectorAll('#pkg-radio-group .radio-row').forEach(r=>r.classList.remove('sel'));
+  labelEl.classList.add('sel');
+  const extra=document.getElementById('pkg-extra');extra.style.display='';
+  const isSm = pkgVal.startsWith('sm'), isFd = pkgVal.startsWith('fd');
+  const isSeason = pkgVal.includes('season');
+  document.getElementById('pkg-period-wrap').style.display = isSm ? '' : 'none';
+  document.getElementById('pkg-team-wrap').style.display   = isFd ? '' : 'none';
+  document.getElementById('pkg-price-display').style.display = '';
+  document.getElementById('pkg-price-val').textContent = PKG_PRICES[pkgVal] ? `${commas(PKG_PRICES[pkgVal])}원` : '별도 협의';
+  if(isSeason){document.getElementById('pkg-start').value='2026-04-04';document.getElementById('pkg-end').value='2026-09-30'}
+}
+function autoPkgEnd(){
+  if(!selectedPkg) return;
+  const weeks = PKG_WEEKS[selectedPkg];
+  if(!weeks) return;
+  const start = new Date(document.getElementById('pkg-start').value);
+  if(isNaN(start)) return;
+  const end = new Date(start);end.setDate(end.getDate()+weeks*7-1);
+  document.getElementById('pkg-end').value = toYMD(end);
+}
+document.getElementById('pkg-start').addEventListener('input', autoPkgEnd);
+
+// ════════════════════════════════════════════════════════════
+// 기획형 - 가격 합산 (날짜 포함)
+// ════════════════════════════════════════════════════════════
+function updatePlanPrice(){
+  if(planMode==='pkg') return;
+  const rows=document.getElementById('plan-price-rows');
+  const divEl=document.getElementById('plan-price-div');
+  const totRow=document.getElementById('plan-price-total-row');
+  const totEl=document.getElementById('plan-price-total');
+  let lines=[],grand=0;
+
   // 슈퍼매치
-  document.querySelectorAll('[id^="sm-items-container"] .plan-item, #sm-items-container .plan-item').forEach(item=>{
-    const id=item.id.replace('plan-item-sm-',''),sel=document.getElementById(`sm-sel-product-${id}`)
-    if(!sel||!sel.value)return;const opt=sel.options[sel.selectedIndex],price=parseInt(opt.getAttribute('data-price')||0),label=opt.textContent.split('—')[0].trim()
-    if(price>0){grand+=price;lines.push({label:`[슈퍼매치] ${label}`,price})}
-    else if(sel.value)lines.push({label:`[슈퍼매치] ${label}`,price:null})
-  })
+  document.querySelectorAll('#sm-items .plan-item').forEach(it=>{
+    const id=it.id.replace('plan-item-',''), sel=document.getElementById(`plan-sel-${id}`);
+    if(!sel||!sel.value) return;
+    const opt=sel.options[sel.selectedIndex], type=opt.getAttribute('data-type'), price=parseInt(opt.getAttribute('data-price')||0);
+    const labelRaw=opt.textContent.split('—')[0].trim();
+
+    if(type==='monthly'){
+      const month=document.getElementById(`bigvr-month-sel-${id}`)?.value||'';
+      const q=parseInt(document.getElementById(`bigvr-quota-${id}`)?.value||0);
+      if(q>0&&month){const a=price*q;grand+=a;lines.push({label:`[슈퍼매치] 빅 가상광고`,sub:`${month} · ${q}구좌`,amt:a})}
+      else lines.push({label:`[슈퍼매치] 빅 가상광고`,sub:month?`${q||0}구좌 미입력`:'집행 월 미선택',amt:null});
+    } else if(price>0){
+      const selDate=CAL_STATE[id]?.selected||'';
+      const selDow=selDate?` (${DAY_KO[new Date(selDate+'T00:00:00').getDay()]})`:'';
+      grand+=price;
+      lines.push({label:`[슈퍼매치] ${labelRaw}`,sub:selDate?`집행일: ${selDate}${selDow}`:'날짜 미선택',amt:price});
+    } else if(sel.value){
+      lines.push({label:`[슈퍼매치] ${labelRaw}`,sub:'별도 협의',amt:null});
+    }
+  });
+
   // 팬덤중계
-  document.querySelectorAll('#fd-items-container .plan-item').forEach(item=>{
-    const id=item.id.replace('plan-item-fd-',''),sel=document.getElementById(`fd-sel-product-${id}`)
-    if(!sel||!sel.value)return;const opt=sel.options[sel.selectedIndex],price=parseInt(opt.getAttribute('data-price')||0),label=opt.textContent.split('—')[0].trim()
-    if(price>0){grand+=price;lines.push({label:`[팬덤중계] ${label}`,price})}
-    else if(sel.value)lines.push({label:`[팬덤중계] ${label}`,price:null})
-  })
+  document.querySelectorAll('#fd-items .plan-item').forEach(it=>{
+    const id=it.id.replace('plan-item-',''), sel=document.getElementById(`plan-sel-${id}`);
+    if(!sel||!sel.value) return;
+    const opt=sel.options[sel.selectedIndex], price=parseInt(opt.getAttribute('data-price')||0);
+    const labelRaw=opt.textContent.split('—')[0].trim();
+    const selDate=CAL_STATE[id]?.selected||'';
+    const selDow=selDate?` (${DAY_KO[new Date(selDate+'T00:00:00').getDay()]})`:'';
+    if(price>0){grand+=price;lines.push({label:`[팬덤중계] ${labelRaw}`,sub:selDate?`집행일: ${selDate}${selDow}`:'날짜 미선택',amt:price})}
+    else if(sel.value)lines.push({label:`[팬덤중계] ${labelRaw}`,sub:'별도 협의',amt:null});
+  });
+
   // 클립
-  if(currentPlanCat==='clip'){
-    if(currentClipType==='monthly'){grand+=100000000;lines.push({label:'하이라이트 클립 범퍼 (1개월 독점)',price:100000000})}
-    else{const u=parseInt(document.querySelector('[name=clip_units]')?.value||0);if(u>0){const p=Math.ceil(u/20)*20000000;grand+=p;lines.push({label:`하이라이트 클립 범퍼 (${u}개)`,price:p})}}
+  if(planCat==='cl'){
+    if(clipType==='monthly'){grand+=100000000;lines.push({label:'하이라이트 클립 범퍼 (1개월 독점)',sub:document.getElementById('clip-month-sel')?.value||'월 미선택',amt:100000000})}
+    else{const u=parseInt(document.getElementById('clip-units-inp')?.value||0);if(u>0){const a=Math.ceil(u/20)*20000000;grand+=a;lines.push({label:`하이라이트 클립 범퍼 (${u}개)`,sub:'',amt:a})}}
   }
-  if(!lines.length){rows.innerHTML='<div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div>';if(dividerEl)dividerEl.style.display='none';if(totalRowEl)totalRowEl.style.display='none';return}
-  rows.innerHTML=lines.map(l=>`<div class="price-row"><div class="price-row-top"><span class="price-row-label">${l.label}</span><span class="price-row-val">${l.price?commas(l.price)+'원':'별도 협의'}</span></div></div>`).join('')
-  if(dividerEl)dividerEl.style.display=lines.length>1?'block':'none'
-  if(totalRowEl){totalRowEl.style.display='flex';totalEl.textContent=grand>0?`${commas(grand)}원 ~`:'별도 협의'}
+
+  if(!lines.length){rows.innerHTML='<div class="price-empty">상품을 선택하면 금액이 자동 계산됩니다</div>';if(divEl)divEl.style.display='none';if(totRow)totRow.style.display='none';return}
+  rows.innerHTML=lines.map(l=>`<div class="price-row"><div class="price-row-top"><span class="price-row-lbl">${l.label}</span><span class="price-row-val">${l.amt!=null?commas(l.amt)+'원':'별도 협의'}</span></div>${l.sub?`<div class="price-row-sub">${l.sub}</div>`:''}</div>`).join('');
+  if(divEl)divEl.style.display=lines.length>1?'block':'none';
+  if(totRow){totRow.style.display='flex';totEl.textContent=grand>0?`${commas(grand)}원 ~`:'별도 협의';}
 }
 
-function selectClipType(type){
-  currentClipType=type
-  document.querySelectorAll('#clip-buy-type .segment-btn').forEach((b,i)=>{b.classList.toggle('active',i===(type==='monthly'?0:1))})
-  document.getElementById('clip-monthly-section').style.display=type==='monthly'?'':'none'
-  document.getElementById('clip-unit-section').style.display=type==='unit'?'':'none'
-  updatePlanPriceSummary()
+// ════════════════════════════════════════════════════════════
+// 개인정보 토글
+// ════════════════════════════════════════════════════════════
+function togglePriv(suf){
+  const body=document.getElementById(`priv-body-${suf}`),tog=document.getElementById(`priv-toggle-${suf}`);
+  const open=body.classList.toggle('open');
+  tog.innerHTML=(open?'접기':'내용 보기')+`<svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  tog.className='priv-toggle'+(open?' open':'');
 }
 
-// ── PKG ──
-function selectPkg(pkgValue){
-  selectedPkg=pkgValue
-  document.querySelectorAll('#pkg-type-group .radio-row').forEach(r=>r.classList.remove('selected'))
-  event.currentTarget.closest('.radio-row').classList.add('selected')
-  const extra=document.getElementById('pkg-extra')
-  const periodSection=document.getElementById('pkg-period-section')
-  const teamSection=document.getElementById('pkg-team-section')
-  extra.style.display=''
-  // 기간 선택: sm 계열
-  periodSection.style.display=pkgValue.startsWith('sm')?'':'none'
-  // 구단 선택: fd 계열
-  teamSection.style.display=pkgValue.startsWith('fd')?'':'none'
-  // 기간 세팅
-  if(pkgValue==='sm_full'||pkgValue==='sm_basic'||pkgValue.includes('monthly')){
-    const weeksLabel={'sm_full':'4주','sm_basic':'2주','fd_monthly':'4주','fd_monthly_novr':'4주'}[pkgValue]||''
-    if(weeksLabel) document.getElementById('pkg-start').setAttribute('placeholder',`예: 2026-05-04 (${weeksLabel} 집행)`)
-  }
-  if(pkgValue.includes('season')){document.getElementById('pkg-start').value='2026-04-04';document.getElementById('pkg-end').value='2026-09-30'}
-  document.getElementById('pkg-price-val').textContent=PKG_PRICES[pkgValue]?`${commas(PKG_PRICES[pkgValue])}원`:'별도 협의'
-}
-
-// pkg 시작일 변경 시 종료일 자동 계산
-document.addEventListener('input',function(e){
-  if(e.target.id==='pkg-start'&&selectedPkg){
-    const weeks={'sm_full':4,'sm_basic':2,'fd_monthly':4,'fd_monthly_novr':4}[selectedPkg]
-    if(weeks){
-      const d=new Date(e.target.value);if(!isNaN(d)){d.setDate(d.getDate()+weeks*7-1);document.getElementById('pkg-end').value=d.toISOString().slice(0,10)}}
-  }
-  if(e.target.name==='clip_units')updatePlanPriceSummary()
-})
-
-// ── 개인정보 토글 ──
-function togglePrivacy(suffix){
-  const body=document.getElementById(`privacy-body-${suffix}`),toggle=document.getElementById(`privacy-toggle-${suffix}`)
-  const open=body.classList.toggle('open')
-  toggle.innerHTML=(open?'접기':'내용 보기')+`<svg width="11" height="7" viewBox="0 0 12 8" fill="none"><path d="M1 1l5 6 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-  toggle.className='privacy-toggle-btn'+(open?' open':'')
-}
-
-// ── 이벤트 ──
-document.getElementById('sel-month').addEventListener('change',onMonthChange)
-
-// ── 초기화 ──
-initMonthSelect();addItem()
-;(function(){
-  const now=new Date(),open=MONTHS_CONFIG.filter(mc=>now>=mc.openAt),upcoming=MONTHS_CONFIG.find(mc=>now<mc.openAt),target=open.length?open[open.length-1]:(upcoming||null)
+// ════════════════════════════════════════════════════════════
+// 초기화
+// ════════════════════════════════════════════════════════════
+initMonthSelect();addExpItem();addPlanItem('sm');addPlanItem('fd');
+(function(){
+  const now=new Date(),open=MONTHS_CONFIG.filter(mc=>now>=mc.openAt),upcoming=MONTHS_CONFIG.find(mc=>now<mc.openAt),target=open.length?open[open.length-1]:(upcoming||null);
   if(target){document.getElementById('sel-month').value=target.label;onMonthChange()}
-})()
+})();
 
-// 초기 기획형 아이템 추가
-addPlanItem('sm');addPlanItem('fd')
-
-// ── 노출형 제출 ──
-const APPS_SCRIPT_URL='https://script.google.com/a/macros/tving.com/s/AKfycbxm0bLmU7MQJuzIKH0buQRBkLtbcS3tDxQe1k-unxFYl60L_JoTKCC_opVzjSuV7hCycQ/exec'
-
-document.getElementById('booking-form').addEventListener('submit',async function(e){
-  e.preventDefault();const form=e.target
+// ════════════════════════════════════════════════════════════
+// 노출형 제출
+// ════════════════════════════════════════════════════════════
+document.getElementById('exp-booking-form').addEventListener('submit', async function(e){
+  e.preventDefault();const form=e.target;
   if(!document.getElementById('chk-privacy').checked){alert('개인정보 수집·이용에 동의해주세요.');return}
   if(!document.getElementById('chk-caution').checked){alert('제출 전 주의사항을 확인하고 동의해주세요.');return}
-  let valid=true
-  form.querySelectorAll('input[required],select[required]').forEach(el=>{if(el.type==='checkbox'){if(!el.checked)valid=false}else{if(!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')}})
-  const items=document.querySelectorAll('.booking-item');if(!items.length){alert('청약 상품을 최소 1개 입력해주세요.');return}
-  for(const item of items){
-    const id=item.id.replace('item-',''),prodVal=document.getElementById(`sel-product-${id}`)?.value,dur=document.getElementById(`sel-duration-${id}`)?.value,quota=Number(document.getElementById(`inp-quota-${id}`)?.value)
-    if(!prodVal||!dur||!quota){valid=false;break}
-    if(dur==='30'&&quota%2!==0){document.getElementById(`inp-quota-${id}`).classList.add('error');alert('30초 소재는 구좌수를 2의 배수로 입력해주세요.');return}
-    const prod=PRODUCTS.find(p=>p.value===prodVal)
+  let valid=true;
+  form.querySelectorAll('input[required],select[required]').forEach(el=>{if(el.type==='checkbox'){if(!el.checked)valid=false}else{if(!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')}});
+  const expItems=document.querySelectorAll('.exp-item');
+  if(!expItems.length){alert('청약 상품을 최소 1개 입력해주세요.');return}
+  for(const it of expItems){
+    const id=it.id.replace('exp-item-',''),pv=document.getElementById(`exp-sel-${id}`)?.value,dur=document.getElementById(`exp-dur-${id}`)?.value,q=Number(document.getElementById(`exp-quota-${id}`)?.value);
+    if(!pv||!dur||!q){valid=false;break}
+    if(dur==='30'&&q%2!==0){document.getElementById(`exp-quota-${id}`).classList.add('error');alert('30초 소재는 구좌수를 2의 배수로 입력해주세요.');return}
+    const prod=EXP_PRODUCTS.find(p=>p.value===pv);
     if(prod?.weekType==='single'&&!document.querySelector(`input[name=weeks_${id}]:checked`)){alert('희망 주차를 선택해주세요.');return}
-    if(prodVal==='팬덤PKG'&&!document.querySelector(`input[name=team_${id}]:checked`)){alert('희망 구단을 선택해주세요.');return}
+    if(pv==='팬덤PKG'&&!document.querySelector(`input[name=team_${id}]:checked`)){alert('희망 구단을 선택해주세요.');return}
   }
   if(!valid){alert('필수 항목을 모두 입력해주세요.');return}
-  const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value)
+  const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);
   if(cfg&&new Date()<cfg.openAt){alert('아직 청약 접수 시간이 아닙니다.');return}
-  const btn=document.getElementById('submit-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> 제출 중...'
-  const fd=new FormData(form),timestamp=new Date().toISOString().replace('T',' ').slice(0,19)
-  const bookingItems=[];items.forEach(item=>{const id=item.id.replace('item-',''),prodVal=document.getElementById(`sel-product-${id}`)?.value,dur=document.getElementById(`sel-duration-${id}`)?.value,quota=Number(document.getElementById(`inp-quota-${id}`)?.value),week=document.querySelector(`input[name=weeks_${id}]:checked`)?.value||'-',team=document.querySelector(`input[name=team_${id}]:checked`)?.value||'-',prod=PRODUCTS.find(p=>p.value===prodVal);bookingItems.push({product:prodVal,duration:dur==='60~90'?'60~90초':dur+'초',quota,week,team,amount:prod?prod.price*quota:0})})
-  const tasNo=document.getElementById('tas-no').checked
-  const payload={type:'노출형',timestamp,month:fd.get('month'),advertiser:fd.get('advertiser'),brand:fd.get('brand'),agency:fd.get('agency'),media_rep:fd.get('media_rep'),billing_entity:fd.get('billing_entity'),billing_month:fd.get('billing_month'),contact_name:fd.get('contact_name'),contact_email:fd.get('contact_email'),contact_org:fd.get('contact_org'),tas_status:tasNo?'없음':'있음',...(tasNo&&{tas_corp_name:fd.get('tas_corp_name'),tas_biz_num:fd.get('tas_biz_num'),tas_mgr_name:fd.get('tas_mgr_name'),tas_mgr_email:fd.get('tas_mgr_email')}),jbp:document.getElementById('chk-jbp').checked?'Y':'N',kbo_pass:document.getElementById('chk-pass').checked?'Y':'N',note:fd.get('note')||'-',items:bookingItems}
-  try{
-    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    showSuccess('노출형')
-  }catch{alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');btn.disabled=false;btn.innerHTML='청약 신청서 제출'}
-})
+  const btn=document.getElementById('exp-submit-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> 제출 중...';
+  const fd=new FormData(form),ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  const items=[];expItems.forEach(it=>{const id=it.id.replace('exp-item-',''),pv=document.getElementById(`exp-sel-${id}`)?.value,dur=document.getElementById(`exp-dur-${id}`)?.value,q=Number(document.getElementById(`exp-quota-${id}`)?.value),wk=document.querySelector(`input[name=weeks_${id}]:checked`)?.value||'-',tm=document.querySelector(`input[name=team_${id}]:checked`)?.value||'-',prod=EXP_PRODUCTS.find(p=>p.value===pv);items.push({product:pv,duration:dur==='60~90'?'60~90초':dur+'초',quota:q,week:wk,team:tm,amount:prod?prod.price*q:0})});
+  const tasNo=document.getElementById('tas-no').checked;
+  const payload={type:'노출형',timestamp:ts,month:fd.get('month'),advertiser:fd.get('advertiser'),brand:fd.get('brand'),agency:fd.get('agency'),media_rep:fd.get('media_rep'),billing_entity:fd.get('billing_entity'),billing_month:fd.get('billing_month'),contact_name:fd.get('contact_name'),contact_email:fd.get('contact_email'),contact_org:fd.get('contact_org'),tas_status:tasNo?'없음':'있음',...(tasNo&&{tas_corp_name:fd.get('tas_corp_name'),tas_biz_num:fd.get('tas_biz_num'),tas_mgr_name:fd.get('tas_mgr_name'),tas_mgr_email:fd.get('tas_mgr_email')}),jbp:document.getElementById('chk-jbp').checked?'Y':'N',kbo_pass:document.getElementById('chk-pass').checked?'Y':'N',note:fd.get('note')||'-',items};
+  try{await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});showSuccess('노출형')}
+  catch{alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');btn.disabled=false;btn.innerHTML='청약 신청서 제출'}
+});
 
-// ── 기획형 제출 ──
-document.getElementById('planning-booking-form').addEventListener('submit',async function(e){
-  e.preventDefault();const form=e.target
+// ════════════════════════════════════════════════════════════
+// 기획형 제출
+// ════════════════════════════════════════════════════════════
+document.getElementById('plan-booking-form').addEventListener('submit', async function(e){
+  e.preventDefault();const form=e.target;
   if(!document.getElementById('p-chk-privacy').checked){alert('개인정보 수집·이용에 동의해주세요.');return}
   if(!document.getElementById('p-chk-caution').checked){alert('기획형 광고 주의사항을 확인하고 동의해주세요.');return}
-  let valid=true
-  form.querySelectorAll('input[required],select[required]').forEach(el=>{if(el.type==='checkbox'){if(!el.checked)valid=false}else{if(!el.value.trim()){el.classList.add('error');valid=false}else el.classList.remove('error')}})
-  if(!valid){alert('필수 항목을 모두 입력해주세요.');return}
-  if(currentPlanMode==='pkg'&&!selectedPkg){alert('패키지를 선택해주세요.');return}
-  const btn=document.getElementById('p-submit-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> 제출 중...'
-  const fd=new FormData(form),timestamp=new Date().toISOString().replace('T',' ').slice(0,19)
-  // 선택된 상품 수집
-  const planItems=[]
-  document.querySelectorAll('#sm-items-container .plan-item').forEach(item=>{const id=item.id.replace('plan-item-sm-',''),sel=document.getElementById(`sm-sel-product-${id}`);if(sel&&sel.value)planItems.push({category:'슈퍼매치',product:sel.options[sel.selectedIndex].textContent.split('—')[0].trim(),date:fd.get(`sm_date_${id}`)||fd.get(`sm_month_${id}`)||'',quota:fd.get(`sm_quota_${id}`)||1})})
-  document.querySelectorAll('#fd-items-container .plan-item').forEach(item=>{const id=item.id.replace('plan-item-fd-',''),sel=document.getElementById(`fd-sel-product-${id}`);if(sel&&sel.value)planItems.push({category:'팬덤중계',product:sel.options[sel.selectedIndex].textContent.split('—')[0].trim(),date:fd.get(`fd_date_${id}`)||fd.get(`fd_month_${id}`)||'',quota:fd.get(`fd_quota_${id}`)||1})})
-  const payload={type:'기획형',timestamp,mode:currentPlanMode,advertiser:fd.get('p_advertiser'),brand:fd.get('p_brand'),agency:fd.get('p_agency'),media_rep:fd.get('p_media_rep'),billing_entity:fd.get('p_billing_entity'),billing_month:fd.get('p_billing_month'),contact_name:fd.get('p_contact_name'),contact_email:fd.get('p_contact_email'),contact_org:fd.get('p_contact_org'),jbp:document.getElementById('p-chk-jbp').checked?'Y':'N',note:fd.get('p_note')||'-',...(currentPlanMode==='single'?{items:planItems,clip_type:currentPlanCat==='clip'?currentClipType:null,clip_month:fd.get('clip_month')||null,clip_units:fd.get('clip_units')||null}:{pkg:selectedPkg,pkg_team:fd.get('pkg_team')||null,pkg_start:fd.get('pkg_start')||null,pkg_end:fd.get('pkg_end')||null})}
-  try{
-    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    showSuccess('기획형')
-  }catch{alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');btn.disabled=false;btn.innerHTML='기획형 청약 신청서 제출'}
-})
+  if(planMode==='pkg'&&!selectedPkg){alert('패키지를 선택해주세요.');return}
+  const btn=document.getElementById('plan-submit-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> 제출 중...';
+  const fd=new FormData(form),ts=new Date().toISOString().replace('T',' ').slice(0,19);
+  // 기획형 상품 수집
+  const planItems=[];
+  document.querySelectorAll('#sm-items .plan-item').forEach(it=>{const id=it.id.replace('plan-item-',''),sel=document.getElementById(`plan-sel-${id}`);if(!sel||!sel.value)return;const opt=sel.options[sel.selectedIndex],type=opt.getAttribute('data-type'),price=parseInt(opt.getAttribute('data-price')||0),label=opt.textContent.split('—')[0].trim();if(type==='monthly'){const month=document.getElementById(`bigvr-month-sel-${id}`)?.value||'';const q=parseInt(document.getElementById(`bigvr-quota-${id}`)?.value||0);if(q>0&&month)planItems.push({category:'슈퍼매치',product:label,date:month,quota:q,price:price*q})}else{planItems.push({category:'슈퍼매치',product:label,date:CAL_STATE[id]?.selected||'',quota:1,price:price||0})}});
+  document.querySelectorAll('#fd-items .plan-item').forEach(it=>{const id=it.id.replace('plan-item-',''),sel=document.getElementById(`plan-sel-${id}`);if(!sel||!sel.value)return;const opt=sel.options[sel.selectedIndex],price=parseInt(opt.getAttribute('data-price')||0),label=opt.textContent.split('—')[0].trim();planItems.push({category:'팬덤중계',product:label,date:CAL_STATE[id]?.selected||'',quota:1,price:price||0})});
+  const payload={type:'기획형',timestamp:ts,mode:planMode,advertiser:fd.get('p_advertiser'),brand:fd.get('p_brand'),agency:fd.get('p_agency'),media_rep:fd.get('p_media_rep'),billing_entity:fd.get('p_billing_entity'),billing_month:fd.get('p_billing_month'),contact_name:fd.get('p_contact_name'),contact_email:fd.get('p_contact_email'),contact_org:fd.get('p_contact_org'),jbp:document.getElementById('p-chk-jbp').checked?'Y':'N',note:fd.get('p_note')||'-',...(planMode==='single'?{items:planItems,clip_type:planCat==='cl'?clipType:null,clip_month:fd.get('clip_month')||null,clip_units:fd.get('clip_units')||null}:{pkg:selectedPkg,pkg_team:fd.get('pkg_team')||null,pkg_start:fd.get('pkg_start')||null,pkg_end:fd.get('pkg_end')||null})};
+  try{await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});showSuccess('기획형')}
+  catch{alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');btn.disabled=false;btn.innerHTML='기획형 청약 신청서 제출'}
+});
 
 function showSuccess(type){
-  document.getElementById('form-screen').style.display='none'
-  document.getElementById('success-screen').style.display='block'
-  document.getElementById('success-title').textContent='청약 신청이 완료되었습니다'
-  document.getElementById('success-desc').innerHTML=type==='기획형'?'영업일 기준 2일 이내에 담당자가<br>입력하신 이메일로 연락드리겠습니다.':'영업일 기준 2일 이내에 낙찰 결과를<br>입력하신 이메일로 안내드리겠습니다.'
-  document.getElementById('success-timestamp').textContent=`제출 시각: ${new Date().toLocaleString('ko-KR')} · ${type} 청약`
+  document.getElementById('form-screen').style.display='none';document.getElementById('success-screen').style.display='block';
+  document.getElementById('succ-title').textContent='청약 신청이 완료되었습니다';
+  document.getElementById('succ-desc').innerHTML=type==='기획형'?'영업일 기준 2일 이내에 담당자가<br>입력하신 이메일로 연락드리겠습니다.':'영업일 기준 2일 이내에 낙찰 결과를<br>입력하신 이메일로 안내드리겠습니다.';
+  document.getElementById('succ-ts').textContent=`제출 시각: ${new Date().toLocaleString('ko-KR')} · ${type} 청약`;
 }
 </script>
 </body>
