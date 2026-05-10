@@ -556,8 +556,22 @@ function renderCalInternal(prefix){
   let h=`<div class="six-cal-grid">`;
   S_MONTHS.forEach(mk=>{
     if(mk==='3~4월 통합'){
-      // 3~4월 통합: 고정 날짜 범위 캘린더 skip (캘린더 대신 주차 표시)
-      h+=`<div class="mini-month"><div class="mini-month-title" style="color:var(--text3)">3~4월 통합<br><span style="font-size:9px;font-weight:400">주차 탭 참고</span></div></div>`;
+      // 3~4월 통합: 4월 캘린더만 표시
+      const y=2026,m=4;
+      const first=new Date(y,m-1,1),last=new Date(y,m,0);
+      let cells='';
+      for(let i=0;i<first.getDay();i++) cells+=`<div class="mc-cell empty"></div>`;
+      for(let d=1;d<=last.getDate();d++){
+        const dt=new Date(y,m-1,d),dow=dt.getDay(),ymd=`2026-04-${pad2(d)}`;
+        const isPast=dt<today,isWD=wd.includes(dow);
+        if(!isWD){cells+=`<div class="mc-cell noshow"></div>`;continue}
+        if(isPast){cells+=`<div class="mc-cell past">${d}</div>`;continue}
+        let anyA=false,anyF=false;
+        codes.forEach(c=>{const inv=INV.find(x=>x.code===c&&x.date===ymd);if(inv){if(inv.remaining>0)anyA=true;else anyF=true;}});
+        const cls=anyF&&!anyA?'full':'avail';
+        cells+=`<div class="mc-cell ${cls}" onclick="showDay('${ymd}','${prefix}')">${d}</div>`;
+      }
+      h+=`<div class="mini-month"><div class="mini-month-title">4월 (3~4월 통합)</div><div class="mini-cal-grid"><div class="mc-lbl">일</div><div class="mc-lbl">월</div><div class="mc-lbl">화</div><div class="mc-lbl">수</div><div class="mc-lbl">목</div><div class="mc-lbl">금</div><div class="mc-lbl">토</div>${cells}</div></div>`;
       return;
     }
     const [y,m]=mk.split('-').map(Number);
