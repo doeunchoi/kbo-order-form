@@ -702,12 +702,12 @@ async function supabaseInsert(table, rows) {
 }
 
 const MONTHS_CONFIG = [
-  {label:'2026년 5월',  openAt:new Date(2026,3,15,10,0,0), seasonStart:new Date(2026,4,4)},
-  {label:'2026년 6월',  openAt:new Date(2026,4,20,10,0,0), seasonStart:new Date(2026,5,1)},
-  {label:'2026년 7월',  openAt:new Date(2026,5,17,10,0,0), seasonStart:new Date(2026,6,6)},
-  {label:'2026년 8월',  openAt:new Date(2026,6,15,10,0,0), seasonStart:new Date(2026,7,3)},
-  {label:'2026년 9월',  openAt:new Date(2026,7,19,10,0,0), seasonStart:new Date(2026,8,7)},
-  {label:'2026년 10월', openAt:new Date(2026,8,16,10,0,0), seasonStart:new Date(2026,9,5)},
+  {label:'2026년 5월',  openAt:new Date(2026,3,15,10,0,0), closeAt:new Date(2026,5,1,0,0,0), seasonStart:new Date(2026,4,4)},
+  {label:'2026년 6월',  openAt:new Date(2026,4,20,10,0,0), closeAt:new Date(2026,6,1,0,0,0), seasonStart:new Date(2026,5,1)},
+  {label:'2026년 7월',  openAt:new Date(2026,5,17,10,0,0), closeAt:new Date(2026,7,1,0,0,0), seasonStart:new Date(2026,6,6)},
+  {label:'2026년 8월',  openAt:new Date(2026,6,15,10,0,0), closeAt:new Date(2026,8,1,0,0,0), seasonStart:new Date(2026,7,3)},
+  {label:'2026년 9월',  openAt:new Date(2026,7,19,10,0,0), closeAt:new Date(2026,9,1,0,0,0), seasonStart:new Date(2026,8,7)},
+  {label:'2026년 10월', openAt:new Date(2026,8,16,10,0,0), closeAt:new Date(2026,10,1,0,0,0), seasonStart:new Date(2026,9,5)},
 ];
 const EXP_PRODUCTS = [
   {value:'노출보장PKG',          label:'노출 보장 PKG',           price:70000000,  durations:[15,30],   weekType:'none',   unit:'구좌'},
@@ -808,7 +808,14 @@ function setFormType(t){
 function initMonthSelect(){
   const now=new Date(),sel=document.getElementById('sel-month');
   sel.innerHTML='<option value="">선택하세요</option>';
-  MONTHS_CONFIG.forEach(mc=>{const o=document.createElement('option');o.value=mc.label;o.textContent=mc.label+(now>=mc.openAt?'':' — 접수 예정');sel.appendChild(o)});
+  MONTHS_CONFIG.forEach(mc=>{
+    // closeAt이 지난 월은 드롭다운에서 아예 숨김
+    if(mc.closeAt && now >= mc.closeAt) return;
+    const o=document.createElement('option');
+    o.value=mc.label;
+    o.textContent=mc.label+(now>=mc.openAt?'':' — 접수 예정');
+    sel.appendChild(o);
+  });
 }
 function onMonthChange(){
   const now=new Date(),cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);
@@ -884,7 +891,9 @@ function onExpDurChange(idx){
 }
 function onExpQuotaInput(idx){const dur=document.getElementById(`exp-dur-${idx}`)?.value,val=Number(document.getElementById(`exp-quota-${idx}`).value);document.getElementById(`exp-quota-${idx}`).classList.toggle('error',dur==='30'&&val%2!==0);updateExpPrice()}
 function buildWeekGrid(grid,idx){
-  grid.innerHTML='';const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);if(!cfg)return;
+  grid.innerHTML='';
+  const cfg=MONTHS_CONFIG.find(mc=>mc.label===document.getElementById('sel-month').value);
+  if(!cfg) return;
   for(let w=0;w<4;w++){const mon=addDays(cfg.seasonStart,w*7),sun=addDays(mon,6);const item=document.createElement('div');item.className='wk-item';item.innerHTML=`<input type="radio" id="wk-${idx}-${w+1}" name="weeks_${idx}" value="${w+1}주차"><label for="wk-${idx}-${w+1}"><span class="wk-n">${w+1}주차</span>${fmt(mon)} ~ ${fmt(sun)}</label>`;grid.appendChild(item)}
 }
 function updateExpPrice(){
@@ -1268,7 +1277,12 @@ function togglePriv(suf){
 // ════════════════════════════════════════════════════════════
 initMonthSelect();addExpItem();addPlanItem('sm');addPlanItem('fd');
 (function(){
-  const now=new Date(),open=MONTHS_CONFIG.filter(mc=>now>=mc.openAt),upcoming=MONTHS_CONFIG.find(mc=>now<mc.openAt),target=open.length?open[open.length-1]:(upcoming||null);
+  const now=new Date();
+  // closeAt 지난 월 제외
+  const available=MONTHS_CONFIG.filter(mc=>!mc.closeAt||now<mc.closeAt);
+  const open=available.filter(mc=>now>=mc.openAt);
+  const upcoming=available.find(mc=>now<mc.openAt);
+  const target=open.length?open[open.length-1]:(upcoming||null);
   if(target){document.getElementById('sel-month').value=target.label;onMonthChange()}
 })();
 
