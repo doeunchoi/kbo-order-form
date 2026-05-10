@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[내부] 구좌 현황 · TVING KBO 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tving:#E61F3C;--bg:#F7F7F5;--surface:#fff;--border:#E2E2DE;
+  --text1:#111;--text2:#5A5A5A;--text3:#999;--radius:12px;--radius-sm:8px;
+  --avail:#2D6A11;--avail-bg:#EAF3DE;--avail-border:#86EFAC;
+  --danger:#991B1B;--danger-bg:#FFF2F2;--danger-border:#FECACA;
+  --warn:#92400E;--warn-bg:#FEF3C7;--warn-border:#FCD34D;
+  --purple:#7C3AED;--purple-bg:#F5F3FF;--purple-border:#DDD6FE;
+  --sm:#C2410C;--sm-bg:#FFF7ED;--sm-border:#FED7AA;
+  --fd:#166534;--fd-bg:#DCFCE7;--fd-border:#86EFAC;
+  --cl:#1D4ED8;--cl-bg:#EFF6FF;--cl-border:#BFDBFE;
+  --gray-bg:#F9FAFB;--gray-border:#E5E7EB;
+}
+body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font-size:14px;color:var(--text1)}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:8px}
+.logo-badge{background:var(--tving);color:#fff;font-size:11px;font-weight:700;padding:3px 7px;border-radius:4px}
+.int-badge{background:#374151;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;letter-spacing:.04em}
+.topbar-title{font-size:13px;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.refresh-btn{display:flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.refresh-btn:hover{border-color:var(--text1)}
+.refresh-btn .icon{transition:transform .5s}
+.refresh-btn.loading .icon{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.updated-at{font-size:11px;color:var(--text3)}
+.page{max-width:1080px;margin:0 auto;padding:24px 20px 60px}
+
+/* 섹션 */
+.sec-hdr{padding:11px 16px;border-radius:var(--radius);margin-bottom:14px;margin-top:28px;display:flex;align-items:center;gap:10px}
+.sec-hdr:first-of-type{margin-top:0}
+.sec-hdr.exp{background:var(--tving);color:#fff}
+.sec-hdr.plan{background:var(--purple);color:#fff}
+.sec-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.25)}
+.sec-title{font-size:14px;font-weight:700}
+.sec-sub{font-size:11px;opacity:.8;margin-left:auto}
+
+/* 월 탭 */
+.month-tabs-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
+.month-tabs-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.month-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.mtab{padding:5px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;background:var(--surface);font-family:inherit;transition:all .12s;white-space:nowrap}
+.mtab:hover:not(.locked){border-color:rgba(0,0,0,.2)}
+.mtab.active{border-color:var(--tving);background:var(--tving);color:#fff}
+.mtab.locked{opacity:.45;cursor:not-allowed}
+
+/* 구좌 테이블 */
+.quota-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px}
+.quota-table{width:100%;border-collapse:collapse}
+.quota-table th{font-size:10px;font-weight:700;color:var(--text2);padding:8px 12px;text-align:left;background:var(--gray-bg);border-bottom:1px solid var(--border);white-space:nowrap}
+.quota-table th.c{text-align:center}
+.quota-table td{font-size:12px;padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.quota-table tr:last-child td{border-bottom:none}
+.quota-table tr:hover td{background:#FAFAFA}
+.prod-name{font-weight:600}
+.num{text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+.adv-tag{display:inline-block;padding:1px 6px;border-radius:3px;background:var(--purple-bg);color:var(--purple);font-size:10px;font-weight:600;margin:1px 2px;border:1px solid var(--purple-border)}
+.no-adv{color:var(--text3);font-size:11px}
+
+/* 게이지 */
+.qbar-wrap{display:flex;align-items:center;gap:5px;min-width:70px}
+.qbar{flex:1;height:5px;border-radius:3px;background:var(--gray-border);overflow:hidden}
+.qfill{height:100%;border-radius:3px}
+.qfill.ok{background:var(--avail)}
+.qfill.half{background:#F59E0B}
+.qfill.full{background:var(--danger)}
+.qnum{font-size:10px;font-weight:700;white-space:nowrap}
+.qnum.ok{color:var(--avail)}
+.qnum.half{color:var(--warn)}
+.qnum.full{color:var(--danger)}
+
+/* 칩 */
+.chip{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;white-space:nowrap}
+.chip.avail{background:var(--avail-bg);color:var(--avail);border:1px solid var(--avail-border)}
+.chip.half{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
+.chip.full{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+
+/* 확장 가능한 광고주 행 */
+.expandable-row{cursor:pointer}
+.expandable-row:hover td{background:#F0F9FF!important}
+.expand-btn{font-size:10px;color:var(--cl);font-weight:600;border:1px solid var(--cl-border);border-radius:3px;padding:1px 6px;cursor:pointer;background:var(--cl-bg);white-space:nowrap}
+.adv-expand-row{display:none}
+.adv-expand-row.open{display:table-row}
+.adv-expand-row td{background:var(--cl-bg)!important;padding:10px 16px!important;border-bottom:1px solid var(--cl-border)!important}
+.adv-list-grid{display:flex;flex-wrap:wrap;gap:4px}
+
+/* 기획형 서브 */
+.plan-sub{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.plan-sub-hdr{padding:9px 14px;display:flex;align-items:center;gap:8px}
+.plan-sub-hdr.sm{background:var(--sm-bg);border-bottom:1px solid var(--sm-border)}
+.plan-sub-hdr.fd{background:var(--fd-bg);border-bottom:1px solid var(--fd-border)}
+.plan-sub-hdr.cl{background:var(--cl-bg);border-bottom:1px solid var(--cl-border)}
+.psb{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.psb.sm{background:var(--sm-bg);color:var(--sm);border:1px solid var(--sm-border)}
+.psb.fd{background:var(--fd-bg);color:var(--fd);border:1px solid var(--fd-border)}
+.psb.cl{background:var(--cl-bg);color:var(--cl);border:1px solid var(--cl-border)}
+.plan-sub-title{font-size:12px;font-weight:700}
+.plan-sub-desc{font-size:11px;color:var(--text3);margin-left:auto}
+
+/* 6개월 캘린더 */
+.six-cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:14px}
+@media(max-width:640px){.six-cal-grid{grid-template-columns:repeat(2,1fr)}}
+.mini-month{background:var(--gray-bg);border-radius:var(--radius-sm);padding:10px}
+.mini-month-title{font-size:11px;font-weight:700;text-align:center;margin-bottom:8px;color:var(--text2)}
+.mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mc-lbl{font-size:8px;text-align:center;color:var(--text3);padding:2px 0;font-weight:600}
+.mc-cell{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500}
+.mc-cell.empty,.mc-cell.past{opacity:.15}
+.mc-cell.noshow{background:#F3F4F6;color:#D1D5DB}
+.mc-cell.avail{background:var(--avail-bg);color:var(--avail);font-weight:700;cursor:pointer}
+.mc-cell.avail:hover{filter:brightness(.88);transform:scale(1.12)}
+.mc-cell.full{background:var(--danger-bg);color:var(--danger);font-weight:700;cursor:pointer}
+.mc-cell.full:hover{filter:brightness(.93)}
+
+/* 노출형 서브타이틀 */
+.exp-sub{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.03em;margin:14px 0 6px;display:flex;align-items:center;gap:5px}
+.exp-sub::before{content:'';width:3px;height:12px;background:var(--tving);border-radius:2px;display:inline-block}
+.exp-sub-note{font-size:10px;font-weight:400;color:var(--text3)}
+
+/* 팬덤 탭 */
+.fd-prod-tabs{display:flex;gap:6px;margin:10px 14px 0;flex-wrap:wrap}
+.fd-tab{padding:5px 12px;border:1.5px solid var(--fd-border);border-radius:20px;font-size:11px;font-weight:600;color:var(--fd);cursor:pointer;background:var(--surface);font-family:inherit;transition:all .12s}
+.fd-tab.active{background:var(--fd);color:#fff;border-color:var(--fd)}
+
+/* 팝업 */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:190;display:none}
+.overlay.show{display:block}
+.popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;width:440px;max-width:94vw;z-index:200;box-shadow:0 20px 60px rgba(0,0,0,.18);display:none;max-height:80vh;overflow-y:auto}
+.popup.show{display:block}
+.popup-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.popup-close{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);padding:2px 6px}
+.popup-table{width:100%;border-collapse:collapse}
+.popup-table th{font-size:11px;font-weight:600;color:var(--text2);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border);background:var(--gray-bg)}
+.popup-table td{font-size:12px;padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.popup-table tr:last-child td{border-bottom:none}
+
+.legend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+.not-open-box{background:var(--gray-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;color:var(--text3);font-size:13px}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="logo-badge">TVING</span>
+    <span class="int-badge">INTERNAL</span>
+    <span class="topbar-title">KBO 2026 구좌 현황 — 내부용</span>
+  </div>
+  <div class="topbar-right">
+    <span class="updated-at" id="updated-at">—</span>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadData()">
+      <svg class="icon" width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 .6 2.6M2 8V4m0 4H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>새로고침
+    </button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="popup" id="popup">
+  <div class="popup-title"><span id="popup-title-text">—</span><button class="popup-close" onclick="closePopup()">✕</button></div>
+  <table class="popup-table"><thead><tr><th>상품</th><th>총/낙찰</th><th>낙찰 광고주</th><th>상태</th></tr></thead><tbody id="popup-body"></tbody></table>
+</div>
+
+<div class="page" id="page-content">
+  <div class="skeleton" style="height:200px"></div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL='https://script.google.com/a/macros/tving.com/s/AKfycbwSOtY2kxxTnKiwAf1fDLeEwRrbOo1U_IUqcb0cpyG0oJCx2x5TlTA3WGMa71gzKc01lQ/exec';
+const DAY_KO=['일','월','화','수','목','금','토'];
+function pad2(n){return String(n).padStart(2,'0')}
+
+const MONTH_CFG=[
+  {key:'2026-05',label:'5월',openAt:new Date(2026,3,15,10,0,0)},
+  {key:'2026-06',label:'6월',openAt:new Date(2026,4,20,10,0,0)},
+  {key:'2026-07',label:'7월',openAt:new Date(2026,5,17,10,0,0)},
+  {key:'2026-08',label:'8월',openAt:new Date(2026,6,15,10,0,0)},
+  {key:'2026-09',label:'9월',openAt:new Date(2026,7,19,10,0,0)},
+];
+const EXP_LARGE=[
+  {code:'노출보장PKG',          label:'노출 보장 PKG',            max:99},
+  {code:'노출보장PKG(제한업종)', label:'노출 보장 PKG (제한업종)', max:20},
+];
+const EXP_SMALL=[
+  {code:'7이닝장초수독점PKG', label:'7이닝 장초수 독점 PKG', max:1},
+];
+const TEAMS=['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움'];
+const SM_WD=[2,5],FD_WD=[6,0];
+const S_MONTHS=['2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'];
+const FD_PRODS=[{key:'PPL',label:'PPL'},{key:'가상광고',label:'풀프레임 가상광고'},{key:'협찬고지',label:'협찬고지'}];
+
+let INV=[],EXP={},expMonth=null,fdSelProd='PPL';
+let expandedRows=new Set(); // 펼쳐진 행 ID
+
+async function loadData(){
+  const btn=document.getElementById('refresh-btn');
+  btn.classList.add('loading');
+  try{
+    const res=await fetch(`${APPS_SCRIPT_URL}?action=inventory&_=${Date.now()}`,{redirect:'follow'});
+    if(!res.ok) throw new Error();
+    const d=await res.json();
+    if(d.ok){INV=d.inventory||[];EXP=d.expMonthly||{};document.getElementById('updated-at').textContent='업데이트: '+new Date(d.ts).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+  }catch{
+    dummy();
+    document.getElementById('updated-at').textContent='미리보기 (Apps Script 미연결)';
+  }
+  btn.classList.remove('loading');
+  if(!expMonth){const f=MONTH_CFG.find(mc=>new Date()>=mc.openAt);expMonth=f?f.key:MONTH_CFG[0].key}
+  render();
+}
+
+function dummy(){
+  INV=[];EXP={};
+  const smC=['sm_ppl','sm_main_display'],fdC=['fd_ppl','fd_fullframe_vr','fd_sponsor'];
+  const pool=['삼성전자','현대자동차','LG전자','롯데칠성','카카오','네이버','CJ제일제당','SK텔레콤','KT','하이트진로','빙그레','오뚜기','농심','롯데제과','GS25'];
+  const rA=()=>pool[Math.floor(Math.random()*pool.length)];
+  for(let m=4;m<=9;m++){
+    const mk=`2026-${pad2(m)}`,days=new Date(2026,m,0).getDate();
+    for(let d=1;d<=days;d++){
+      const dt=new Date(2026,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+      if(SM_WD.includes(dow)) smC.forEach(c=>{const r=Math.random()<.3?1:0;INV.push({code:c,cat:'슈퍼매치',date:ymd,total:1,reserved:r,remaining:1-r,advertisers:r?[rA()]:[]})});
+      if(FD_WD.includes(dow)) fdC.forEach(c=>{const r=Math.random()<.25?1:0;INV.push({code:c,cat:'팬덤중계',date:ymd,total:1,reserved:r,remaining:1-r,advertisers:r?[rA()]:[]})});
+    }
+    const bR=Math.floor(Math.random()*7);
+    INV.push({code:'sm_big_vr',cat:'슈퍼매치',date:mk,total:6,reserved:bR,remaining:6-bR,advertisers:Array.from({length:bR},rA)});
+    const cR=Math.random()<.3?1:0;
+    INV.push({code:'clip_monthly',cat:'클립',date:mk,total:1,reserved:cR,remaining:1-cR,advertisers:cR?[rA()]:[]});
+    if(m>=5){
+      // 노출보장 (구좌 많음 — 다수 광고주)
+      EXP_LARGE.forEach(p=>{
+        const u=Math.floor(Math.random()*(p.max*0.5));
+        if(u>0)EXP[`${mk}__${p.code}`]={used:u,advertisers:Array.from({length:Math.min(u,15)},rA)};
+      });
+      EXP_SMALL.forEach(p=>{
+        const u=Math.random()<.3?1:0;
+        if(u)EXP[`${mk}__${p.code}`]={used:1,advertisers:[rA()]};
+      });
+      for(let w=1;w<=4;w++){const r=Math.random()<.35?1:0;EXP[`${mk}__퍼스트뷰PKG__${w}주차`]={used:r,advertisers:r?[rA()]:[]};}
+      for(let w=1;w<=4;w++){const u=Math.floor(Math.random()*4);EXP[`${mk}__1주집중임팩트PKG__${w}주차`]={used:u,advertisers:Array.from({length:Math.min(u,3)},rA)};}
+      TEAMS.forEach(t=>{const u=Math.floor(Math.random()*6);if(u>0)EXP[`${mk}__팬덤PKG__${t}`]={used:u,advertisers:Array.from({length:Math.min(u,3)},rA)}});
+    }
+  }
+}
+
+function getWeeks(mk){
+  const s={'2026-05':new Date(2026,4,4),'2026-06':new Date(2026,5,1),'2026-07':new Date(2026,6,6),'2026-08':new Date(2026,7,3),'2026-09':new Date(2026,8,7)};
+  const start=s[mk]||new Date(mk+'-01');
+  return Array.from({length:4},(_,i)=>{
+    const mon=new Date(start);mon.setDate(mon.getDate()+i*7);
+    const sun=new Date(mon);sun.setDate(sun.getDate()+6);
+    const f=d=>`${d.getMonth()+1}/${d.getDate()}(${DAY_KO[d.getDay()]})`;
+    return {label:`${i+1}주차`,range:`${f(mon)}~${f(sun)}`};
+  });
+}
+
+function advTags(arr,max=5){
+  if(!arr||!arr.length) return '<span class="no-adv">—</span>';
+  const shown=arr.slice(0,max).map(a=>`<span class="adv-tag">${a}</span>`).join('');
+  const more=arr.length>max?`<span style="font-size:10px;color:var(--text3);margin-left:2px">외 ${arr.length-max}개</span>`:'';
+  return shown+more;
+}
+function barHtml(used,total){
+  const pct=total>0?Math.round(used/total*100):0,rem=total-used;
+  const cls=rem<=0?'full':pct>=60?'half':'ok';
+  return `<div class="qbar-wrap"><div class="qbar"><div class="qfill ${cls}" style="width:${Math.min(100,pct)}%"></div></div><span class="qnum ${cls}">${rem}남음</span></div>`;
+}
+function chipHtml(rem,total){
+  const pct=total>0?Math.round((total-rem)/total*100):0;
+  const cls=rem<=0?'full':pct>=60?'half':'avail';
+  return `<span class="chip ${cls}">${rem<=0?'마감':pct>=60?'잔여 적음':'청약 가능'}</span>`;
+}
+
+// 행 펼치기 토글
+function toggleExpand(rowId){
+  const row=document.getElementById(`expand-${rowId}`);
+  if(!row) return;
+  const isOpen=row.classList.contains('open');
+  if(isOpen){row.classList.remove('open');expandedRows.delete(rowId)}
+  else{row.classList.add('open');expandedRows.add(rowId)}
+}
+
+function render(){
+  const now=new Date();
+  let h='';
+
+  // ══ 노출형 ══
+  h+=`<div class="sec-hdr exp"><span class="sec-badge">노출형</span><span class="sec-title">노출형 광고 — KBO STANDARD AD</span><span class="sec-sub">월별 청약</span></div>`;
+  const openM=MONTH_CFG.filter(mc=>now>=mc.openAt);
+  if(!openM.length){h+=`<div class="not-open-box">아직 접수 개시 전</div>`}
+  else{
+    h+=`<div class="month-tabs-wrap"><div class="month-tabs-label">청약월 선택</div><div class="month-tabs">`;
+    MONTH_CFG.forEach(mc=>{const isO=now>=mc.openAt,isSel=expMonth===mc.key;h+=`<button class="mtab${isSel?' active':''}${!isO?' locked':''}" onclick="${isO?`setEM('${mc.key}')`:''}"> ${mc.label}${!isO?'<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:3px">접수예정</span>':''}</button>`;});
+    h+=`</div></div>`;
+    h+=renderExp();
+  }
+
+  // ══ 기획형 ══
+  h+=`<div class="sec-hdr plan" style="margin-top:28px"><span class="sec-badge">기획형</span><span class="sec-title">기획형 광고 — KBO DEEP-ENGAGEMENT AD</span><span class="sec-sub">정규시즌(4~9월) 상시 청약</span></div>`;
+  h+=renderPlan();
+
+  document.getElementById('page-content').innerHTML=h;
+}
+
+// ── 노출형 내부 렌더 ──
+function renderExp(){
+  const mc=MONTH_CFG.find(m=>m.key===expMonth);
+  if(!mc||new Date()<mc.openAt) return `<div class="not-open-box">접수 예정</div>`;
+  const weeks=getWeeks(expMonth);
+  let h='';
+
+  // ① 구좌 많은 상품 — 클릭 펼침
+  h+=`<div class="exp-sub">노출 보장 PKG <span class="exp-sub-note">· 행 클릭 시 광고주 전체 목록</span></div>`;
+  h+=`<div class="quota-table-wrap"><table class="quota-table"><thead><tr><th>상품명</th><th class="c">낙찰</th><th class="c">잔여</th><th>낙찰 광고주 (상위 4개)</th><th class="c">상태</th></tr></thead><tbody>`;
+  EXP_LARGE.forEach((p,pi)=>{
+    const d=EXP[`${expMonth}__${p.code}`]||{used:0,advertisers:[]};
+    const u=d.used||0,rem=p.max-u;
+    const rowId=`large-${expMonth}-${pi}`;
+    const isOpen=expandedRows.has(rowId);
+    const allAdvs=(d.advertisers||[]);
+    h+=`<tr class="expandable-row" onclick="toggleExpand('${rowId}')">
+      <td class="prod-name">${p.label} <span class="expand-btn">${isOpen?'▲ 접기':'▼ 전체보기 (${allAdvs.length}건)'}</span></td>
+      <td class="num">${u}</td>
+      <td>${barHtml(u,p.max)}</td>
+      <td>${advTags(d.advertisers,4)}</td>
+      <td>${chipHtml(rem,p.max)}</td>
+    </tr>
+    <tr class="adv-expand-row${isOpen?' open':''}" id="expand-${rowId}">
+      <td colspan="5">
+        <div style="font-size:11px;font-weight:700;color:var(--cl);margin-bottom:8px">📋 낙찰 광고주 전체 목록 — ${allAdvs.length}건</div>
+        <div class="adv-list-grid">${allAdvs.length?allAdvs.map(a=>`<span class="adv-tag">${a}</span>`).join(''):'<span class="no-adv">낙찰 내역 없음</span>'}</div>
+      </td>
+    </tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // ② 7이닝 독점 (단독)
+  h+=`<div class="exp-sub" style="margin-top:14px">7이닝 장초수 독점 PKG <span class="exp-sub-note">월 독점 1구좌</span></div>`;
+  h+=`<div class="quota-table-wrap"><table class="quota-table"><thead><tr><th>상품명</th><th class="c">낙찰</th><th class="c">잔여</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
+  EXP_SMALL.forEach(p=>{
+    const d=EXP[`${expMonth}__${p.code}`]||{used:0,advertisers:[]};
+    const u=d.used||0,rem=p.max-u;
+    h+=`<tr><td class="prod-name">${p.label}</td><td class="num">${u}/${p.max}</td><td>${barHtml(u,p.max)}</td><td>${advTags(d.advertisers)}</td><td>${chipHtml(rem,p.max)}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // ③ 퍼스트뷰 주차별
+  h+=`<div class="exp-sub" style="margin-top:14px">1주 퍼스트뷰 독점 PKG <span class="exp-sub-note">주당 1구좌 독점</span></div>`;
+  h+=`<div class="quota-table-wrap"><table class="quota-table"><thead><tr><th>주차</th><th>기간</th><th class="c">낙찰</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
+  weeks.forEach((wk,i)=>{
+    const d=EXP[`${expMonth}__퍼스트뷰PKG__${i+1}주차`]||{used:0,advertisers:[]};
+    const full=(d.used||0)>=1;
+    h+=`<tr><td class="prod-name">${wk.label}</td><td style="font-size:11px;color:var(--text2)">${wk.range}</td><td class="num">${d.used||0}/1</td><td>${advTags(d.advertisers)}</td><td>${chipHtml(full?0:1,1)}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // ④ 임팩트 주차별
+  h+=`<div class="exp-sub" style="margin-top:14px">1주 집중 임팩트 PKG</div>`;
+  h+=`<div class="quota-table-wrap"><table class="quota-table"><thead><tr><th>주차</th><th>기간</th><th class="c">낙찰 구좌</th><th>낙찰 광고주</th></tr></thead><tbody>`;
+  weeks.forEach((wk,i)=>{
+    const d=EXP[`${expMonth}__1주집중임팩트PKG__${i+1}주차`]||{used:0,advertisers:[]};
+    h+=`<tr><td class="prod-name">${wk.label}</td><td style="font-size:11px;color:var(--text2)">${wk.range}</td><td class="num">${d.used||0}</td><td>${advTags(d.advertisers)}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+
+  // ⑤ 팬덤 구단별
+  h+=`<div class="exp-sub" style="margin-top:14px">팬덤 PKG <span class="exp-sub-note">구단당 최대 5구좌</span></div>`;
+  h+=`<div class="quota-table-wrap"><table class="quota-table"><thead><tr><th>구단</th><th class="c">낙찰</th><th class="c">잔여</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
+  TEAMS.forEach(t=>{
+    const d=EXP[`${expMonth}__팬덤PKG__${t}`]||{used:0,advertisers:[]};
+    const u=d.used||0,rem=5-u;
+    h+=`<tr><td class="prod-name">${t}</td><td class="num">${u}/5</td><td>${barHtml(u,5)}</td><td>${advTags(d.advertisers)}</td><td>${chipHtml(rem,5)}</td></tr>`;
+  });
+  h+=`</tbody></table></div>`;
+  return h;
+}
+function setEM(k){expMonth=k;expandedRows.clear();render()}
+
+// ── 기획형 렌더 ──
+function renderPlan(){
+  let h='';
+
+  // 슈퍼매치 일점유
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr sm"><span class="psb sm">슈퍼매치</span><span class="plan-sub-title">일점유 상품</span><span class="plan-sub-desc">화·금 편성 · 날짜 클릭 시 상세</span></div>
+    ${renderCalInternal('sm')}
+    <div class="legend"><div class="legend-item"><div class="legend-dot" style="background:var(--avail-bg);border:1px solid var(--avail)"></div>청약 가능</div><div class="legend-item"><div class="legend-dot" style="background:var(--danger-bg);border:1px solid var(--danger)"></div>청약 마감</div><div class="legend-item"><div class="legend-dot" style="background:#F3F4F6"></div>편성 없음</div></div>
+  </div>`;
+
+  // 빅가상광고
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr sm"><span class="psb sm">슈퍼매치</span><span class="plan-sub-title">빅 가상광고</span><span class="plan-sub-desc">월별 구좌 · 광고주 표시</span></div>
+    <div style="padding:0">
+      <div class="quota-table-wrap" style="border:none;border-radius:0;margin:0">
+        <table class="quota-table"><thead><tr><th>월</th><th class="c">총 구좌</th><th class="c">낙찰</th><th class="c">잔여</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
+  S_MONTHS.forEach(mk=>{
+    const inv=INV.find(d=>d.code==='sm_big_vr'&&d.date===mk);
+    const total=inv?.total||6,rsv=inv?.reserved||0,rem=inv?.remaining||(6-rsv);
+    const [,m]=mk.split('-');
+    h+=`<tr><td class="prod-name">${parseInt(m)}월</td><td class="num">${total}</td><td class="num">${rsv}</td><td>${barHtml(rsv,total)}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rem,total)}</td></tr>`;
+  });
+  h+=`</tbody></table></div></div></div>`;
+
+  // 팬덤중계 — 상품 탭별 캘린더
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr fd"><span class="psb fd">팬덤중계</span><span class="plan-sub-title">일점유 상품</span><span class="plan-sub-desc">토·일 편성 · 날짜 클릭 시 상세</span></div>
+    <div class="fd-prod-tabs">`;
+  FD_PRODS.forEach(p=>{h+=`<button class="fd-tab${fdSelProd===p.key?' active':''}" onclick="setFdProd('${p.key}')">${p.label}</button>`;});
+  h+=`</div>
+    ${renderCalInternal('fd')}
+    <div class="legend"><div class="legend-item"><div class="legend-dot" style="background:var(--avail-bg);border:1px solid var(--avail)"></div>청약 가능</div><div class="legend-item"><div class="legend-dot" style="background:var(--danger-bg);border:1px solid var(--danger)"></div>청약 마감</div><div class="legend-item"><div class="legend-dot" style="background:#F3F4F6"></div>편성 없음</div></div>
+  </div>`;
+
+  // 클립 범퍼
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr cl"><span class="psb cl">클립 범퍼</span><span class="plan-sub-title">하이라이트 클립 범퍼</span><span class="plan-sub-desc">1개월 독점 · 광고주 표시</span></div>
+    <div style="padding:0">
+      <div class="quota-table-wrap" style="border:none;border-radius:0;margin:0">
+        <table class="quota-table"><thead><tr><th>월</th><th class="c">낙찰 여부</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
+  S_MONTHS.forEach(mk=>{
+    const [y,m]=mk.split('-').map(Number);
+    if(new Date(y,m,0)<new Date()) return;
+    const inv=INV.find(d=>d.code==='clip_monthly'&&d.date===mk);
+    const rsv=inv?.reserved||0;
+    h+=`<tr><td class="prod-name">${m}월</td><td class="num">${rsv>=1?'낙찰':'미낙찰'}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rsv>=1?0:1,1)}</td></tr>`;
+  });
+  h+=`</tbody></table></div></div></div>`;
+  return h;
+}
+function setFdProd(k){fdSelProd=k;render()}
+
+// ── 기획형 캘린더 ──
+function renderCalInternal(prefix){
+  const wd=prefix==='sm'?SM_WD:FD_WD;
+  // 슈퍼매치: sm_ppl + sm_main_display 합산 / 팬덤중계: 탭별 코드
+  const smCodeMap={'sm_ppl':['sm_ppl'],'sm_main_display':['sm_main_display']};
+  const fdCodeMap={'PPL':['fd_ppl'],'가상광고':['fd_fullframe_vr'],'협찬고지':['fd_sponsor']};
+  const codes=prefix==='sm'?['sm_ppl','sm_main_display']:fdCodeMap[fdSelProd]||['fd_ppl'];
+  const today=new Date();today.setHours(0,0,0,0);
+
+  let h=`<div class="six-cal-grid">`;
+  S_MONTHS.forEach(mk=>{
+    const [y,m]=mk.split('-').map(Number);
+    const first=new Date(y,m-1,1),last=new Date(y,m,0);
+    let cells='';
+    for(let i=0;i<first.getDay();i++) cells+=`<div class="mc-cell empty"></div>`;
+    for(let d=1;d<=last.getDate();d++){
+      const dt=new Date(y,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+      const isPast=dt<today,isWD=wd.includes(dow);
+      if(!isWD){cells+=`<div class="mc-cell noshow"></div>`;continue}
+      if(isPast){cells+=`<div class="mc-cell past">${d}</div>`;continue}
+      let anyA=false,anyF=false;
+      codes.forEach(c=>{const inv=INV.find(x=>x.code===c&&x.date===ymd);if(inv){if(inv.remaining>0)anyA=true;else anyF=true;}});
+      const cls=anyF&&!anyA?'full':'avail';
+      cells+=`<div class="mc-cell ${cls}" onclick="showDay('${ymd}','${prefix}')">${d}</div>`;
+    }
+    h+=`<div class="mini-month"><div class="mini-month-title">${m}월</div><div class="mini-cal-grid"><div class="mc-lbl">일</div><div class="mc-lbl">월</div><div class="mc-lbl">화</div><div class="mc-lbl">수</div><div class="mc-lbl">목</div><div class="mc-lbl">금</div><div class="mc-lbl">토</div>${cells}</div></div>`;
+  });
+  return h+`</div>`;
+}
+
+// ── 날짜 상세 팝업 ──
+function showDay(ymd,prefix){
+  const dow=DAY_KO[new Date(ymd+'T00:00:00').getDay()];
+  document.getElementById('popup-title-text').textContent=`${ymd} (${dow}) — 상품별 현황`;
+  const smProds=[{codes:['sm_ppl'],label:'PPL (기획/이벤트/기능/단순)'},{codes:['sm_main_display'],label:'메인 디스플레이 PPL'}];
+  const fdProds=[{codes:['fd_ppl'],label:'PPL (기획/이벤트/기능/단순)'},{codes:['fd_fullframe_vr'],label:'풀프레임 가상광고'},{codes:['fd_sponsor'],label:'협찬고지'}];
+  const prods=prefix==='sm'?smProds:fdProds;
+  const rows=prods.map(p=>{
+    let total=0,rsv=0,rem=0,advs=[];
+    INV.forEach(inv=>{if(p.codes.includes(inv.code)&&inv.date===ymd){total+=inv.total;rsv+=inv.reserved;rem+=inv.remaining;advs=[...advs,...(inv.advertisers||[])]}});
+    const cls=rem<=0?'full':'avail';
+    const advHtml=advs.length?advs.map(a=>`<span class="adv-tag">${a}</span>`).join(''):'—';
+    return `<tr><td>${p.label}</td><td class="num">${rsv}/${total}</td><td>${advHtml}</td><td><span class="chip ${cls}">${rem<=0?'마감':'가능'}</span></td></tr>`;
+  }).join('');
+  document.getElementById('popup-body').innerHTML=rows;
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('popup').classList.add('show');
+}
+function closePopup(){document.getElementById('overlay').classList.remove('show');document.getElementById('popup').classList.remove('show')}
+
+loadData();
+setInterval(loadData,300000);
+</script>
+</body>
+</html>
