@@ -192,6 +192,8 @@ const DAY_KO=['일','월','화','수','목','금','토'];
 function pad2(n){return String(n).padStart(2,'0')}
 
 const MONTH_CFG=[
+  {key:'2026-03',label:'3월',openAt:new Date(2026,1,1,0,0,0)},  // 통합 판매
+  {key:'2026-04',label:'4월',openAt:new Date(2026,2,1,0,0,0)},  // 통합 판매
   {key:'2026-05',label:'5월',openAt:new Date(2026,3,15,10,0,0)},
   {key:'2026-06',label:'6월',openAt:new Date(2026,4,20,10,0,0)},
   {key:'2026-07',label:'7월',openAt:new Date(2026,5,17,10,0,0)},
@@ -207,7 +209,7 @@ const EXP_SMALL=[
 ];
 const TEAMS=['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움'];
 const SM_WD=[2,5],FD_WD=[6,0];
-const S_MONTHS=['2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'];
+const S_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'];
 const FD_PRODS=[{key:'PPL',label:'PPL'},{key:'가상광고',label:'풀프레임 가상광고'},{key:'협찬고지',label:'협찬고지'}];
 
 let INV=[],EXP={},expMonth=null,fdSelProd='PPL';
@@ -296,7 +298,14 @@ async function loadData(){
     document.getElementById('updated-at').textContent='미리보기 (연결 오류)';
   }
   btn.classList.remove('loading');
-  if(!expMonth){const f=MONTH_CFG.find(mc=>new Date()>=mc.openAt);expMonth=f?f.key:MONTH_CFG[0].key}
+  if(!expMonth){
+    const now=new Date();
+    // 현재 시점에서 열린 월 중 가장 최근 월 선택 (3~4월은 지난월이므로 현재 월 우선)
+    const openMonths=MONTH_CFG.filter(mc=>now>=mc.openAt);
+    const currentMonthKey=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
+    const currentMatch=openMonths.find(mc=>mc.key===currentMonthKey);
+    expMonth=(currentMatch||openMonths[openMonths.length-1]||MONTH_CFG[0]).key;
+  }
   render();
 }
 
@@ -311,7 +320,7 @@ function dummy(){
   const smC=['sm_ppl','sm_main_display'],fdC=['fd_ppl','fd_fullframe_vr','fd_sponsor'];
   const pool=['삼성전자','현대자동차','LG전자','롯데칠성','카카오','네이버','CJ제일제당','SK텔레콤','KT','하이트진로','빙그레','오뚜기','농심','롯데제과','GS25'];
   const rA=()=>pool[Math.floor(Math.random()*pool.length)];
-  for(let m=4;m<=9;m++){
+  for(let m=3;m<=9;m++){
     const mk=`2026-${pad2(m)}`,days=new Date(2026,m,0).getDate();
     for(let d=1;d<=days;d++){
       const dt=new Date(2026,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
@@ -492,8 +501,9 @@ function renderPlan(){
   S_MONTHS.forEach(mk=>{
     const inv=INV.find(d=>d.code==='sm_big_vr'&&d.date===mk);
     const total=inv?.total||6,rsv=inv?.reserved||0,rem=inv?.remaining||(6-rsv);
-    const [,m]=mk.split('-');
-    h+=`<tr><td class="prod-name">${parseInt(m)}월</td><td class="num">${total}</td><td class="num">${rsv}</td><td>${barHtml(rsv,total)}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rem,total)}</td></tr>`;
+    const [y,m]=mk.split('-').map(Number);
+    const isPastMonth=new Date(y,m,0)<new Date();
+    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${parseInt(m)}월${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${total}</td><td class="num">${rsv}</td><td>${barHtml(rsv,total)}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rem,total)}</td></tr>`;
   });
   h+=`</tbody></table></div></div></div>`;
 
@@ -515,10 +525,11 @@ function renderPlan(){
         <table class="quota-table"><thead><tr><th>월</th><th class="c">낙찰 여부</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
   S_MONTHS.forEach(mk=>{
     const [y,m]=mk.split('-').map(Number);
-    if(new Date(y,m,0)<new Date()) return;
+    const now=new Date();
+    const isPastMonth=new Date(y,m,0)<now;
     const inv=INV.find(d=>d.code==='clip_monthly'&&d.date===mk);
     const rsv=inv?.reserved||0;
-    h+=`<tr><td class="prod-name">${m}월</td><td class="num">${rsv>=1?'낙찰':'미낙찰'}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rsv>=1?0:1,1)}</td></tr>`;
+    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${m}월${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${rsv>=1?'낙찰':'미낙찰'}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rsv>=1?0:1,1)}</td></tr>`;
   });
   h+=`</tbody></table></div></div></div>`;
   return h;
