@@ -205,7 +205,10 @@ async function loadData(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('loading');
   try{
-    const res = await fetch(`${APPS_SCRIPT_URL}?action=inventory&_=${Date.now()}`);
+const res = await fetch(
+  `${APPS_SCRIPT_URL}?action=inventory&_=${Date.now()}`,
+  { redirect: 'follow' }
+);
     if(!res.ok) throw new Error();
     const data = await res.json();
     if(data.ok){
