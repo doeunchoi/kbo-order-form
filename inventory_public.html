@@ -164,9 +164,16 @@ body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font
 </div>
 
 <script>
-const SHEET_ID   = '1Wgnc4fGhvTIdR-8EwbSp2KsNGoakJ5IztOWb8YOYYio'; // ← 교체
-const SHEET_NAME = '외부공개_현황';
-const CSV_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const SUPABASE_URL='https://xlgaixyfgvhefteydobe.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZ2FpeHlmZ3ZoZWZ0ZXlkb2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MDYxMjEsImV4cCI6MjA5Mzk4MjEyMX0.I46gdwEdkgR_rSezYWzGJ4-gK4eikn0KZCiuYJBJJnw';
+
+async function sbSelect(table, params=''){
+  const res=await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`,{
+    headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}
+  });
+  if(!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
 const DAY_KO=['일','월','화','수','목','금','토'];
 function pad2(n){return String(n).padStart(2,'0')}
@@ -193,31 +200,114 @@ let PUB_DATA=[];
 let expMonth=null;
 let fdSelProd='PPL'; // 팬덤중계 선택된 상품 탭
 
-// ── CSV 파싱 ──
-function parseCSV(text){
-  return text.trim().split('\n').slice(1).map(line=>{
-    const cols=[];let cur='',inQ=false;
-    for(const ch of line+','){if(ch==='"'){inQ=!inQ}else if(ch===','&&!inQ){cols.push(cur.trim());cur=''}else cur+=ch}
-    return {cat:cols[0]||'',product:cols[1]||'',date:cols[2]||'',sub:cols[3]||'',status:cols[4]||''};
-  }).filter(r=>r.cat&&r.product);
-}
-
-// ── 데이터 로드 ──
+// ── 데이터 로드 (Supabase 직접 연동) ──
 async function loadData(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('loading');
   try{
-    const res=await fetch(`${CSV_URL}&_=${Date.now()}`);
-    if(!res.ok) throw new Error();
-    PUB_DATA=parseCSV(await res.text());
+    const [expRows, planRows] = await Promise.all([
+      sbSelect('exposure_orders','select=month,product,quota,week,team,status&status=neq.취소'),
+      sbSelect('planning_orders','select=category,product,date_month,quota,status&status=neq.취소'),
+    ]);
+
+    PUB_DATA=[];
+
+    // 노출형 — 7이닝
+    const exp7Map={};
+    expRows.filter(r=>r.product==='7이닝장초수독점PKG').forEach(r=>{
+      const mk=monthLabelToKey(r.month);if(!mk)return;
+      exp7Map[mk]=(exp7Map[mk]||0)+(r.quota||1);
+    });
+    S_MONTHS.forEach(mk=>{
+      PUB_DATA.push({cat:'노출형',product:'7이닝',date:mk,sub:'',status:(exp7Map[mk]||0)>=1?'청약마감':'청약가능'});
+    });
+
+    // 노출형 — 퍼스트뷰 주차별
+    const expFvMap={};
+    expRows.filter(r=>r.product==='퍼스트뷰PKG'&&r.week).forEach(r=>{
+      const mk=monthLabelToKey(r.month);if(!mk)return;
+      const k=`${mk}_${r.week}`;expFvMap[k]=(expFvMap[k]||0)+(r.quota||1);
+    });
+    S_MONTHS.forEach(mk=>{
+      for(let w=1;w<=4;w++){
+        PUB_DATA.push({cat:'노출형',product:'퍼스트뷰',date:mk,sub:`${w}주차`,status:(expFvMap[`${mk}_${w}주차`]||0)>=1?'청약마감':'청약가능'});
+      }
+    });
+
+    // 노출형 — 팬덤 구단별
+    const expFdMap={};
+    expRows.filter(r=>r.product==='팬덤PKG'&&r.team).forEach(r=>{
+      const mk=monthLabelToKey(r.month);if(!mk)return;
+      const k=`${mk}_${r.team}`;expFdMap[k]=(expFdMap[k]||0)+(r.quota||1);
+    });
+    S_MONTHS.forEach(mk=>{
+      TEAMS.forEach(t=>{
+        PUB_DATA.push({cat:'노출형',product:'팬덤',date:mk,sub:t,status:(expFdMap[`${mk}_${t}`]||0)>=5?'청약마감':'청약가능'});
+      });
+    });
+
+    // 기획형 — 슈퍼매치 일점유 (날짜별)
+    const smDayMap={};
+    planRows.filter(r=>r.category==='슈퍼매치'&&r.date_month&&r.date_month.length===10).forEach(r=>{
+      smDayMap[r.date_month]=(smDayMap[r.date_month]||0)+(r.quota||1);
+    });
+    // 날짜 목록 생성
+    for(let m=4;m<=9;m++){
+      const mk=`2026-${pad2(m)}`,days=new Date(2026,m,0).getDate();
+      for(let d=1;d<=days;d++){
+        const dt=new Date(2026,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+        if(SM_WD.includes(dow)) PUB_DATA.push({cat:'기획형_슈퍼매치',product:'PPL_디스플레이',date:ymd,sub:'',status:(smDayMap[ymd]||0)>=1?'청약마감':'청약가능'});
+      }
+    }
+
+    // 기획형 — 팬덤중계 상품별 날짜
+    const fdProdMap={'PPL':['fd_ppl'],'가상광고':['fd_fullframe_vr'],'협찬고지':['fd_sponsor']};
+    const fdDayMap={PPL:{},가상광고:{},협찬고지:{}};
+    planRows.filter(r=>r.category==='팬덤중계'&&r.date_month&&r.date_month.length===10).forEach(r=>{
+      const prodKey=r.product&&r.product.includes('가상')?'가상광고':r.product&&r.product.includes('협찬')?'협찬고지':'PPL';
+      fdDayMap[prodKey][r.date_month]=(fdDayMap[prodKey][r.date_month]||0)+(r.quota||1);
+    });
+    for(let m=4;m<=9;m++){
+      const mk=`2026-${pad2(m)}`,days=new Date(2026,m,0).getDate();
+      for(let d=1;d<=days;d++){
+        const dt=new Date(2026,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+        if(FD_WD.includes(dow)){
+          ['PPL','가상광고','협찬고지'].forEach(pk=>{
+            PUB_DATA.push({cat:'기획형_팬덤중계',product:pk,date:ymd,sub:'',status:(fdDayMap[pk][ymd]||0)>=1?'청약마감':'청약가능'});
+          });
+        }
+      }
+    }
+
+    // 기획형 — 빅가상광고 월별
+    const bvMap={};
+    planRows.filter(r=>r.category==='슈퍼매치'&&r.product&&r.product.includes('가상')&&r.date_month&&r.date_month.length===7).forEach(r=>{
+      bvMap[r.date_month]=(bvMap[r.date_month]||0)+(r.quota||1);
+    });
+    S_MONTHS.forEach(mk=>PUB_DATA.push({cat:'기획형_빅가상광고',product:'빅가상광고',date:mk,sub:'',status:(bvMap[mk]||0)>=6?'청약마감':'청약가능'}));
+
+    // 기획형 — 클립 범퍼 월별
+    const clipMap={};
+    planRows.filter(r=>r.category==='클립'&&r.date_month&&r.date_month.length===7).forEach(r=>{
+      clipMap[r.date_month]=(clipMap[r.date_month]||0)+(r.quota||1);
+    });
+    S_MONTHS.forEach(mk=>PUB_DATA.push({cat:'기획형_클립',product:'클립범퍼',date:mk,sub:'',status:(clipMap[mk]||0)>=1?'청약마감':'청약가능'}));
+
     document.getElementById('updated-at').textContent='업데이트: '+new Date().toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  }catch{
+  }catch(err){
+    console.error('로드 오류:',err);
     dummy();
     document.getElementById('updated-at').textContent='미리보기';
   }
   btn.classList.remove('loading');
   if(!expMonth){const f=MONTH_CFG.find(mc=>new Date()>=mc.openAt);expMonth=f?f.key:MONTH_CFG[0].key}
   render();
+}
+
+function monthLabelToKey(label){
+  const m=String(label).match(/(\d{4})년\s*(\d{1,2})월/);
+  if(!m) return null;
+  return `${m[1]}-${String(m[2]).padStart(2,'0')}`;
 }
 
 function getStatus(cat,product,date,sub=''){
