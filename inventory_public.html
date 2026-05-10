@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>청약 가능 현황 · TVING KBO 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tving:#E61F3C;--bg:#F7F7F5;--surface:#fff;--border:#E2E2DE;
+  --text1:#111;--text2:#5A5A5A;--text3:#999;--radius:12px;--radius-sm:8px;
+  --avail:#2D6A11;--avail-bg:#EAF3DE;--avail-border:#86EFAC;
+  --danger:#991B1B;--danger-bg:#FFF2F2;--danger-border:#FECACA;
+  --purple:#7C3AED;--purple-bg:#F5F3FF;--purple-border:#DDD6FE;
+  --sm:#C2410C;--sm-bg:#FFF7ED;--sm-border:#FED7AA;
+  --fd:#166534;--fd-bg:#DCFCE7;--fd-border:#86EFAC;
+  --cl:#1D4ED8;--cl-bg:#EFF6FF;--cl-border:#BFDBFE;
+  --gray-bg:#F9FAFB;--gray-border:#E5E7EB;
+}
+body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font-size:14px;color:var(--text1)}
+
+/* ── 탑바 ── */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:100}
+.logo-badge{background:var(--tving);color:#fff;font-size:11px;font-weight:700;padding:3px 7px;border-radius:4px}
+.topbar-title{font-size:13px;font-weight:600;margin-left:8px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.refresh-btn{display:flex;align-items:center;gap:5px;padding:6px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.refresh-btn:hover{border-color:var(--text1)}
+.refresh-btn .icon{transition:transform .5s}
+.refresh-btn.loading .icon{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.updated-at{font-size:11px;color:var(--text3)}
+.page{max-width:780px;margin:0 auto;padding:24px 20px 60px}
+
+/* ── 섹션 헤더 ── */
+.sec-hdr{padding:11px 16px;border-radius:var(--radius);margin-bottom:14px;margin-top:28px;display:flex;align-items:center;gap:10px}
+.sec-hdr:first-of-type{margin-top:0}
+.sec-hdr.exp{background:var(--tving);color:#fff}
+.sec-hdr.plan{background:var(--purple);color:#fff}
+.sec-badge{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:3px;background:rgba(255,255,255,.25)}
+.sec-title{font-size:14px;font-weight:700}
+.sec-sub{font-size:11px;opacity:.8;margin-left:auto}
+
+/* ── 월 탭 ── */
+.month-tabs-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
+.month-tabs-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.month-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.mtab{padding:5px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;background:var(--surface);font-family:inherit;transition:all .12s;white-space:nowrap}
+.mtab:hover:not(.locked){border-color:rgba(0,0,0,.2)}
+.mtab.active{border-color:var(--tving);background:var(--tving);color:#fff}
+.mtab.locked{opacity:.45;cursor:not-allowed}
+
+/* ── 공통 칩 ── */
+.chip{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.chip.avail{background:var(--avail-bg);color:var(--avail);border:1px solid var(--avail-border)}
+.chip.full{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+
+/* ── 노출형 서브타이틀 ── */
+.exp-sub{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.03em;margin:14px 0 7px;display:flex;align-items:center;gap:5px}
+.exp-sub::before{content:'';width:3px;height:12px;background:var(--tving);border-radius:2px;display:inline-block}
+.exp-sub-note{font-size:10px;font-weight:400;color:var(--text3)}
+
+/* ── 컴팩트 카드 그리드 ── */
+/* 2열 */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px}
+/* 4열 (주차) */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:4px}
+/* 5열 (구단 1행) */
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+/* 5열 2행 (구단 전체) */
+.grid-5x2{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+/* 5열 (클립 월별) */
+.grid-5m{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+@media(max-width:520px){
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-5,.grid-5x2,.grid-5m{grid-template-columns:repeat(3,1fr)}
+}
+
+/* 공통 아이템 카드 — 이름과 칩을 한 줄에 */
+.item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.item-card .ic-name{font-size:12px;font-weight:600;color:var(--text1);flex:1;min-width:0}
+.item-card .ic-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.item-card .ic-left{display:flex;flex-direction:column;flex:1;min-width:0}
+
+/* 가로 배치 카드 (이름+칩 한줄) */
+.row-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.row-card .rc-name{font-size:12px;font-weight:600}
+.row-card .rc-sub{font-size:10px;color:var(--text3);margin-top:1px}
+
+/* ── 기획형 서브 섹션 ── */
+.plan-sub{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;overflow:hidden}
+.plan-sub-hdr{padding:9px 14px;display:flex;align-items:center;gap:8px}
+.plan-sub-hdr.sm{background:var(--sm-bg);border-bottom:1px solid var(--sm-border)}
+.plan-sub-hdr.fd{background:var(--fd-bg);border-bottom:1px solid var(--fd-border)}
+.plan-sub-hdr.cl{background:var(--cl-bg);border-bottom:1px solid var(--cl-border)}
+.psb{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.psb.sm{background:var(--sm-bg);color:var(--sm);border:1px solid var(--sm-border)}
+.psb.fd{background:var(--fd-bg);color:var(--fd);border:1px solid var(--fd-border)}
+.psb.cl{background:var(--cl-bg);color:var(--cl);border:1px solid var(--cl-border)}
+.plan-sub-title{font-size:12px;font-weight:700}
+.plan-sub-desc{font-size:11px;color:var(--text3);margin-left:auto}
+.plan-sub-body{padding:12px 14px}
+
+/* ── 팬덤 상품 탭 ── */
+.fd-prod-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.fd-tab{padding:5px 12px;border:1.5px solid var(--fd-border);border-radius:20px;font-size:11px;font-weight:600;color:var(--fd);cursor:pointer;background:var(--surface);font-family:inherit;transition:all .12s}
+.fd-tab.active{background:var(--fd);color:#fff;border-color:var(--fd)}
+
+/* ── 6개월 캘린더 ── */
+.six-cal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:580px){.six-cal-grid{grid-template-columns:repeat(2,1fr)}}
+.mini-month{background:var(--gray-bg);border-radius:var(--radius-sm);padding:9px}
+.mini-month-title{font-size:11px;font-weight:700;text-align:center;margin-bottom:7px;color:var(--text2)}
+.mini-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mc-lbl{font-size:8px;text-align:center;color:var(--text3);padding:2px 0;font-weight:600}
+.mc-cell{aspect-ratio:1;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500}
+.mc-cell.empty,.mc-cell.past{opacity:.15}
+.mc-cell.noshow{background:#F3F4F6;color:#D1D5DB}
+.mc-cell.avail{background:var(--avail-bg);color:var(--avail);font-weight:700}
+.mc-cell.full{background:var(--danger-bg);color:var(--danger);font-weight:700}
+
+/* ── 범례 ── */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* ── 상품 안내 박스 ── */
+.prod-info-box{border-radius:var(--radius-sm);padding:9px 12px;margin-bottom:10px;font-size:11px;line-height:1.8}
+
+/* ── 하단 배너 ── */
+.bottom-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-top:28px}
+.bottom-banner-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.bottom-banner-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.bottom-banner-label{font-size:12px;font-weight:600;color:var(--text2);width:60px;flex-shrink:0}
+.bottom-banner-link{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--tving);color:#fff;border-radius:var(--radius-sm);font-size:12px;font-weight:600;text-decoration:none;transition:background .12s}
+.bottom-banner-link:hover{background:#B8182F}
+.bottom-banner-link.mail{background:var(--surface);color:var(--text1);border:1.5px solid var(--border)}
+.bottom-banner-link.mail:hover{border-color:var(--text1)}
+.bottom-banner-note{font-size:11px;color:var(--text3);margin-top:6px}
+
+.not-open-box{background:var(--gray-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;color:var(--text3);font-size:13px}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center">
+    <span class="logo-badge">TVING</span>
+    <span class="topbar-title">KBO 2026 광고 청약 가능 현황</span>
+  </div>
+  <div class="topbar-right">
+    <span class="updated-at" id="updated-at">—</span>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadData()">
+      <svg class="icon" width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 8a6 6 0 1 1 .6 2.6M2 8V4m0 4H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>새로고침
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-content">
+  <div class="skeleton" style="height:200px"></div>
+</div>
+
+<script>
+const SHEET_ID   = 'YOUR_SPREADSHEET_ID'; // ← 교체
+const SHEET_NAME = '외부공개_현황';
+const CSV_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+
+const DAY_KO=['일','월','화','수','목','금','토'];
+function pad2(n){return String(n).padStart(2,'0')}
+
+const MONTH_CFG=[
+  {key:'2026-05',label:'5월',openAt:new Date(2026,3,15,10,0,0)},
+  {key:'2026-06',label:'6월',openAt:new Date(2026,4,20,10,0,0)},
+  {key:'2026-07',label:'7월',openAt:new Date(2026,5,17,10,0,0)},
+  {key:'2026-08',label:'8월',openAt:new Date(2026,6,15,10,0,0)},
+  {key:'2026-09',label:'9월',openAt:new Date(2026,7,19,10,0,0)},
+];
+const TEAMS=['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움'];
+const SM_WD=[2,5],FD_WD=[6,0];
+const S_MONTHS=['2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'];
+
+// 팬덤중계 상품 탭
+const FD_PRODS=[
+  {key:'PPL',       label:'PPL',         desc:'기획/이벤트/기능/단순'},
+  {key:'가상광고',  label:'풀프레임 가상광고', desc:'중계화면 내 가상광고 래핑'},
+  {key:'협찬고지',  label:'협찬고지',     desc:'프로그램 엔딩 브랜드 로고'},
+];
+
+let PUB_DATA=[];
+let expMonth=null;
+let fdSelProd='PPL'; // 팬덤중계 선택된 상품 탭
+
+// ── CSV 파싱 ──
+function parseCSV(text){
+  return text.trim().split('\n').slice(1).map(line=>{
+    const cols=[];let cur='',inQ=false;
+    for(const ch of line+','){if(ch==='"'){inQ=!inQ}else if(ch===','&&!inQ){cols.push(cur.trim());cur=''}else cur+=ch}
+    return {cat:cols[0]||'',product:cols[1]||'',date:cols[2]||'',sub:cols[3]||'',status:cols[4]||''};
+  }).filter(r=>r.cat&&r.product);
+}
+
+// ── 데이터 로드 ──
+async function loadData(){
+  const btn=document.getElementById('refresh-btn');
+  btn.classList.add('loading');
+  try{
+    const res=await fetch(`${CSV_URL}&_=${Date.now()}`);
+    if(!res.ok) throw new Error();
+    PUB_DATA=parseCSV(await res.text());
+    document.getElementById('updated-at').textContent='업데이트: '+new Date().toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }catch{
+    dummy();
+    document.getElementById('updated-at').textContent='미리보기';
+  }
+  btn.classList.remove('loading');
+  if(!expMonth){const f=MONTH_CFG.find(mc=>new Date()>=mc.openAt);expMonth=f?f.key:MONTH_CFG[0].key}
+  render();
+}
+
+function getStatus(cat,product,date,sub=''){
+  const r=PUB_DATA.find(d=>d.cat===cat&&d.product===product&&d.date===date&&(sub===''||d.sub===sub));
+  return r?r.status:'청약가능';
+}
+function avail(cat,product,date,sub=''){return getStatus(cat,product,date,sub)!=='청약마감'}
+
+function dummy(){
+  PUB_DATA=[];
+  const add=(cat,product,date,sub,ok)=>PUB_DATA.push({cat,product,date,sub,status:ok?'청약가능':'청약마감'});
+  S_MONTHS.forEach(mk=>{
+    add('노출형','7이닝',mk,'',Math.random()>.3);
+    for(let w=1;w<=4;w++) add('노출형','퍼스트뷰',mk,`${w}주차`,Math.random()>.4);
+    TEAMS.forEach(t=>add('노출형','팬덤',mk,t,Math.random()>.4));
+    add('기획형_빅가상광고','빅가상광고',mk,'',Math.random()>.4);
+    add('기획형_클립','클립범퍼',mk,'',Math.random()>.3);
+    const days=new Date(2026,parseInt(mk.slice(5)),0).getDate();
+    for(let d=1;d<=days;d++){
+      const dt=new Date(2026,parseInt(mk.slice(5))-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+      if(SM_WD.includes(dow)){add('기획형_슈퍼매치','PPL_디스플레이',ymd,'',Math.random()>.3)}
+      if(FD_WD.includes(dow)){
+        add('기획형_팬덤중계','PPL',ymd,'',Math.random()>.25);
+        add('기획형_팬덤중계','가상광고',ymd,'',Math.random()>.2);
+        add('기획형_팬덤중계','협찬고지',ymd,'',Math.random()>.2);
+      }
+    }
+  });
+}
+
+function getWeeks(mk){
+  const s={'2026-05':new Date(2026,4,4),'2026-06':new Date(2026,5,1),'2026-07':new Date(2026,6,6),'2026-08':new Date(2026,7,3),'2026-09':new Date(2026,8,7)};
+  const start=s[mk]||new Date(mk+'-01');
+  return Array.from({length:4},(_,i)=>{
+    const mon=new Date(start);mon.setDate(mon.getDate()+i*7);
+    const sun=new Date(mon);sun.setDate(sun.getDate()+6);
+    const f=d=>`${d.getMonth()+1}/${d.getDate()}(${DAY_KO[d.getDay()]})`;
+    return {label:`${i+1}주차`,range:`${f(mon)}~${f(sun)}`};
+  });
+}
+
+function chip(ok){return `<span class="chip ${ok?'avail':'full'}">${ok?'청약 가능':'청약 마감'}</span>`}
+
+// ── 전체 렌더 ──
+function render(){
+  const now=new Date();
+  let h='';
+
+  // ══ 노출형 ══
+  h+=`<div class="sec-hdr exp"><span class="sec-badge">노출형</span><span class="sec-title">노출형 광고</span><span class="sec-sub">월별 청약 | 생중계·클립 인스트림</span></div>`;
+  const openM=MONTH_CFG.filter(mc=>now>=mc.openAt);
+  if(!openM.length){h+=`<div class="not-open-box">아직 접수 개시 전입니다.</div>`}
+  else{
+    h+=`<div class="month-tabs-wrap"><div class="month-tabs-label">청약월 선택</div><div class="month-tabs">`;
+    MONTH_CFG.forEach(mc=>{const isO=now>=mc.openAt,isSel=expMonth===mc.key;h+=`<button class="mtab${isSel?' active':''}${!isO?' locked':''}" onclick="${isO?`setEM('${mc.key}')`:''}"> ${mc.label}${!isO?'<span style="font-size:10px;font-weight:400;opacity:.7;margin-left:3px">접수예정</span>':''}</button>`;});
+    h+=`</div></div>`;
+    h+=renderExp();
+  }
+
+  // ══ 기획형 ══
+  h+=`<div class="sec-hdr plan" style="margin-top:24px"><span class="sec-badge">기획형</span><span class="sec-title">기획형 광고</span><span class="sec-sub">정규시즌(4~9월) 상시 청약</span></div>`;
+  h+=renderPlan();
+
+  // ══ 하단 배너 ══
+  h+=`<div class="bottom-banner">
+    <div class="bottom-banner-title">청약 신청 및 문의</div>
+    <div class="bottom-banner-row">
+      <span class="bottom-banner-label">청약 신청</span>
+      <a class="bottom-banner-link" href="https://doeunchoi.github.io/kbo-order-form/" target="_blank">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        청약 신청서 작성하기
+      </a>
+    </div>
+    <div class="bottom-banner-row">
+      <span class="bottom-banner-label">문의</span>
+      <a class="bottom-banner-link mail" href="mailto:tving.advertising@cj.net">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2zM2 4l6 5 6-5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        tving.advertising@cj.net
+      </a>
+    </div>
+    <div class="bottom-banner-note">관련 문의사항은 TVING 광고팀 메일로 문의 바랍니다.</div>
+  </div>`;
+
+  document.getElementById('page-content').innerHTML=h;
+}
+
+// ── 노출형 렌더 ──
+function renderExp(){
+  const mc=MONTH_CFG.find(m=>m.key===expMonth);
+  if(!mc||new Date()<mc.openAt) return `<div class="not-open-box">접수 예정</div>`;
+  const weeks=getWeeks(expMonth);
+  let h='';
+
+  // 1. 일반 구좌 (2열)
+  h+=`<div class="exp-sub">일반 구좌 상품</div><div class="grid-2">`;
+  [{code:'노출보장PKG',label:'노출 보장 PKG',sub:'월 생중계·클립 인스트림'},{code:'노출보장PKG(제한업종)',label:'노출 보장 PKG (제한업종)',sub:'주류·청불게임 등 제한업종 전용'}].forEach(p=>{
+    h+=`<div class="item-card"><div class="ic-left"><div class="ic-name">${p.label}</div><div class="ic-sub">${p.sub}</div></div>${chip(true)}</div>`;
+  });
+  h+=`</div>`;
+
+  // 7이닝 (1개라 단독 행)
+  const a7=avail('노출형','7이닝',expMonth);
+  h+=`<div class="row-card" style="margin-bottom:4px"><div><div class="rc-name">7이닝 장초수 독점 PKG</div><div class="rc-sub">60~90초 · 월 독점 1구좌</div></div>${chip(a7)}</div>`;
+
+  // 2. 퍼스트뷰 주차 (4열 한 줄)
+  h+=`<div class="exp-sub" style="margin-top:14px">1주 퍼스트뷰 독점 PKG <span class="exp-sub-note">주당 1구좌 독점</span></div>`;
+  h+=`<div class="grid-4">`;
+  weeks.forEach((wk,i)=>{
+    const ok=avail('노출형','퍼스트뷰',expMonth,`${i+1}주차`);
+    h+=`<div class="item-card"><div class="ic-left"><div class="ic-name">${wk.label}</div><div class="ic-sub">${wk.range}</div></div>${chip(ok)}</div>`;
+  });
+  h+=`</div>`;
+
+  // 3. 임팩트 주차 (4열 한 줄, 항상 가능)
+  h+=`<div class="exp-sub" style="margin-top:14px">1주 집중 임팩트 PKG</div>`;
+  h+=`<div class="grid-4">`;
+  weeks.forEach(wk=>{
+    h+=`<div class="item-card"><div class="ic-left"><div class="ic-name">${wk.label}</div><div class="ic-sub">${wk.range}</div></div>${chip(true)}</div>`;
+  });
+  h+=`</div>`;
+
+  // 4. 팬덤 구단 (5열 × 2행 = 10개)
+  h+=`<div class="exp-sub" style="margin-top:14px">팬덤 PKG <span class="exp-sub-note">구단당 최대 5구좌</span></div>`;
+  h+=`<div class="grid-5x2">`;
+  TEAMS.forEach(t=>{
+    const ok=avail('노출형','팬덤',expMonth,t);
+    h+=`<div class="item-card" style="justify-content:space-between"><span class="ic-name">${t}</span>${chip(ok)}</div>`;
+  });
+  h+=`</div>`;
+  return h;
+}
+function setEM(k){expMonth=k;render()}
+
+// ── 기획형 렌더 ──
+function renderPlan(){
+  let h='';
+
+  // 슈퍼매치 일점유 (PPL + 디스플레이 합산)
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr sm"><span class="psb sm">슈퍼매치</span><span class="plan-sub-title">일점유 상품</span><span class="plan-sub-desc">화·금 편성 · PPL / 메인 디스플레이</span></div>
+    <div class="plan-sub-body">
+      <div class="prod-info-box" style="background:var(--sm-bg);color:var(--sm)">
+        PPL (기획 / 이벤트 / 기능 / 단순) &nbsp;·&nbsp; 메인 디스플레이 PPL — 일 1구좌 독점
+      </div>
+      ${renderCalSM()}
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--avail-bg);border:1px solid var(--avail)"></div>청약 가능</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--danger-bg);border:1px solid var(--danger)"></div>청약 마감</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#F3F4F6"></div>편성 없음</div>
+      </div>
+    </div>
+  </div>`;
+
+  // 빅 가상광고 (5열 한 줄)
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr sm"><span class="psb sm">슈퍼매치</span><span class="plan-sub-title">빅 가상광고</span><span class="plan-sub-desc">경기 화면 위 5초 디지털 오버레이 · 월별</span></div>
+    <div class="plan-sub-body">
+      <div class="grid-5m">`;
+  S_MONTHS.forEach(mk=>{
+    const [,m]=mk.split('-').map(Number);
+    if(new Date(2026,m,0)<new Date()) return;
+    const ok=avail('기획형_빅가상광고','빅가상광고',mk);
+    h+=`<div class="item-card" style="justify-content:space-between"><span class="ic-name">${m}월</span>${chip(ok)}</div>`;
+  });
+  h+=`</div></div></div>`;
+
+  // 팬덤중계 — 상품 탭별 캘린더
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr fd"><span class="psb fd">팬덤중계</span><span class="plan-sub-title">일점유 상품</span><span class="plan-sub-desc">토·일 편성 · 상품 선택 후 현황 확인</span></div>
+    <div class="plan-sub-body">
+      <div class="fd-prod-tabs">`;
+  FD_PRODS.forEach(p=>{
+    h+=`<button class="fd-tab${fdSelProd===p.key?' active':''}" onclick="setFdProd('${p.key}')">${p.label}</button>`;
+  });
+  h+=`</div>`;
+  const selFdProd=FD_PRODS.find(p=>p.key===fdSelProd);
+  h+=`<div style="font-size:11px;color:var(--text2);margin-bottom:10px">${selFdProd?.desc||''}</div>`;
+  h+=renderCalFD(fdSelProd);
+  h+=`<div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--avail-bg);border:1px solid var(--avail)"></div>청약 가능</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--danger-bg);border:1px solid var(--danger)"></div>청약 마감</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#F3F4F6"></div>편성 없음</div>
+  </div></div></div>`;
+
+  // 하이라이트 클립 범퍼 (5열 한 줄)
+  h+=`<div class="plan-sub">
+    <div class="plan-sub-hdr cl"><span class="psb cl">클립 범퍼</span><span class="plan-sub-title">하이라이트 클립 범퍼</span><span class="plan-sub-desc">1개월 독점 · TVING & YouTube 동시 노출</span></div>
+    <div class="plan-sub-body">
+      <div class="grid-5m">`;
+  S_MONTHS.forEach(mk=>{
+    const [y,m]=mk.split('-').map(Number);
+    if(new Date(y,m,0)<new Date()) return;
+    const ok=avail('기획형_클립','클립범퍼',mk);
+    h+=`<div class="item-card"><div class="ic-left"><div class="ic-name">${m}월</div><div class="ic-sub">1억원</div></div>${chip(ok)}</div>`;
+  });
+  h+=`</div></div></div>`;
+
+  return h;
+}
+
+// ── 슈퍼매치 캘린더 ──
+function renderCalSM(){
+  const today=new Date();today.setHours(0,0,0,0);
+  let h=`<div class="six-cal-grid">`;
+  S_MONTHS.forEach(mk=>{
+    const [y,m]=mk.split('-').map(Number);
+    const first=new Date(y,m-1,1),last=new Date(y,m,0);
+    let cells='';
+    for(let i=0;i<first.getDay();i++) cells+=`<div class="mc-cell empty"></div>`;
+    for(let d=1;d<=last.getDate();d++){
+      const dt=new Date(y,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+      const isPast=dt<today,isWD=SM_WD.includes(dow);
+      if(!isWD){cells+=`<div class="mc-cell noshow"></div>`;continue}
+      if(isPast){cells+=`<div class="mc-cell past">${d}</div>`;continue}
+      const ok=avail('기획형_슈퍼매치','PPL_디스플레이',ymd);
+      cells+=`<div class="mc-cell ${ok?'avail':'full'}">${d}</div>`;
+    }
+    h+=`<div class="mini-month"><div class="mini-month-title">${m}월</div><div class="mini-cal-grid"><div class="mc-lbl">일</div><div class="mc-lbl">월</div><div class="mc-lbl">화</div><div class="mc-lbl">수</div><div class="mc-lbl">목</div><div class="mc-lbl">금</div><div class="mc-lbl">토</div>${cells}</div></div>`;
+  });
+  return h+`</div>`;
+}
+
+// ── 팬덤중계 캘린더 (상품 탭별) ──
+function renderCalFD(prodKey){
+  const today=new Date();today.setHours(0,0,0,0);
+  let h=`<div class="six-cal-grid">`;
+  S_MONTHS.forEach(mk=>{
+    const [y,m]=mk.split('-').map(Number);
+    const first=new Date(y,m-1,1),last=new Date(y,m,0);
+    let cells='';
+    for(let i=0;i<first.getDay();i++) cells+=`<div class="mc-cell empty"></div>`;
+    for(let d=1;d<=last.getDate();d++){
+      const dt=new Date(y,m-1,d),dow=dt.getDay(),ymd=`${mk}-${pad2(d)}`;
+      const isPast=dt<today,isWD=FD_WD.includes(dow);
+      if(!isWD){cells+=`<div class="mc-cell noshow"></div>`;continue}
+      if(isPast){cells+=`<div class="mc-cell past">${d}</div>`;continue}
+      const ok=avail('기획형_팬덤중계',prodKey,ymd);
+      cells+=`<div class="mc-cell ${ok?'avail':'full'}">${d}</div>`;
+    }
+    h+=`<div class="mini-month"><div class="mini-month-title">${m}월</div><div class="mini-cal-grid"><div class="mc-lbl">일</div><div class="mc-lbl">월</div><div class="mc-lbl">화</div><div class="mc-lbl">수</div><div class="mc-lbl">목</div><div class="mc-lbl">금</div><div class="mc-lbl">토</div>${cells}</div></div>`;
+  });
+  return h+`</div>`;
+}
+
+function setFdProd(key){fdSelProd=key;render()}
+
+loadData();
+setInterval(loadData,300000);
+</script>
+</body>
+</html>
