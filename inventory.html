@@ -199,8 +199,8 @@ const MONTH_CFG=[
   {key:'2026-09',label:'9월',openAt:new Date(2026,7,19,10,0,0)},
 ];
 const EXP_LARGE=[
-  {code:'노출보장PKG',          label:'노출 보장 PKG',            max:99},
-  {code:'노출보장PKG(제한업종)', label:'노출 보장 PKG (제한업종)', max:20},
+  {code:'노출보장PKG',          label:'노출 보장 PKG',            max:80},
+  {code:'노출보장PKG(제한업종)', label:'노출 보장 PKG (제한업종)', max:10},
 ];
 const EXP_SMALL=[
   {code:'7이닝장초수독점PKG', label:'7이닝 장초수 독점 PKG', max:1},
@@ -415,7 +415,7 @@ function renderExp(){
     const isOpen=expandedRows.has(rowId);
     const allAdvs=(d.advertisers||[]);
     h+=`<tr class="expandable-row" onclick="toggleExpand('${rowId}')">
-      <td class="prod-name">${p.label} <span class="expand-btn">${isOpen?'▲ 접기':'▼ 전체보기 (${allAdvs.length}건)'}</span></td>
+      <td class="prod-name">${p.label} <span class="expand-btn">${isOpen?'▲ 접기':`▼ 전체보기 (${allAdvs.length}건)`}</span></td>
       <td class="num">${u}</td>
       <td>${barHtml(u,p.max)}</td>
       <td>${advTags(d.advertisers,4)}</td>
