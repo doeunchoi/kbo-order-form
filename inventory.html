@@ -192,8 +192,7 @@ const DAY_KO=['일','월','화','수','목','금','토'];
 function pad2(n){return String(n).padStart(2,'0')}
 
 const MONTH_CFG=[
-  {key:'2026-03',label:'3월',openAt:new Date(2026,1,1,0,0,0)},  // 통합 판매
-  {key:'2026-04',label:'4월',openAt:new Date(2026,2,1,0,0,0)},  // 통합 판매
+  {key:'3~4월 통합',label:'3~4월 통합',openAt:new Date(2026,1,1,0,0,0)},
   {key:'2026-05',label:'5월',openAt:new Date(2026,3,15,10,0,0)},
   {key:'2026-06',label:'6월',openAt:new Date(2026,4,20,10,0,0)},
   {key:'2026-07',label:'7월',openAt:new Date(2026,5,17,10,0,0)},
@@ -209,7 +208,7 @@ const EXP_SMALL=[
 ];
 const TEAMS=['LG','두산','KT','SSG','NC','삼성','한화','롯데','기아','키움'];
 const SM_WD=[2,5],FD_WD=[6,0];
-const S_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09'];
+const S_MONTHS=['3~4월 통합','2026-05','2026-06','2026-07','2026-08','2026-09'];
 const FD_PRODS=[{key:'PPL',label:'PPL'},{key:'가상광고',label:'풀프레임 가상광고'},{key:'협찬고지',label:'협찬고지'}];
 
 let INV=[],EXP={},expMonth=null,fdSelProd='PPL';
@@ -300,16 +299,18 @@ async function loadData(){
   btn.classList.remove('loading');
   if(!expMonth){
     const now=new Date();
-    // 현재 시점에서 열린 월 중 가장 최근 월 선택 (3~4월은 지난월이므로 현재 월 우선)
     const openMonths=MONTH_CFG.filter(mc=>now>=mc.openAt);
+    // 현재 월과 일치하는 탭 우선, 없으면 마지막 열린 탭
     const currentMonthKey=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
     const currentMatch=openMonths.find(mc=>mc.key===currentMonthKey);
-    expMonth=(currentMatch||openMonths[openMonths.length-1]||MONTH_CFG[0]).key;
+    expMonth=(currentMatch||openMonths.filter(mc=>mc.key!=='3~4월 통합').slice(-1)[0]||openMonths[0]||MONTH_CFG[0]).key;
   }
   render();
 }
 
 function monthLabelToKey(label){
+  if(!label) return null;
+  if(String(label).includes('3~4월')) return '3~4월 통합';
   const m=String(label).match(/(\d{4})년\s*(\d{1,2})월/);
   if(!m) return null;
   return `${m[1]}-${String(m[2]).padStart(2,'0')}`;
@@ -349,6 +350,14 @@ function dummy(){
 }
 
 function getWeeks(mk){
+  // 3~4월 통합: 고정 주차
+  if(mk==='3~4월 통합') return [
+    {label:'1주차',range:'3/28(토)~4/5(일)'},
+    {label:'2주차',range:'4/6(월)~4/12(일)'},
+    {label:'3주차',range:'4/13(월)~4/19(일)'},
+    {label:'4주차',range:'4/20(월)~4/26(일)'},
+    {label:'5주차',range:'4/27(월)~5/3(일)'},
+  ];
   const s={'2026-05':new Date(2026,4,4),'2026-06':new Date(2026,5,1),'2026-07':new Date(2026,6,6),'2026-08':new Date(2026,7,3),'2026-09':new Date(2026,8,7)};
   const start=s[mk]||new Date(mk+'-01');
   return Array.from({length:4},(_,i)=>{
@@ -501,9 +510,9 @@ function renderPlan(){
   S_MONTHS.forEach(mk=>{
     const inv=INV.find(d=>d.code==='sm_big_vr'&&d.date===mk);
     const total=inv?.total||6,rsv=inv?.reserved||0,rem=inv?.remaining||(6-rsv);
-    const [y,m]=mk.split('-').map(Number);
-    const isPastMonth=new Date(y,m,0)<new Date();
-    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${parseInt(m)}월${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${total}</td><td class="num">${rsv}</td><td>${barHtml(rsv,total)}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rem,total)}</td></tr>`;
+    const isPastMonth = mk==='3~4월 통합' ? true : (()=>{const [y,m]=mk.split('-').map(Number);return new Date(y,m,0)<new Date();})();
+    const label = mk==='3~4월 통합' ? '3~4월 통합' : `${parseInt(mk.split('-')[1])}월`;
+    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${label}${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${total}</td><td class="num">${rsv}</td><td>${barHtml(rsv,total)}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rem,total)}</td></tr>`;
   });
   h+=`</tbody></table></div></div></div>`;
 
@@ -524,12 +533,11 @@ function renderPlan(){
       <div class="quota-table-wrap" style="border:none;border-radius:0;margin:0">
         <table class="quota-table"><thead><tr><th>월</th><th class="c">낙찰 여부</th><th>낙찰 광고주</th><th class="c">상태</th></tr></thead><tbody>`;
   S_MONTHS.forEach(mk=>{
-    const [y,m]=mk.split('-').map(Number);
-    const now=new Date();
-    const isPastMonth=new Date(y,m,0)<now;
+    const isPastMonth = mk==='3~4월 통합' ? true : (()=>{const [y,m]=mk.split('-').map(Number);return new Date(y,m,0)<new Date();})();
+    const label = mk==='3~4월 통합' ? '3~4월 통합' : `${parseInt(mk.split('-')[1])}월`;
     const inv=INV.find(d=>d.code==='clip_monthly'&&d.date===mk);
     const rsv=inv?.reserved||0;
-    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${m}월${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${rsv>=1?'낙찰':'미낙찰'}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rsv>=1?0:1,1)}</td></tr>`;
+    h+=`<tr${isPastMonth?' style="opacity:.6"':''}><td class="prod-name">${label}${isPastMonth?' <span style="font-size:10px;color:var(--text3)">(지난월)</span>':''}</td><td class="num">${rsv>=1?'낙찰':'미낙찰'}</td><td>${advTags(inv?.advertisers)}</td><td>${chipHtml(rsv>=1?0:1,1)}</td></tr>`;
   });
   h+=`</tbody></table></div></div></div>`;
   return h;
@@ -547,6 +555,11 @@ function renderCalInternal(prefix){
 
   let h=`<div class="six-cal-grid">`;
   S_MONTHS.forEach(mk=>{
+    if(mk==='3~4월 통합'){
+      // 3~4월 통합: 고정 날짜 범위 캘린더 skip (캘린더 대신 주차 표시)
+      h+=`<div class="mini-month"><div class="mini-month-title" style="color:var(--text3)">3~4월 통합<br><span style="font-size:9px;font-weight:400">주차 탭 참고</span></div></div>`;
+      return;
+    }
     const [y,m]=mk.split('-').map(Number);
     const first=new Date(y,m-1,1),last=new Date(y,m,0);
     let cells='';
