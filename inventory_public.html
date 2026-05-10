@@ -305,6 +305,8 @@ async function loadData(){
 }
 
 function monthLabelToKey(label){
+  if(!label) return null;
+  if(String(label).includes('3~4월')) return '3~4월 통합';
   const m=String(label).match(/(\d{4})년\s*(\d{1,2})월/);
   if(!m) return null;
   return `${m[1]}-${String(m[2]).padStart(2,'0')}`;
