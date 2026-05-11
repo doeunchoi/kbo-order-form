@@ -334,9 +334,12 @@ function render(){
 
   // ══ 기획형 ══
   h+=`<div class="sec-hdr plan" style="margin-top:28px"><span class="sec-badge">기획형</span><span class="sec-title">기획형 광고 — KBO DEEP-ENGAGEMENT AD</span><span class="sec-sub">정규시즌(4~9월) 상시 청약</span></div>`;
-  h+=renderPlan();
+h+=renderPlan();
+h+=renderAdminTable();
 
-  document.getElementById('page-content').innerHTML=h;
+document.getElementById('page-content').innerHTML=h;
+
+loadAdminOrders();
 }
 
 // ── 노출형 내부 렌더 ──
