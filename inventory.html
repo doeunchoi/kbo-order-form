@@ -539,6 +539,102 @@ function showDay(ymd,prefix){
 }
 function closePopup(){document.getElementById('overlay').classList.remove('show');document.getElementById('popup').classList.remove('show')}
 
+let ADMIN_ORDERS = [];
+
+function renderAdminTable() {
+  return `
+    <div class="sec-hdr" style="background:#111;color:#fff;margin-top:32px">
+      <span class="sec-badge">ADMIN</span>
+      <span class="sec-title">관리자용 원본 DB</span>
+      <span class="sec-sub">상태 변경 / 원본 데이터 확인</span>
+    </div>
+
+    <div class="quota-table-wrap">
+      <table class="quota-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>유형</th>
+            <th>상태</th>
+            <th>광고주</th>
+            <th>브랜드</th>
+            <th>상품</th>
+            <th>월/일자</th>
+            <th>금액</th>
+            <th>담당자</th>
+            <th>이메일</th>
+          </tr>
+        </thead>
+        <tbody id="admin-orders-body">
+          <tr><td colspan="10">불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+async function loadAdminOrders() {
+  const tbody = document.getElementById('admin-orders-body');
+  if (!tbody) return;
+
+  try {
+    const res = await fetch('/api/admin-orders');
+    const json = await res.json();
+
+    if (!json.ok) throw new Error(json.error);
+
+    ADMIN_ORDERS = json.data || [];
+
+    tbody.innerHTML = ADMIN_ORDERS.map(row => {
+      const product = row.product || row.pkg_type || row.category || '-';
+      const date = row.month || row.date_month || row.billing_month || row.pkg_start || '-';
+      const amount = row.amount ? Number(row.amount).toLocaleString('ko-KR') : '-';
+      const status = row.status || '활성';
+
+      return `
+        <tr>
+          <td>${row.id}</td>
+          <td>${row.type === 'exposure' ? '노출형' : '기획형'}</td>
+          <td>
+            <select onchange="updateOrderStatus('${row.type}', ${row.id}, this.value)">
+              ${['활성','가부킹','낙찰','확정','종료','취소'].map(s =>
+                `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
+              ).join('')}
+            </select>
+          </td>
+          <td>${row.advertiser || '-'}</td>
+          <td>${row.brand || '-'}</td>
+          <td>${product}</td>
+          <td>${date}</td>
+          <td>${amount}</td>
+          <td>${row.contact_name || '-'}</td>
+          <td>${row.contact_email || '-'}</td>
+        </tr>
+      `;
+    }).join('');
+
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="10">로드 오류: ${err.message}</td></tr>`;
+  }
+}
+
+async function updateOrderStatus(type, id, status) {
+  const res = await fetch('/api/admin-orders', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, id, status })
+  });
+
+  const json = await res.json();
+
+  if (!json.ok) {
+    alert('상태 변경 실패: ' + json.error);
+    return;
+  }
+
+  await loadData();
+}
+  
 loadData();
 setInterval(loadData,300000);
 </script>
