@@ -554,6 +554,7 @@ function renderAdminTable() {
         <thead>
           <tr>
             <th>ID</th>
+            <th>제출 시각</th>            
             <th>유형</th>
             <th>상태</th>
             <th>광고주</th>
@@ -562,11 +563,11 @@ function renderAdminTable() {
             <th>월/일자</th>
             <th>금액</th>
             <th>담당자</th>
-            <th>이메일</th>
+            <th>이메일</th>            
           </tr>
         </thead>
         <tbody id="admin-orders-body">
-          <tr><td colspan="10">불러오는 중...</td></tr>
+          <tr><td colspan="11">불러오는 중...</td></tr>
         </tbody>
       </table>
     </div>
@@ -590,10 +591,13 @@ async function loadAdminOrders() {
       const date = row.month || row.date_month || row.billing_month || row.pkg_start || '-';
       const amount = row.amount ? Number(row.amount).toLocaleString('ko-KR') : '-';
       const status = row.status || '활성';
+      const submittedAt = row.submitted_at || row.created_at || row.timestamp || '-';
+      
 
       return `
         <tr>
           <td>${row.id}</td>
+          <td>${submittedAt}</td>
           <td>${row.type === 'exposure' ? '노출형' : '기획형'}</td>
           <td>
             <select onchange="updateOrderStatus('${row.type}', ${row.id}, this.value)">
@@ -614,7 +618,7 @@ async function loadAdminOrders() {
     }).join('');
 
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="10">로드 오류: ${err.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11">로드 오류: ${err.message}</td></tr>`;
   }
 }
 
