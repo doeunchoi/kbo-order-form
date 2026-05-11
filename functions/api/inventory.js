@@ -113,8 +113,18 @@ WHERE COALESCE(status, '활성') IN ('활성', '낙찰', '확정')
 
 function monthLabelToKey(label) {
   if (!label) return null;
-  if (String(label).includes('3~4월')) return '3~4월 통합';
-  const m = String(label).match(/(\d{4})년\s*(\d{1,2})월/);
-  if (!m) return null;
-  return `${m[1]}-${String(m[2]).padStart(2,'0')}`;
+
+  const s = String(label);
+
+  if (s.includes('3~4월')) return '3~4월 통합';
+
+  if (/^\d{4}-\d{2}$/.test(s)) return s;
+
+  const m1 = s.match(/(\d{4})년\s*(\d{1,2})월/);
+  if (m1) return `${m1[1]}-${String(m1[2]).padStart(2,'0')}`;
+
+  const m2 = s.match(/(\d{4})[-./](\d{1,2})/);
+  if (m2) return `${m2[1]}-${String(m2[2]).padStart(2,'0')}`;
+
+  return null;
 }
