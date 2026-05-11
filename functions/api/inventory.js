@@ -36,7 +36,8 @@ export async function onRequestOptions() {
 async function buildExpMonthly(db) {
   const { results } = await db.prepare(`
     SELECT month, product, quota, week, team, advertiser
-    FROM exposure_orders WHERE status = '낙찰'
+FROM exposure_orders
+WHERE COALESCE(status, '활성') IN ('활성', '낙찰', '확정')
   `).all();
 
   const map = {};
@@ -69,7 +70,8 @@ async function buildExpMonthly(db) {
 async function buildInventory(db) {
   const { results } = await db.prepare(`
     SELECT category, product, date_month, quota, advertiser
-    FROM planning_orders WHERE status = '낙찰'
+FROM planning_orders
+WHERE COALESCE(status, '활성') IN ('활성', '낙찰', '확정')
   `).all();
 
   const codeMap = {
