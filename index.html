@@ -684,19 +684,13 @@ input[readonly]{background:#F7F7F5;color:var(--text3)}
 // ════════════════════════════════════════════════════════════
 // 상수
 // ════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://xlgaixyfgvhefteydobe.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZ2FpeHlmZ3ZoZWZ0ZXlkb2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MDYxMjEsImV4cCI6MjA5Mzk4MjEyMX0.I46gdwEdkgR_rSezYWzGJ4-gK4eikn0KZCiuYJBJJnw';
+const API_URL = 'https://kbo-order-form.doeun-choi.workers.dev';
 
-async function supabaseInsert(table, rows) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+async function apiPost(payload) {
+  const res = await fetch(`${API_URL}/api/order`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Prefer': 'return=minimal',
-    },
-    body: JSON.stringify(rows),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   });
   if (!res.ok) { const err = await res.text(); throw new Error(err); }
 }
@@ -1314,26 +1308,8 @@ document.getElementById('exp-booking-form').addEventListener('submit', async fun
   const tasNo=document.getElementById('tas-no').checked;
   const payload={type:'노출형',timestamp:ts,month:fd.get('month'),advertiser:fd.get('advertiser'),brand:fd.get('brand'),agency:fd.get('agency'),media_rep:fd.get('media_rep'),billing_entity:fd.get('billing_entity'),billing_month:fd.get('billing_month'),contact_name:fd.get('contact_name'),contact_email:fd.get('contact_email'),contact_org:fd.get('contact_org'),tas_status:tasNo?'없음':'있음',...(tasNo&&{tas_corp_name:fd.get('tas_corp_name'),tas_biz_num:fd.get('tas_biz_num'),tas_mgr_name:fd.get('tas_mgr_name'),tas_mgr_email:fd.get('tas_mgr_email')}),jbp:document.getElementById('chk-jbp').checked?'Y':'N',kbo_pass:document.getElementById('chk-pass').checked?'Y':'N',note:fd.get('note')||'-',items};
   try{
-    const rows = (payload.items||[]).map(item=>({
-      submitted_at: payload.timestamp, month: payload.month,
-      advertiser: payload.advertiser, brand: payload.brand,
-      agency: payload.agency, media_rep: payload.media_rep,
-      billing_entity: payload.billing_entity, billing_month: payload.billing_month,
-      contact_name: payload.contact_name, contact_email: payload.contact_email, contact_org: payload.contact_org,
-      tas_status: payload.tas_status, tas_corp: payload.tas_corp_name||null,
-      tas_biz_num: payload.tas_biz_num||null, tas_mgr_name: payload.tas_mgr_name||null, tas_mgr_email: payload.tas_mgr_email||null,
-      product: item.product, duration: item.duration, quota: item.quota,
-      week: item.week||null, team: item.team||null, amount: item.amount||0,
-      jbp: payload.jbp, kbo_pass: payload.kbo_pass, note: payload.note,
-    }));
-    await supabaseInsert('exposure_orders', rows.length ? rows : [{
-      submitted_at: payload.timestamp, month: payload.month,
-      advertiser: payload.advertiser, brand: payload.brand,
-      agency: payload.agency, media_rep: payload.media_rep,
-      billing_entity: payload.billing_entity, billing_month: payload.billing_month,
-      contact_name: payload.contact_name, contact_email: payload.contact_email, contact_org: payload.contact_org,
-      tas_status: payload.tas_status, jbp: payload.jbp, kbo_pass: payload.kbo_pass, note: payload.note,
-    }]);
+
+    await apiPost(payload);
     showSuccess('노출형');
   }catch(err){alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');console.error(err);btn.disabled=false;btn.innerHTML='청약 신청서 제출'}
 });
@@ -1355,43 +1331,9 @@ document.getElementById('plan-booking-form').addEventListener('submit', async fu
   const payload={type:'기획형',timestamp:ts,mode:planMode,advertiser:fd.get('p_advertiser'),brand:fd.get('p_brand'),agency:fd.get('p_agency'),media_rep:fd.get('p_media_rep'),billing_entity:fd.get('p_billing_entity'),billing_month:fd.get('p_billing_month'),contact_name:fd.get('p_contact_name'),contact_email:fd.get('p_contact_email'),contact_org:fd.get('p_contact_org'),jbp:document.getElementById('p-chk-jbp').checked?'Y':'N',note:fd.get('p_note')||'-',...(planMode==='single'?{items:planItems,clip_type:planCat==='cl'?clipType:null,clip_month:fd.get('clip_month')||null,clip_units:fd.get('clip_units')||null}:{pkg:selectedPkg,pkg_team:fd.get('pkg_team')||null,pkg_start:fd.get('pkg_start')||null,pkg_end:fd.get('pkg_end')||null})};
   try{
     if(payload.mode==='pkg'){
-      await supabaseInsert('planning_orders',[{
-        submitted_at: payload.timestamp, order_type: '패키지',
-        product: payload.pkg, pkg_type: payload.pkg, pkg_team: payload.pkg_team||null,
-        pkg_start: payload.pkg_start||null, pkg_end: payload.pkg_end||null,
-        advertiser: payload.advertiser, brand: payload.brand,
-        agency: payload.agency, media_rep: payload.media_rep,
-        billing_entity: payload.billing_entity, billing_month: payload.billing_month,
-        contact_name: payload.contact_name, contact_email: payload.contact_email, contact_org: payload.contact_org,
-        jbp: payload.jbp, note: payload.note,
-      }]);
+      await apiPost(payload);
     } else {
-      const rows=[];
-      (payload.items||[]).forEach(item=>rows.push({
-        submitted_at: payload.timestamp, order_type: '단일',
-        category: item.category, product: item.product,
-        date_month: item.date||null, quota: item.quota||1, amount: item.price||0,
-        advertiser: payload.advertiser, brand: payload.brand,
-        agency: payload.agency, media_rep: payload.media_rep,
-        billing_entity: payload.billing_entity, billing_month: payload.billing_month,
-        contact_name: payload.contact_name, contact_email: payload.contact_email, contact_org: payload.contact_org,
-        jbp: payload.jbp, note: payload.note,
-      }));
-      if(payload.clip_type){
-        const units=parseInt(payload.clip_units||0);
-        const amt=payload.clip_type==='monthly'?100000000:Math.ceil(units/20)*20000000;
-        rows.push({
-          submitted_at: payload.timestamp, order_type: '단일', category: '클립',
-          product: '하이라이트 클립 범퍼',
-          date_month: payload.clip_month||null, quota: units||1, amount: amt,
-          advertiser: payload.advertiser, brand: payload.brand,
-          agency: payload.agency, media_rep: payload.media_rep,
-          billing_entity: payload.billing_entity, billing_month: payload.billing_month,
-          contact_name: payload.contact_name, contact_email: payload.contact_email, contact_org: payload.contact_org,
-          jbp: payload.jbp, note: payload.note,
-        });
-      }
-      if(rows.length) await supabaseInsert('planning_orders', rows);
+      await apiPost(payload);
     }
     showSuccess('기획형');
   }catch(err){alert('제출 중 오류가 발생했습니다.\n\ntving.advertising@cj.net 으로 문의해주세요.');console.error(err);btn.disabled=false;btn.innerHTML='기획형 청약 신청서 제출'}
