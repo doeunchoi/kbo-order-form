@@ -546,7 +546,11 @@ function renderAdminTable() {
     <div class="sec-hdr" style="background:#111;color:#fff;margin-top:32px">
       <span class="sec-badge">ADMIN</span>
       <span class="sec-title">관리자용 원본 DB</span>
-      <span class="sec-sub">상태 변경 / 원본 데이터 확인</span>
+      <span class="sec-sub">
+  <button onclick="downloadAdminCSV()" style="padding:6px 10px;border-radius:8px;border:1px solid #fff;background:#fff;color:#111;font-weight:700;cursor:pointer">
+    CSV 다운로드
+  </button>
+</span>
     </div>
 
     <div class="quota-table-wrap">
@@ -590,7 +594,7 @@ async function loadAdminOrders() {
       const product = row.product || row.pkg_type || row.category || '-';
       const date = row.month || row.date_month || row.billing_month || row.pkg_start || '-';
       const amount = row.amount ? Number(row.amount).toLocaleString('ko-KR') : '-';
-      const status = row.status || '활성';
+      const status = row.status || '제출';
       const submittedAt = row.submitted_at || row.created_at || row.timestamp || '-';
       
 
@@ -601,7 +605,7 @@ async function loadAdminOrders() {
           <td>${row.type === 'exposure' ? '노출형' : '기획형'}</td>
           <td>
             <select onchange="updateOrderStatus('${row.type}', ${row.id}, this.value)">
-              ${['활성','가부킹','낙찰','확정','종료','취소'].map(s =>
+              ${['제출','낙찰','미낙찰','취소'].map(s =>
                 `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
               ).join('')}
             </select>
@@ -635,7 +639,66 @@ async function updateOrderStatus(type, id, status) {
     alert('상태 변경 실패: ' + json.error);
     return;
   }
+function downloadAdminCSV() {
+  if (!ADMIN_ORDERS || !ADMIN_ORDERS.length) {
+    alert('다운로드할 데이터가 없습니다.');
+    return;
+  }
 
+  const headers = [
+    'ID',
+    '제출 시각',
+    '유형',
+    '상태',
+    '광고주',
+    '브랜드',
+    '상품',
+    '월/일자',
+    '금액',
+    '담당자',
+    '이메일'
+  ];
+
+  const rows = ADMIN_ORDERS.map(row => {
+    const product = row.product || row.pkg_type || row.category || '';
+    const date = row.month || row.date_month || row.billing_month || row.pkg_start || '';
+    const submittedAt = row.submitted_at || row.created_at || row.timestamp || '';
+
+    return [
+      row.id,
+      submittedAt,
+      row.type === 'exposure' ? '노출형' : '기획형',
+      row.status || '활성',
+      row.advertiser || '',
+      row.brand || '',
+      product,
+      date,
+      row.amount || '',
+      row.contact_name || '',
+      row.contact_email || ''
+    ];
+  });
+
+  const csv = [headers, ...rows]
+    .map(cols => cols.map(csvEscape).join(','))
+    .join('\n');
+
+  const blob = new Blob(['\uFEFF' + csv], {
+    type: 'text/csv;charset=utf-8;'
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kbo_orders_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(value) {
+  const s = String(value ?? '');
+  return `"${s.replace(/"/g, '""')}"`;
+}
   await loadData();
 }
   
