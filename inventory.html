@@ -178,16 +178,7 @@ body{background:var(--bg);font-family:'Pretendard',-apple-system,sans-serif;font
 </div>
 
 <script>
-const SUPABASE_URL='https://xlgaixyfgvhefteydobe.supabase.co';
-const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhsZ2FpeHlmZ3ZoZWZ0ZXlkb2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0MDYxMjEsImV4cCI6MjA5Mzk4MjEyMX0.I46gdwEdkgR_rSezYWzGJ4-gK4eikn0KZCiuYJBJJnw';
-
-async function sbSelect(table, params=''){
-  const res=await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`,{
-    headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':`Bearer ${SUPABASE_ANON_KEY}`}
-  });
-  if(!res.ok) throw new Error(await res.text());
-  return res.json();
-}
+const API_URL='https://kbo-order-form.doeun-choi.workers.dev';
 const DAY_KO=['일','월','화','수','목','금','토'];
 function pad2(n){return String(n).padStart(2,'0')}
 
@@ -218,81 +209,13 @@ async function loadData(){
   const btn=document.getElementById('refresh-btn');
   btn.classList.add('loading');
   try{
-    // 노출형 청약 데이터 가져오기
-    const expRows = await sbSelect('exposure_orders','select=month,product,quota,week,team,advertiser,status&status=neq.취소');
-    // 기획형 청약 데이터 가져오기
-    const planRows = await sbSelect('planning_orders','select=category,product,date_month,quota,advertiser,pkg_type,status&status=neq.취소');
-
-    // EXP 집계 (노출형)
-    EXP={};
-    expRows.forEach(r=>{
-      if(!r.month||!r.product) return;
-      // 월 레이블 → 키 변환 (예: "2026년 5월" → "2026-05")
-      const mk = monthLabelToKey(r.month);
-      if(!mk) return;
-      // 일반 상품
-      const k1=`${mk}__${r.product}`;
-      if(!EXP[k1]) EXP[k1]={used:0,advertisers:[]};
-      EXP[k1].used+=(r.quota||1);
-      if(r.advertiser) EXP[k1].advertisers.push(r.advertiser);
-      // 주차별
-      if(r.week){
-        const k2=`${mk}__${r.product}__${r.week}`;
-        if(!EXP[k2]) EXP[k2]={used:0,advertisers:[]};
-        EXP[k2].used+=(r.quota||1);
-        if(r.advertiser) EXP[k2].advertisers.push(r.advertiser);
-      }
-      // 구단별
-      if(r.team){
-        const k3=`${mk}__${r.product}__${r.team}`;
-        if(!EXP[k3]) EXP[k3]={used:0,advertisers:[]};
-        EXP[k3].used+=(r.quota||1);
-        if(r.advertiser) EXP[k3].advertisers.push(r.advertiser);
-      }
-    });
-
-    // INV 집계 (기획형 — 날짜별 상품 점유 현황)
-    INV=[];
-    // 코드 매핑
-    const prodToCode={
-      'PPL — 기획':'sm_ppl','PPL — 이벤트':'sm_ppl','PPL — 기능':'sm_ppl','PPL — 단순':'sm_ppl',
-      'PPL (기획/이벤트/기능/단순)':'sm_ppl',
-      '메인 디스플레이 PPL':'sm_main_display',
-      '빅 가상광고':'sm_big_vr',
-      'PPL — 기획 ':'fd_ppl','풀프레임 가상광고':'fd_fullframe_vr','협찬고지':'fd_sponsor',
-      '하이라이트 클립 범퍼':'clip_monthly',
-    };
-    const catToCode={'슈퍼매치':'sm','팬덤중계':'fd','클립':'cl'};
-
-    // 날짜별 점유 집계
-    const invMap={}; // key: "code_date"
-    planRows.forEach(r=>{
-      if(!r.product||!r.date_month) return;
-      let code=prodToCode[r.product]||null;
-      if(!code){
-        if(r.category==='슈퍼매치'&&r.product.includes('PPL')) code='sm_ppl';
-        else if(r.category==='팬덤중계'&&r.product.includes('PPL')) code='fd_ppl';
-        else if(r.category==='슈퍼매치'&&r.product.includes('가상')) code='sm_big_vr';
-        else if(r.category==='팬덤중계'&&r.product.includes('가상')) code='fd_fullframe_vr';
-        else if(r.category==='팬덤중계'&&r.product.includes('협찬')) code='fd_sponsor';
-        else if(r.category==='클립') code='clip_monthly';
-      }
-      if(!code) return;
-      const key=`${code}_${r.date_month}`;
-      if(!invMap[key]) invMap[key]={code,date:r.date_month,reserved:0,advertisers:[]};
-      invMap[key].reserved+=(r.quota||1);
-      if(r.advertiser) invMap[key].advertisers.push(r.advertiser);
-    });
-    // total 설정 후 INV 배열 생성
-    const totalMap={'sm_ppl':1,'sm_main_display':1,'sm_big_vr':6,'fd_ppl':1,'fd_fullframe_vr':1,'fd_sponsor':1,'clip_monthly':1};
-    Object.values(invMap).forEach(item=>{
-      const total=totalMap[item.code]||1;
-      INV.push({...item,total,remaining:Math.max(0,total-item.reserved)});
-    });
-
-    document.getElementById('updated-at').textContent='업데이트: '+new Date().toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const data = await fetch(`${API_URL}/api/inventory`).then(r=>r.json());
+    if(!data.ok) throw new Error(data.error);
+    INV = data.inventory||[];
+    EXP = data.expMonthly||{};
+    document.getElementById('updated-at').textContent='업데이트: '+new Date(data.ts).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   }catch(err){
-    console.error('Supabase 로드 오류:', err);
+    console.error('로드 오류:', err);
     dummy();
     document.getElementById('updated-at').textContent='미리보기 (연결 오류)';
   }
