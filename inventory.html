@@ -702,6 +702,48 @@ function csvEscape(value) {
   await loadData();
 }
   
+function downloadAdminCSV() {
+  if (!ADMIN_ORDERS || !ADMIN_ORDERS.length) {
+    alert('다운로드할 데이터가 없습니다.');
+    return;
+  }
+
+  const headers = ['ID','제출 시각','유형','상태','광고주','브랜드','상품','월/일자','금액','담당자','이메일'];
+
+  const rows = ADMIN_ORDERS.map(row => [
+    row.id,
+    row.submitted_at || row.created_at || row.timestamp || '',
+    row.type === 'exposure' ? '노출형' : '기획형',
+    row.status || '활성',
+    row.advertiser || '',
+    row.brand || '',
+    row.product || row.pkg_type || row.category || '',
+    row.month || row.date_month || row.billing_month || row.pkg_start || '',
+    row.amount || '',
+    row.contact_name || '',
+    row.contact_email || ''
+  ]);
+
+  const csv = [headers, ...rows]
+    .map(cols => cols.map(csvEscape).join(','))
+    .join('\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kbo_orders_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(value) {
+  const s = String(value ?? '');
+  return `"${s.replace(/"/g, '""')}"`;
+}
+
 loadData();
 setInterval(loadData,300000);
 </script>
